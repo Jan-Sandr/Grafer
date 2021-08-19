@@ -1,3 +1,3 @@
-# Grafer-2.0
+# Grafer 2.0
 
 ## Future is bright
