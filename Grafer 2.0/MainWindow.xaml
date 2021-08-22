@@ -5,8 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Grafer_2._0"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow" Height="534" Width="873">
+    <Grid Margin="0,0,-52,-48">
+        <Canvas x:Name="drawingCanvas" Margin="284,0,52,118" Background="#FFF1EDED"/>
+        <TextBox x:Name="equationInput" HorizontalAlignment="Left" Margin="68,156,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="136" Height="34" Background="#FFF1E8E8"/>
+        <Label Content="y =" HorizontalAlignment="Left" Margin="21,153,0,0" VerticalAlignment="Top" RenderTransformOrigin="-6.559,3.773" FontSize="20"/>
+        <TextBox x:Name="minimumXIpnut" HorizontalAlignment="Left" Margin="77,108,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="37" Height="29" RenderTransformOrigin="0.846,1.154"/>
+        <TextBox x:Name="maximumXInput" HorizontalAlignment="Left" Margin="208,108,0,0" TextWrapping="Wrap" Text="TextBox" VerticalAlignment="Top" Width="37" Height="29" RenderTransformOrigin="0.846,1.154"/>
+        <Label Content="min:" HorizontalAlignment="Left" Margin="30,111,0,0" VerticalAlignment="Top"/>
+        <Label Content="max:" HorizontalAlignment="Left" Margin="158,111,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="buttonDraw" Content="Draw" HorizontalAlignment="Left" Margin="64,206,0,0" VerticalAlignment="Top" Height="37" Width="140" Click="ButtonDrawClick"/>
+        <CheckBox x:Name="limitX" Content="limit x" HorizontalAlignment="Left" Margin="40,70,0,0" VerticalAlignment="Top" Width="94"/>
 
     </Grid>
 </Window>

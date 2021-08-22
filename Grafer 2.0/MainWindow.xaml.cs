@@ -24,5 +24,66 @@ namespace Grafer_2._0
         {
             InitializeComponent();
         }
+
+        private void ButtonDrawClick(object sender, RoutedEventArgs e)
+        {
+            Draw();
+        }
+
+        private void Draw()
+        {
+            Line line = new()
+            {
+                X1 = 0,
+                Y1 = 0,
+                X2 = 100,
+                Y2 = 100,
+                StrokeThickness = 1,
+                Stroke = Brushes.Black
+                
+            };
+
+            Polyline polyline = new()
+            {
+                StrokeThickness = 2,
+                Stroke = Brushes.Blue
+
+            };
+
+            Point point = new Point()
+            {
+                X = 100,
+                Y = 100
+            };
+            Point point2 = new Point()
+            {
+                X = 200,
+                Y = 100
+            };
+            Point point3 = new Point()
+            {
+                X = 200,
+                Y = 200
+            };
+            Point point4 = new Point()
+            {
+                X = 100,
+                Y = 200
+            };
+            Point point5 = new Point()
+            {
+                X = 100,
+                Y = 100
+            };
+
+            polyline.Points.Add(point);
+            polyline.Points.Add(point2);
+            polyline.Points.Add(point3);
+            polyline.Points.Add(point4);
+            polyline.Points.Add(point5);
+
+            drawingCanvas.Children.Add(line);
+            drawingCanvas.Children.Add(polyline);
+        }
     }
 }
