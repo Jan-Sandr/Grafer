@@ -24,5 +24,15 @@ namespace Grafer2
             CalculationOrder = new();
             Curves = new List<List<PointF>>();
         }
+
+        public void PrepareForCalculation()
+        {
+            CalculationOrder = (CalculationOrder)CalculationOrder.GetOrder(CalculationOrder);
+        }
+
+        public List<List<PointF>> CalculatePoints()
+        {
+            return Curves;
+        }
     }
 }
