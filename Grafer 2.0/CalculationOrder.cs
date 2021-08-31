@@ -10,8 +10,34 @@ namespace Grafer2
     {
         string[] mathOperations = new string[] { "+-", "*/" };
 
-        public List<List<int>> GetOrder(List<List<int>> calculationOrder)
+        public CalculationOrder GetOrder(Relation relation, CalculationOrder calculationOrder)
         {
+            
+            for(int i = 0; i < relation.Count; i++)
+            {
+                int index = Array.FindIndex(mathOperations, s => s.Contains(relation[i]));
+
+                if (index != -1)
+                {
+                    calculationOrder[0].Add(i);
+                    calculationOrder[1].Add(index);
+                }
+            }
+            calculationOrder = SortOrder(calculationOrder);
+            return calculationOrder;
+        }
+
+        private CalculationOrder SortOrder(CalculationOrder calculationOrder)
+        {
+            int[] indexs = calculationOrder[0].ToArray();
+            int[] priorities = calculationOrder[1].ToArray();
+
+            Array.Sort(priorities,indexs);
+            Array.Reverse(indexs);
+            Array.Reverse(priorities);
+
+            calculationOrder[0] = indexs.ToList();
+            calculationOrder[1] = priorities.ToList();
             return calculationOrder;
         }
     }
