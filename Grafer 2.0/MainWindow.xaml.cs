@@ -39,6 +39,8 @@ namespace Grafer2
             GetXRange();
 
             gFunction = new Function(equationInput.Text,gMinimumX,gMaximumX);
+            gFunction.PrepareForCalculation();
+            gFunction.CalculatePoints();
         }
 
         private void GetXRange()

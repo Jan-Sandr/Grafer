@@ -21,13 +21,13 @@ namespace Grafer2
             Relation.AddRange(relation.Select(s => s.ToString()));
             MinimumX = minimumX;
             MaximumX = maximumX;
-            CalculationOrder = new();
+            CalculationOrder = new CalculationOrder() { new List<int>(), new List<int>() };
             Curves = new List<List<PointF>>();
         }
 
         public void PrepareForCalculation()
         {
-            CalculationOrder = (CalculationOrder)CalculationOrder.GetOrder(CalculationOrder);
+            CalculationOrder = CalculationOrder.GetOrder(Relation, CalculationOrder);
         }
 
         public List<List<PointF>> CalculatePoints()
