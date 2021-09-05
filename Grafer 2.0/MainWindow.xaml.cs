@@ -45,8 +45,17 @@ namespace Grafer2
 
         private void GetXRange()
         {
-            gMinimumX = double.Parse(minimumXIpnut.Text);
-            gMaximumX = double.Parse(maximumXInput.Text);
+            if((bool)limitX.IsChecked)
+            {
+                gMinimumX = double.Parse(minimumXIpnut.Text);
+                gMaximumX = double.Parse(maximumXInput.Text);
+            }
+            else
+            {
+                gMinimumX = -drawingCanvas.Width / 200;
+                gMaximumX = drawingCanvas.Width / 200;
+            }
+            
         }
 
         private void Draw()
