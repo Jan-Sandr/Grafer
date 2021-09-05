@@ -15,6 +15,9 @@ namespace Grafer2
         CalculationOrder CalculationOrder {  get; set; }
         List<List<PointF>> Curves { get; set; }
 
+        Relation relationBackup;
+        CalculationOrder calculationOrderBackup;
+
         public Function(string relation,double minimumX, double maximumX)
         {
             Relation = new();
@@ -32,7 +35,25 @@ namespace Grafer2
 
         public List<List<PointF>> CalculatePoints()
         {
+            SetBackup();
+            GetBackup();
             return Curves;
+        }
+
+        private void SetBackup()
+        {
+            relationBackup = new();
+            relationBackup.AddRange(Relation);
+            calculationOrderBackup = new();
+            calculationOrderBackup.AddRange(CalculationOrder);
+        }
+
+        private void GetBackup()
+        {
+            Relation = new();
+            CalculationOrder = new();
+            Relation.AddRange(relationBackup);
+            CalculationOrder.AddRange(calculationOrderBackup);
         }
     }
 }
