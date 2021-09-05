@@ -36,13 +36,7 @@ namespace Grafer2
         public List<List<PointF>> CalculatePoints()
         {
             SetBackup();
-            for(double i = MinimumX; i <= MaximumX; i += 0.01)
-            {
-                GetBackup();
-                //SubstituteX();
-                //CalculateYForX();
-            }
-          
+
             return Curves;
         }
 
