@@ -36,7 +36,7 @@ namespace Grafer2
         public List<List<PointF>> CalculatePoints()
         {
             SetBackup();
-            GetBackup();
+
             return Curves;
         }
 
