@@ -45,7 +45,7 @@ namespace Grafer2
 
         private void GetXRange()
         {
-            if((bool)limitX.IsChecked)
+            if(limitX.IsChecked == true)
             {
                 gMinimumX = double.Parse(minimumXIpnut.Text);
                 gMaximumX = double.Parse(maximumXInput.Text);

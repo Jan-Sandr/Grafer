@@ -8,7 +8,7 @@ namespace Grafer2
 {
     class CalculationOrder : List<List<int>>
     {
-        string[] mathOperations = new string[] { "+-", "*/" };
+        readonly string[] mathOperations = new string[] { "+-", "*/" };
 
         public CalculationOrder GetOrder(Relation relation, CalculationOrder calculationOrder)
         {
