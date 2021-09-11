@@ -61,9 +61,40 @@ namespace Grafer2
             int orderProgression = 0;
             while(Relation.Count >1)
             {
+                int index = CalculationOrder[0][orderProgression];
+                Relation[index] = Operation(index).ToString();
                 orderProgression++;
             }
            
+        }
+
+        private double Operation(int index)
+        {
+            switch (Relation[index])
+            {
+                case "+":
+                    {
+                        y = double.Parse(Relation[index - 1]) + double.Parse(Relation[index + 1]);
+                        break;
+                    }
+                case "-":
+                    {
+                        y = double.Parse(Relation[index - 1]) - double.Parse(Relation[index + 1]);
+                        break;
+                    }
+                case "*":
+                    {
+                        y = double.Parse(Relation[index - 1]) * double.Parse(Relation[index + 1]);
+                        break;
+                    }
+                case "/":
+                    {
+                        y = double.Parse(Relation[index - 1]) / double.Parse(Relation[index + 1]);
+                        break;
+                    }
+            }
+
+            return y;
         }
 
         private void SetBackup()
