@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Grafer2
 {
-    class Function
+    public class Function
     {
         Relation Relation { get; set; }
         double MinimumX {  get; set; }
@@ -36,14 +36,23 @@ namespace Grafer2
         public List<List<PointF>> CalculatePoints()
         {
             SetBackup();
-            for(double i = MinimumX; i <= MaximumX; i += 0.01)
+            for(double x = MinimumX; x <= MaximumX; x += 0.01)
             {
                 GetBackup();
-                //SubstituteX();
+                SubstituteX(x);
                 //CalculateYForX();
             }
           
             return Curves;
+        }
+
+        private void SubstituteX(double x)
+        {
+            for(int i = 0;i< Relation.Count;i++)
+            {
+                Relation[i] = Relation[i] == "x" ? x.ToString() : Relation[i];
+                Relation[i] = Relation[i] == "-x" ? (-x).ToString() : Relation[i];
+            }
         }
 
         private void SetBackup()
