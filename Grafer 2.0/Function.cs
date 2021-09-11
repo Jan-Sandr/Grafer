@@ -14,6 +14,7 @@ namespace Grafer2
         double MaximumX {  get; set; }
         CalculationOrder CalculationOrder {  get; set; }
         List<List<PointF>> Curves { get; set; }
+        double y;
 
         Relation relationBackup;
         CalculationOrder calculationOrderBackup;
@@ -40,7 +41,7 @@ namespace Grafer2
             {
                 GetBackup();
                 SubstituteX(x);
-                //CalculateYForX();
+                CalculateYForX();
             }
           
             return Curves;
@@ -53,6 +54,16 @@ namespace Grafer2
                 Relation[i] = Relation[i] == "x" ? x.ToString() : Relation[i];
                 Relation[i] = Relation[i] == "-x" ? (-x).ToString() : Relation[i];
             }
+        }
+
+        private void CalculateYForX()
+        {
+            int orderProgression = 0;
+            while(Relation.Count >1)
+            {
+                orderProgression++;
+            }
+           
         }
 
         private void SetBackup()
