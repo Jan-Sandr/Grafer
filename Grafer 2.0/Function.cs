@@ -64,6 +64,8 @@ namespace Grafer2
                 int index = CalculationOrder[0][orderProgression];
                 Relation[index] = Operation(index).ToString();
                 Relation.RemoveNeighbors(Relation, index);
+                CalculationOrder.ShiftPosition(CalculationOrder, Relation.RemovedElementsCount, orderProgression);
+                Relation.RemovedElementsCount = 0;
                 orderProgression++;
             }
            

@@ -8,7 +8,7 @@ namespace Grafer2
 {
     public class Relation: List<string>
     {
-        public int RemovedElementsCount { get; private set; }
+        public int RemovedElementsCount { get; set; }
 
         public Relation()
         {
@@ -19,6 +19,9 @@ namespace Grafer2
         {
             relation.RemoveAt(index + 1);
             relation.RemoveAt(index - 1);
+            RemovedElementsCount = 2;
         }
+
+       
     }
 }
