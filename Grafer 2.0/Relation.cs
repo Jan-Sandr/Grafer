@@ -6,7 +6,19 @@ using System.Threading.Tasks;
 
 namespace Grafer2
 {
-    class Relation: List<string>
+    public class Relation: List<string>
     {
+        public int RemovedElementsCount { get; private set; }
+
+        public Relation()
+        {
+            RemovedElementsCount = 0;
+        }
+
+        public void RemoveNeighbors(Relation relation, int index)
+        {
+            relation.RemoveAt(index + 1);
+            relation.RemoveAt(index - 1);
+        }
     }
 }

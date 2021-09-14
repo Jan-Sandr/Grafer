@@ -63,6 +63,7 @@ namespace Grafer2
             {
                 int index = CalculationOrder[0][orderProgression];
                 Relation[index] = Operation(index).ToString();
+                Relation.RemoveNeighbors(Relation, index);
                 orderProgression++;
             }
            
