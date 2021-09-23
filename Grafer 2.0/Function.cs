@@ -15,13 +15,14 @@ namespace Grafer2
         double MaximumX {  get; set; }
         CalculationOrder CalculationOrder {  get; set; }
         List<List<Point>> Curves { get; set; }
+        public Canvas Canvas { get; }
         private List<Point> points;
         double y;
 
         Relation relationBackup;
         CalculationOrder calculationOrderBackup;
 
-        public Function(string relation,double minimumX, double maximumX)
+        public Function(string relation,double minimumX, double maximumX, Canvas canvas)
         {
             Relation = new();
             Relation.AddRange(relation.Select(s => s.ToString()));
@@ -30,6 +31,7 @@ namespace Grafer2
             CalculationOrder = new CalculationOrder() { new List<int>(), new List<int>() };
             Curves = new List<List<Point>>();
             points = new List<Point>();
+            Canvas = canvas;
         }
 
         public void PrepareForCalculation()
@@ -44,6 +46,7 @@ namespace Grafer2
             {
                 GetBackup();
                 SubstituteX(x);
+                y = x;
                 CalculateYForX();
                 SavePoint(x, y);
             }
@@ -80,9 +83,20 @@ namespace Grafer2
             if(!double.IsNaN(y))
             {
                 Point point = new(x, y);
+                point = ConvertToCoordinatePoint(point);
                 points.Add(point);
             }
           
+        }
+
+        private Point ConvertToCoordinatePoint(Point point)
+        {
+            point = new Point()
+            {
+                X = Canvas.Width / 2 + point.X * 100,
+                Y = (-y * 100) + Canvas.Height / 2
+            };
+            return point;
         }
 
         private double Operation(int index)

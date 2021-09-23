@@ -43,7 +43,7 @@ namespace Grafer2
 
         public void ShiftPosition(CalculationOrder calculationOrder, int removeCount, int index)
         {
-            for(int i =0; i < calculationOrder.Count; i++)
+            for(int i =0; i < calculationOrder[0].Count; i++)
             {
                 if(calculationOrder[0][index] < calculationOrder[0][i])
                 {
