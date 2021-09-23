@@ -1,9 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace Grafer2
 {
@@ -13,7 +14,8 @@ namespace Grafer2
         double MinimumX {  get; set; }
         double MaximumX {  get; set; }
         CalculationOrder CalculationOrder {  get; set; }
-        List<List<PointF>> Curves { get; set; }
+        List<List<Point>> Curves { get; set; }
+        private List<Point> points;
         double y;
 
         Relation relationBackup;
@@ -26,7 +28,8 @@ namespace Grafer2
             MinimumX = minimumX;
             MaximumX = maximumX;
             CalculationOrder = new CalculationOrder() { new List<int>(), new List<int>() };
-            Curves = new List<List<PointF>>();
+            Curves = new List<List<Point>>();
+            points = new List<Point>();
         }
 
         public void PrepareForCalculation()
@@ -34,7 +37,7 @@ namespace Grafer2
             CalculationOrder = CalculationOrder.GetOrder(Relation, CalculationOrder);
         }
 
-        public List<List<PointF>> CalculatePoints()
+        public List<List<Point>> CalculatePoints()
         {
             SetBackup();
             for(double x = MinimumX; x <= MaximumX; x += 0.01)
@@ -42,6 +45,7 @@ namespace Grafer2
                 GetBackup();
                 SubstituteX(x);
                 CalculateYForX();
+                SavePoint(x, y);
             }
           
             return Curves;
@@ -69,6 +73,16 @@ namespace Grafer2
                 orderProgression++;
             }
            
+        }
+
+        private void SavePoint(double x, double y)
+        {
+            if(!double.IsNaN(y))
+            {
+                Point point = new(x, y);
+                points.Add(point);
+            }
+          
         }
 
         private double Operation(int index)
