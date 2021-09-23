@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Grafer2
 {
-    class CalculationOrder : List<List<int>>
+    public class CalculationOrder : List<List<int>>
     {
         readonly string[] mathOperations = new string[] { "+-", "*/" };
 

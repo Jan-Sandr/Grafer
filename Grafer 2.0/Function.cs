@@ -10,11 +10,11 @@ namespace Grafer2
 {
     public class Function
     {
-        Relation Relation { get; set; }
-        double MinimumX {  get; set; }
-        double MaximumX {  get; set; }
-        CalculationOrder CalculationOrder {  get; set; }
-        List<List<Point>> Curves { get; set; }
+        public Relation Relation { get; set; }
+        public double MinimumX {  get; set; }
+        public double MaximumX {  get; set; }
+        public CalculationOrder CalculationOrder {  get; set; }
+        public List<List<Point>> Curves { get; set; }
         public Canvas Canvas { get; }
         private List<Point> points;
         double y;
@@ -39,19 +39,21 @@ namespace Grafer2
             CalculationOrder = CalculationOrder.GetOrder(Relation, CalculationOrder);
         }
 
-        public List<List<Point>> CalculatePoints()
+        public void CalculatePoints()
         {
             SetBackup();
             for(double x = MinimumX; x <= MaximumX; x += 0.01)
             {
+                x = Math.Round(x, 2);
                 GetBackup();
                 SubstituteX(x);
                 y = x;
                 CalculateYForX();
                 SavePoint(x, y);
             }
-          
-            return Curves;
+
+            SaveCurve(points);
+            points = new List<Point>();
         }
 
         private void SubstituteX(double x)
@@ -80,13 +82,22 @@ namespace Grafer2
 
         private void SavePoint(double x, double y)
         {
-            if(!double.IsNaN(y))
+            if(!double.IsNaN(y) && !double.IsInfinity(y))
             {
                 Point point = new(x, y);
                 point = ConvertToCoordinatePoint(point);
                 points.Add(point);
             }
-          
+            else if(points.Count > 1)
+            {
+                SaveCurve(points);
+                points = new List<Point>();
+            }
+        }
+
+        private void SaveCurve(List<Point> points)
+        {
+            Curves.Add(points);
         }
 
         private Point ConvertToCoordinatePoint(Point point)
