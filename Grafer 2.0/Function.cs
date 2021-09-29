@@ -5,6 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Shapes;
+using System.Windows.Media;
 
 namespace Grafer2
 {
@@ -14,7 +16,7 @@ namespace Grafer2
         public double MinimumX {  get; set; }
         public double MaximumX {  get; set; }
         public CalculationOrder CalculationOrder {  get; set; }
-        public List<List<Point>> Curves { get; set; }
+        public List<Polyline> Curves { get; set; }
         public Canvas Canvas { get; }
         private List<Point> points;
         double y;
@@ -29,7 +31,7 @@ namespace Grafer2
             MinimumX = minimumX;
             MaximumX = maximumX;
             CalculationOrder = new CalculationOrder() { new List<int>(), new List<int>() };
-            Curves = new List<List<Point>>();
+            Curves = new List<Polyline>();
             points = new List<Point>();
             Canvas = canvas;
         }
@@ -54,6 +56,14 @@ namespace Grafer2
 
             SaveCurve(points);
             points = new List<Point>();
+        }
+
+        public void Plot()
+        {
+            for(int i = 0; i < Curves.Count;i++)
+            {
+                Canvas.Children.Add(Curves[i]);
+            }        
         }
 
         private void SubstituteX(double x)
@@ -97,7 +107,18 @@ namespace Grafer2
 
         private void SaveCurve(List<Point> points)
         {
-            Curves.Add(points);
+            Polyline polyline = new()
+            {
+                Stroke = Brushes.Black,
+                StrokeThickness = 2
+            };
+
+            for (int i =0; i < points.Count;i++)
+            {
+                polyline.Points.Add(points[i]);
+            }
+          
+            Curves.Add(polyline);
         }
 
         private Point ConvertToCoordinatePoint(Point point)
