@@ -8,10 +8,10 @@
         Title="MainWindow" Height="659" Width="889">
     <Grid Margin="0,0,-52,-48">
         <Canvas x:Name="drawingCanvas" Margin="272,0,53,118" Background="#FFF1EDED" Width="600" Height="600"/>
-        <TextBox x:Name="equationInput" HorizontalAlignment="Left" Margin="66,156,0,0" TextWrapping="Wrap" Text="x+3" VerticalAlignment="Top" Width="136" Height="34" Background="#FFF1E8E8"/>
+        <TextBox x:Name="equationInput" HorizontalAlignment="Left" Margin="66,156,0,0" TextWrapping="Wrap" Text="x+3" VerticalAlignment="Top" Width="136" Height="34" Background="#FFF1E8E8" KeyDown="RelationInputCheck"/>
         <Label Content="y =" HorizontalAlignment="Left" Margin="21,153,0,0" VerticalAlignment="Top" RenderTransformOrigin="-6.559,3.773" FontSize="20"/>
-        <TextBox x:Name="minimumXIpnut" HorizontalAlignment="Left" Margin="68,116,0,0" TextWrapping="Wrap" Text="-3" VerticalAlignment="Top" Width="57" Height="16" RenderTransformOrigin="0.846,1.154"/>
-        <TextBox x:Name="maximumXInput" HorizontalAlignment="Left" Margin="180,116,0,0" TextWrapping="Wrap" Text="3" VerticalAlignment="Top" Width="57" Height="16" RenderTransformOrigin="0.846,1.154"/>
+        <TextBox x:Name="minimumXIpnut" HorizontalAlignment="Left" Margin="68,116,0,0" TextWrapping="Wrap" Text="-3" VerticalAlignment="Top" Width="57" Height="16" RenderTransformOrigin="0.846,1.154" KeyDown="RangeXInputCheck" KeyUp="minimumXIpnut_KeyUp"/>
+        <TextBox x:Name="maximumXInput" HorizontalAlignment="Left" Margin="180,116,0,0" TextWrapping="Wrap" Text="3" VerticalAlignment="Top" Width="57" Height="16" RenderTransformOrigin="0.846,1.154" KeyDown="RangeXInputCheck"/>
         <Label Content="min:" HorizontalAlignment="Left" Margin="30,111,0,0" VerticalAlignment="Top"/>
         <Label Content="max:" HorizontalAlignment="Left" Margin="140,111,0,0" VerticalAlignment="Top"/>
         <Button x:Name="buttonDraw" Content="Draw" HorizontalAlignment="Left" Margin="64,206,0,0" VerticalAlignment="Top" Height="37" Width="140" Click="ButtonDrawClick"/>

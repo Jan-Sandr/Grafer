@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Text.RegularExpressions;
 
 namespace Grafer2
 {
@@ -64,5 +65,22 @@ namespace Grafer2
             drawingCanvas.Children.Clear();
             gFunction.Plot();
         }
+
+        private void RangeXInputCheck(object sender, KeyEventArgs e)
+        {
+            if (!Regex.IsMatch(e.Key.ToString(), "[0-9]") && e.Key.ToString() != "Subtract")
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void RelationInputCheck(object sender, KeyEventArgs e)
+        {
+            if(!Regex.IsMatch(e.Key.ToString(), "[0-9,X,Add,Subtract,Multiply,Divide]"))
+            {
+                e.Handled = true;
+            }
+        }
+
     }
 }
