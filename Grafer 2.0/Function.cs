@@ -21,8 +21,10 @@ namespace Grafer2
         private List<Point> points;
         double y;
 
-        Relation relationBackup;
-        CalculationOrder calculationOrderBackup;
+        string[] relationBackup;
+        int[] calculationOrderIndexesBackup;
+        int[] calculationOrderPrioritiesBackup;
+
 
         public Function(string relation,double minimumX, double maximumX, Canvas canvas)
         {
@@ -162,18 +164,24 @@ namespace Grafer2
 
         private void SetBackup()
         {
-            relationBackup = new();
-            relationBackup.AddRange(Relation);
-            calculationOrderBackup = new();
-            calculationOrderBackup.AddRange(CalculationOrder);
+            relationBackup = Relation.ToArray();
+            calculationOrderIndexesBackup = CalculationOrder[0].ToArray();
+            calculationOrderPrioritiesBackup = CalculationOrder[1].ToArray();
         }
 
         private void GetBackup()
         {
             Relation = new();
             CalculationOrder = new();
+            CalculationOrder.Add(new List<int>());
+            CalculationOrder.Add(new List<int>());
+
             Relation.AddRange(relationBackup);
-            CalculationOrder.AddRange(calculationOrderBackup);
+
+            CalculationOrder[0].AddRange(calculationOrderIndexesBackup);
+            CalculationOrder[1].AddRange(calculationOrderPrioritiesBackup);
+
+
         }
     }
 }
