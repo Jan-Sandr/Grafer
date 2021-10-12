@@ -71,7 +71,7 @@ namespace Grafer2
 
         private void RangeXInputCheck(object sender, KeyEventArgs e)
         {
-            if (!Regex.IsMatch(e.Key.ToString(), "[0-9]") && e.Key.ToString() != "Subtract")
+            if (!Regex.IsMatch(e.Key.ToString(), "[0-9]") && e.Key.ToString() != "Subtract" && e.Key.ToString() != "Back")
             {
                 e.Handled = true;
             }
