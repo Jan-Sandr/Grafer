@@ -29,16 +29,43 @@ namespace Grafer2
 
         private CalculationOrder SortOrder(CalculationOrder calculationOrder)
         {
-            int[] indexs = calculationOrder[0].ToArray();
+            int[] indexes = calculationOrder[0].ToArray();
             int[] priorities = calculationOrder[1].ToArray();
 
-            Array.Sort(priorities,indexs);
-            Array.Reverse(indexs);
+            Array.Sort(priorities,indexes);
+            Array.Reverse(indexes);
             Array.Reverse(priorities);
 
-            calculationOrder[0] = indexs.ToList();
+            indexes = SortIndexes(indexes,priorities);
+
+            calculationOrder[0] = indexes.ToList();
             calculationOrder[1] = priorities.ToList();
             return calculationOrder;
+        }
+
+        private int[] SortIndexes(int[] indexes, int[] priorities)
+        {
+            int sameElementsCount = 0;
+            for(int i = 1; i < indexes.Length; i++)
+            {
+                sameElementsCount++;
+
+                if(sameElementsCount > 1)
+                {
+                    if (priorities[i] != priorities[i - 1])
+                    {
+                        Array.Sort(indexes, i - sameElementsCount, sameElementsCount);
+                        sameElementsCount = 0;
+                    }
+
+                    if (i == indexes.Length - 1)
+                    {
+                        Array.Sort(indexes, i - sameElementsCount, sameElementsCount + 1);
+                    }
+                }
+            }
+
+            return indexes;
         }
 
         public void ShiftPosition(CalculationOrder calculationOrder, int removeCount, int index)
