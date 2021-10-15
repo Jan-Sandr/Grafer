@@ -22,13 +22,45 @@ namespace Grafer2
         public void Create()
         {
             DrawAxes();
+            DrawGrid();
+        }
+
+        private void DrawGrid()
+        {
+            DrawGridLines(Direction.X, Width);
+            DrawGridLines(Direction.Y, Height);
+        }
+
+        private void DrawGridLines(Direction direction, double size)
+        {
+            for (int i = 100; i < size; i += 100)
+            {
+                Line gridLine = new();
+                
+                switch (direction)
+                {
+                    case Direction.X:
+                        {
+                            gridLine = NewLine(direction, lineY: i);
+                            break;
+                        }
+
+                    case Direction.Y:
+                        {
+                            gridLine = NewLine(direction, lineX: i);
+                            break;
+                        }
+                }
+
+                Children.Add(gridLine);            
+            }
         }
 
         private void DrawAxes()
         {
-            Line axisX = NewLine(Direction.X, lineY: Height/2);
+            Line axisX = NewLine(Direction.X, lineY: Height / 2, strokeThickness: 2);
 
-            Line axisY = NewLine(Direction.Y, lineX: Width/2);
+            Line axisY = NewLine(Direction.Y, lineX: Width / 2, strokeThickness: 2);
 
             Children.Add(axisX);
             Children.Add(axisY);

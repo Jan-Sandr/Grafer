@@ -66,7 +66,11 @@ namespace Grafer2
             CoordinateSystem coordinateSystem = new(drawingCanvas.Width, drawingCanvas.Height);
             coordinateSystem.Create();
             drawingCanvas.Children.Add(coordinateSystem);
-            gFunction.Plot();
+           
+            if(gFunction != null)
+            {
+                gFunction.Plot();
+            }        
         }
 
         private void RangeXInputCheck(object sender, KeyEventArgs e)
@@ -83,6 +87,11 @@ namespace Grafer2
             {
                 e.Handled = true;
             }
+        }
+
+        private void drawingCanvasLoaded(object sender, RoutedEventArgs e)
+        {
+            Draw();
         }
     }
 }
