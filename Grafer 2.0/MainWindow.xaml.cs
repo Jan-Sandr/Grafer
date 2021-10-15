@@ -64,7 +64,7 @@ namespace Grafer2
         {
             drawingCanvas.Children.Clear();
             CoordinateSystem coordinateSystem = new(drawingCanvas.Width, drawingCanvas.Height);
-            coordinateSystem.Draw();
+            coordinateSystem.Create();
             drawingCanvas.Children.Add(coordinateSystem);
             gFunction.Plot();
         }
