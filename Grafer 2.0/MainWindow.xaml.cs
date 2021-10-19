@@ -89,7 +89,7 @@ namespace Grafer2
             }
         }
 
-        private void drawingCanvasLoaded(object sender, RoutedEventArgs e)
+        private void DrawingCanvasLoaded(object sender, RoutedEventArgs e)
         {
             Draw();
         }

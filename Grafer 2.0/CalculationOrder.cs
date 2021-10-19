@@ -27,7 +27,7 @@ namespace Grafer2
             return calculationOrder;
         }
 
-        private CalculationOrder SortOrder(CalculationOrder calculationOrder)
+        private static CalculationOrder SortOrder(CalculationOrder calculationOrder) 
         {
             int[] indexes = calculationOrder[0].ToArray();
             int[] priorities = calculationOrder[1].ToArray();
@@ -43,7 +43,7 @@ namespace Grafer2
             return calculationOrder;
         }
 
-        private int[] SortIndexes(int[] indexes, int[] priorities)
+        private static int[] SortIndexes(int[] indexes, int[] priorities)
         {
             int sameElementsCount = 0;
             for(int i = 1; i < indexes.Length; i++)
@@ -68,7 +68,7 @@ namespace Grafer2
             return indexes;
         }
 
-        public void ShiftPosition(CalculationOrder calculationOrder, int removeCount, int index)
+        public static void ShiftPosition(CalculationOrder calculationOrder, int removeCount, int index)
         {
             for(int i =0; i < calculationOrder[0].Count; i++)
             {

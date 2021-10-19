@@ -58,9 +58,9 @@ namespace Grafer2
 
         private void DrawAxes()
         {
-            Line axisX = NewLine(Direction.X, lineY: Height / 2, strokeThickness: 2);
+            Line axisX = NewLine(Direction.X, lineY: Height / 2, strokeThickness: 1.5);
 
-            Line axisY = NewLine(Direction.Y, lineX: Width / 2, strokeThickness: 2);
+            Line axisY = NewLine(Direction.Y, lineX: Width / 2, strokeThickness: 1.5);
 
             Children.Add(axisX);
             Children.Add(axisY);
@@ -74,9 +74,11 @@ namespace Grafer2
                 Y1 = direction == Direction.X ? lineY : 0,
                 X2 = direction == Direction.X ? Width : lineX,
                 Y2 = direction == Direction.X ? lineY : Height,
-                Stroke = Brushes.Black,
-                StrokeThickness = 1
+                Stroke = brushes ?? Brushes.Black,
+                StrokeThickness = strokeThickness
             };
+
+            line.SnapsToDevicePixels = true;
 
             return line;
         }

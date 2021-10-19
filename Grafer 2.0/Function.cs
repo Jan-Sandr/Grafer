@@ -115,6 +115,8 @@ namespace Grafer2
                 StrokeThickness = 2
             };
 
+            polyline.SnapsToDevicePixels = true;
+
             for (int i =0; i < points.Count;i++)
             {
                 polyline.Points.Add(points[i]);
