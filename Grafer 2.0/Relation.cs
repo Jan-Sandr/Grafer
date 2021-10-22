@@ -9,15 +9,18 @@ namespace Grafer2
     public class Relation: List<string>
     {
         public int RemovedElementsCount { get; set; }
+        public bool IsRelationValid { get; private set; }
 
         public Relation()
         {
             RemovedElementsCount = 0;
         }
 
-        public static Relation Adjust(Relation relation)
+        public Relation Adjust(Relation relation)
         {
             relation.RemoveAll(s => s == " ");
+
+            IsRelationValid = EquationCheck.BasicCheck(relation);
 
             return relation;
         }
