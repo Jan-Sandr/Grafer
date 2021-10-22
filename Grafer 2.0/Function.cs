@@ -40,6 +40,7 @@ namespace Grafer2
 
         public void PrepareForCalculation()
         {
+            Relation = Relation.Adjust(Relation);
             CalculationOrder = CalculationOrder.GetOrder(Relation, CalculationOrder);
         }
 
@@ -80,7 +81,7 @@ namespace Grafer2
         private void CalculateYForX()
         {
             int orderProgression = 0;
-            while(Relation.Count >1)
+            while(Relation.Count > 1)
             {
                 int index = CalculationOrder[0][orderProgression];
                 Relation[index] = Operation(index).ToString();

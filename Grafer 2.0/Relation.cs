@@ -15,6 +15,13 @@ namespace Grafer2
             RemovedElementsCount = 0;
         }
 
+        public static Relation Adjust(Relation relation)
+        {
+            relation.RemoveAll(s => s == " ");
+
+            return relation;
+        }
+
         public void RemoveNeighbors(Relation relation, int index)
         {
             relation.RemoveAt(index + 1);
