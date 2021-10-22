@@ -41,7 +41,12 @@ namespace Grafer2
 
             gFunction = new Function(equationInput.Text,gMinimumX,gMaximumX, drawingCanvas);
             gFunction.PrepareForCalculation();
-            gFunction.CalculatePoints();
+            
+            if(gFunction.Relation.IsRelationValid)
+            {
+                gFunction.CalculatePoints();             
+            }
+
             Draw();
         }
 
