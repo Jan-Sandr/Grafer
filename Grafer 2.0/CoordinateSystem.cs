@@ -46,28 +46,33 @@ namespace Grafer2
                 {
                     case Direction.X:
                         {
-                            Children.Add(NewNumber(-i / 100, size / 2 - i - 12, Height / 2 + 10));
-                            Children.Add(NewNumber(i / 100, size / 2 + i - 5, Height / 2 + 10));
+                            Children.Add(NewNumber(-i / 100, (size / 2) - i - 7, Height / 2 + 10));
+                            Children.Add(NewNumber(i / 100, (size / 2) + i-3, Height / 2 + 10));
                             break;
                         }
 
                     case Direction.Y:
                         {
-                            Children.Add(NewNumber(i / 100, Width / 2 + 16, size / 2 - i - 15));
-                            Children.Add(NewNumber(-i / 100, Width / 2 + 10, size / 2 + i - 15));
+                            Children.Add(NewNumber(i / 100, Width / 2 + 16, (size / 2) - i - 7));
+                            Children.Add(NewNumber(-i / 100, Width / 2 + 10, (size / 2) + i - 7));
                             break;
                         }
                 }
             }
 
-            Children.Add(NewNumber(0, Width / 2 + 16, Height / 2 + 10));
+            if(direction == Direction.X)
+            {
+                Children.Add(NewNumber(0, Width / 2 + 16, Height / 2 + 10));
+            }
+            
         }
 
-        private TextBlock NewNumber(int value, double x, double y)
+        private static TextBlock NewNumber(int value, double x, double y)
         {
             TextBlock number = new();
             number.Text = value.ToString();
-            number.FontSize = 20;
+            number.FontFamily = new FontFamily("Arial");
+            number.FontSize = 13;
 
             number.RenderTransform = new TranslateTransform()
             {
@@ -80,28 +85,25 @@ namespace Grafer2
 
         private void DrawGridLines(Direction direction, double size)
         {
-            Color color = Color.FromArgb(100, 0, 0, 0);
-
-            for (int i = 100; i < size; i += 100)
+            SolidColorBrush brush = new(Color.FromArgb(75, 0, 0, 0));
+            for (int i = 100; i < size / 2; i += 100)
             {
-                Line gridLine = new();
-                SolidColorBrush brush = new SolidColorBrush(color);
                 switch (direction)
                 {
                     case Direction.X:
                         {
-                            gridLine = NewLine(direction, lineY: i, brushes: brush);
+                            Children.Add(NewLine(direction, lineY: (size / 2) - i, brushes: brush));
+                            Children.Add(NewLine(direction, lineY: (size / 2) + i, brushes: brush));
                             break;
                         }
 
                     case Direction.Y:
                         {
-                            gridLine = NewLine(direction, lineX: i, brushes: brush);
+                            Children.Add(NewLine(direction, lineX: (size / 2) -i, brushes: brush));
+                            Children.Add(NewLine(direction, lineX: (size / 2) + i, brushes: brush));
                             break;
                         }
                 }
-
-                Children.Add(gridLine);            
             }
         }
 
@@ -120,10 +122,10 @@ namespace Grafer2
 
             Line line = new()
             {
-                X1 = direction == Direction.X ? 0 : lineX,
-                Y1 = direction == Direction.X ? lineY : 0,
-                X2 = direction == Direction.X ? Width : lineX,
-                Y2 = direction == Direction.X ? lineY : Height,
+                X1 = (direction == Direction.X) ? 0 : lineX,
+                Y1 = (direction == Direction.X) ? lineY : 0,
+                X2 = (direction == Direction.X) ? Width : lineX,
+                Y2 = (direction == Direction.X) ? lineY : Height,
                 Stroke = brushes ?? Brushes.Black,
                 StrokeThickness = strokeThickness,              
             };
