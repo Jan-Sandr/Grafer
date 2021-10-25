@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
 namespace Grafer2
 {
-    public class Relation: List<string>
+    public class Relation : List<string>
     {
         public int RemovedElementsCount { get; set; }
         public bool IsRelationValid { get; private set; }
@@ -32,6 +28,6 @@ namespace Grafer2
             RemovedElementsCount = 2;
         }
 
-       
+
     }
 }

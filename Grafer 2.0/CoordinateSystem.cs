@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
-using System.Windows.Shapes;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace Grafer2
 {
@@ -13,7 +13,7 @@ namespace Grafer2
             Y
         }
 
-        public CoordinateSystem(double width,double height)
+        public CoordinateSystem(double width, double height)
         {
             Width = width;
             Height = height;
@@ -47,7 +47,7 @@ namespace Grafer2
                     case Direction.X:
                         {
                             Children.Add(NewNumber(-i / 100, (size / 2) - i - 7, Height / 2 + 10));
-                            Children.Add(NewNumber(i / 100, (size / 2) + i-3, Height / 2 + 10));
+                            Children.Add(NewNumber(i / 100, (size / 2) + i - 3, Height / 2 + 10));
                             break;
                         }
 
@@ -60,11 +60,11 @@ namespace Grafer2
                 }
             }
 
-            if(direction == Direction.X)
+            if (direction == Direction.X)
             {
                 Children.Add(NewNumber(0, Width / 2 + 16, Height / 2 + 10));
             }
-            
+
         }
 
         private static TextBlock NewNumber(int value, double x, double y)
@@ -99,7 +99,7 @@ namespace Grafer2
 
                     case Direction.Y:
                         {
-                            Children.Add(NewLine(direction, lineX: (size / 2) -i, brushes: brush));
+                            Children.Add(NewLine(direction, lineX: (size / 2) - i, brushes: brush));
                             Children.Add(NewLine(direction, lineX: (size / 2) + i, brushes: brush));
                             break;
                         }
@@ -127,7 +127,7 @@ namespace Grafer2
                 X2 = (direction == Direction.X) ? Width : lineX,
                 Y2 = (direction == Direction.X) ? lineY : Height,
                 Stroke = brushes ?? Brushes.Black,
-                StrokeThickness = strokeThickness,              
+                StrokeThickness = strokeThickness,
             };
 
             line.SnapsToDevicePixels = true;
