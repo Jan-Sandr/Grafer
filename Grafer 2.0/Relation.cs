@@ -15,10 +15,52 @@ namespace Grafer2
         public Relation Adjust(Relation relation)
         {
             relation.RemoveAll(s => s == " ");
+            
+            relation = InsertZero(relation);
 
             IsRelationValid = EquationCheck.BasicCheck(relation);
 
+            relation = InsertMultiplication(relation);
+
+            relation = ConnectNumbers(relation);
+
             return relation;
+        }
+
+        private static Relation InsertZero(Relation relation)
+        {
+            if (relation[0] == "-")
+            {
+                relation.Insert(0, "0");
+            }
+            return relation;
+        }
+
+        private static Relation InsertMultiplication(Relation relation)
+        {
+            for (int i = 1; i < relation.Count; i++)
+            {
+                if(relation[i] == "x" && char.IsLetterOrDigit(char.Parse(relation[i-1])))
+                {
+                    relation.Insert(i, "*");
+                }
+            }
+
+            return relation;
+        }
+
+        private static Relation ConnectNumbers(Relation relation)
+        {
+            for (int i = 1; i < relation.Count; i++)
+            {
+                if(char.IsDigit(char.Parse(relation[i])) && char.IsDigit(char.Parse(relation[i-1])))
+                {
+                    relation[i - 1] += relation[i];
+                    relation.RemoveAt(i);
+                }
+            }
+
+            return relation;               
         }
 
         public void RemoveNeighbors(Relation relation, int index)
@@ -27,7 +69,5 @@ namespace Grafer2
             relation.RemoveAt(index - 1);
             RemovedElementsCount = 2;
         }
-
-
     }
 }
