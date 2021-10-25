@@ -1,32 +1,30 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Shapes;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace Grafer2
 {
     public class Function
     {
         public Relation Relation { get; set; }
-        public double MinimumX {  get; set; }
-        public double MaximumX {  get; set; }
-        public CalculationOrder CalculationOrder {  get; set; }
+        public double MinimumX { get; set; }
+        public double MaximumX { get; set; }
+        public CalculationOrder CalculationOrder { get; set; }
         public List<Polyline> Curves { get; set; }
         public Canvas Canvas { get; }
         private List<Point> points;
-        double y;
+        private double y;
 
-        string[] relationBackup;
-        int[] calculationOrderIndexesBackup;
-        int[] calculationOrderPrioritiesBackup;
+        private string[] relationBackup = Array.Empty<string>();
+        private int[] calculationOrderIndexesBackup = Array.Empty<int>();
+        private int[] calculationOrderPrioritiesBackup = Array.Empty<int>();
 
 
-        public Function(string relation,double minimumX, double maximumX, Canvas canvas)
+        public Function(string relation, double minimumX, double maximumX, Canvas canvas)
         {
             Relation = new();
             Relation.AddRange(relation.Select(s => s.ToString()));
@@ -47,7 +45,7 @@ namespace Grafer2
         public void CalculatePoints()
         {
             SetBackup();
-            for(double x = MinimumX; x <= MaximumX; x += 0.01)
+            for (double x = MinimumX; x <= MaximumX; x += 0.01)
             {
                 x = Math.Round(x, 2);
                 GetBackup();
@@ -63,15 +61,15 @@ namespace Grafer2
 
         public void Plot()
         {
-            for(int i = 0; i < Curves.Count;i++)
+            for (int i = 0; i < Curves.Count; i++)
             {
                 Canvas.Children.Add(Curves[i]);
-            }        
+            }
         }
 
         private void SubstituteX(double x)
         {
-            for(int i = 0;i< Relation.Count;i++)
+            for (int i = 0; i < Relation.Count; i++)
             {
                 Relation[i] = Relation[i] == "x" ? x.ToString() : Relation[i];
                 Relation[i] = Relation[i] == "-x" ? (-x).ToString() : Relation[i];
@@ -81,7 +79,7 @@ namespace Grafer2
         private void CalculateYForX()
         {
             int orderProgression = 0;
-            while(Relation.Count > 1)
+            while (Relation.Count > 1)
             {
                 int index = CalculationOrder[0][orderProgression];
                 Relation[index] = Operation(index).ToString();
@@ -90,18 +88,18 @@ namespace Grafer2
                 Relation.RemovedElementsCount = 0;
                 orderProgression++;
             }
-           
+
         }
 
         private void SavePoint(double x, double y)
         {
-            if(!double.IsNaN(y) && !double.IsInfinity(y))
+            if (!double.IsNaN(y) && !double.IsInfinity(y))
             {
                 Point point = new(x, y);
                 point = ConvertToCoordinatePoint(point);
                 points.Add(point);
             }
-            else if(points.Count > 1)
+            else if (points.Count > 1)
             {
                 SaveCurve(points);
                 points = new List<Point>();
@@ -118,11 +116,11 @@ namespace Grafer2
 
             polyline.SnapsToDevicePixels = true;
 
-            for (int i =0; i < points.Count;i++)
+            for (int i = 0; i < points.Count; i++)
             {
                 polyline.Points.Add(points[i]);
             }
-          
+
             Curves.Add(polyline);
         }
 

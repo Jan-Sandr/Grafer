@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Grafer2
+﻿namespace Grafer2
 {
     public static class EquationCheck
     {
@@ -22,7 +16,7 @@ namespace Grafer2
                 areEdgesValid = false;
             }
 
-            if (!char.IsDigit(char.Parse(relation[relation.Count-1])) && relation[relation.Count-1] != "x")
+            if (!char.IsDigit(char.Parse(relation[^1])) && relation[^1] != "x")
             {
                 areEdgesValid = false;
             }

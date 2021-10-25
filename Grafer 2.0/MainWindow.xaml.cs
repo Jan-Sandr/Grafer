@@ -1,18 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Text.RegularExpressions;
 
 namespace Grafer2
 {
@@ -26,9 +14,9 @@ namespace Grafer2
             InitializeComponent();
         }
 
-        Function gFunction;
-        double gMinimumX;
-        double gMaximumX;
+        private Function? gFunction;
+        private double gMinimumX;
+        private double gMaximumX;
 
         private void ButtonDrawClick(object sender, RoutedEventArgs e)
         {
@@ -39,12 +27,12 @@ namespace Grafer2
         {
             GetXRange();
 
-            gFunction = new Function(equationInput.Text,gMinimumX,gMaximumX, drawingCanvas);
+            gFunction = new Function(equationInput.Text, gMinimumX, gMaximumX, drawingCanvas);
             gFunction.PrepareForCalculation();
-            
-            if(gFunction.Relation.IsRelationValid)
+
+            if (gFunction.Relation.IsRelationValid)
             {
-                gFunction.CalculatePoints();             
+                gFunction.CalculatePoints();
             }
 
             Draw();
@@ -52,7 +40,7 @@ namespace Grafer2
 
         private void GetXRange()
         {
-            if(limitX.IsChecked == true)
+            if (limitX.IsChecked == true)
             {
                 gMinimumX = double.Parse(minimumXIpnut.Text);
                 gMaximumX = double.Parse(maximumXInput.Text);
@@ -62,7 +50,7 @@ namespace Grafer2
                 gMinimumX = -drawingCanvas.Width / 200;
                 gMaximumX = drawingCanvas.Width / 200;
             }
-            
+
         }
 
         private void Draw()
@@ -71,16 +59,16 @@ namespace Grafer2
             CoordinateSystem coordinateSystem = new(drawingCanvas.Width, drawingCanvas.Height);
             coordinateSystem.Create();
             drawingCanvas.Children.Add(coordinateSystem);
-           
-            if(gFunction != null)
+
+            if (gFunction != null)
             {
                 gFunction.Plot();
-            }        
+            }
         }
 
         private void RangeXInputCheck(object sender, KeyEventArgs e)
         {
-            if (!Regex.IsMatch(e.Key.ToString(), "[0-9]") && e.Key.ToString() != "Subtract" && e.Key.ToString() != "Back")
+            if (!Regex.IsMatch(e.Key.ToString(), "[0-9]") && e.Key.ToString() != "Subtract" && e.Key.ToString() != "Back" && e.Key.ToString() != "OemComma")
             {
                 e.Handled = true;
             }
@@ -88,7 +76,7 @@ namespace Grafer2
 
         private void RelationInputCheck(object sender, KeyEventArgs e)
         {
-            if(!Regex.IsMatch(e.Key.ToString(), "[0-9,X,Add,Subtract,Multiply,Divide]"))
+            if (!Regex.IsMatch(e.Key.ToString(), "[0-9,X,Add,Subtract,Multiply,Divide]"))
             {
                 e.Handled = true;
             }
