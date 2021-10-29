@@ -22,6 +22,7 @@ namespace Grafer2
         private string[] relationBackup = Array.Empty<string>();
         private int[] calculationOrderIndexesBackup = Array.Empty<int>();
         private int[] calculationOrderPrioritiesBackup = Array.Empty<int>();
+        private double calculationMinimumX, calculationMaximumX;
 
 
         public Function(string relation, double minimumX, double maximumX, Canvas canvas)
@@ -45,7 +46,8 @@ namespace Grafer2
         public void CalculatePoints()
         {
             SetBackup();
-            for (double x = MinimumX; x <= MaximumX; x += 0.01)
+            SetCalculationXRange();
+            for (double x = calculationMinimumX; x <= calculationMaximumX; x += 0.01)
             {
                 x = Math.Round(x, 2);
                 GetBackup();
@@ -65,6 +67,12 @@ namespace Grafer2
             {
                 Canvas.Children.Add(Curves[i]);
             }
+        }
+
+        private void SetCalculationXRange()
+        {
+            calculationMinimumX = (Math.Abs(MinimumX) > Canvas.Width / 200) ? -(Canvas.Width / 200) : MinimumX;
+            calculationMaximumX = (MaximumX > Canvas.Width / 200) ? Canvas.Width / 200 : MaximumX;
         }
 
         private void SubstituteX(double x)
