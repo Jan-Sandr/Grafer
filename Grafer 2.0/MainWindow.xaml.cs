@@ -17,6 +17,7 @@ namespace Grafer2
         private Function? gFunction;
         private double gMinimumX;
         private double gMaximumX;
+        private bool IsRangeValid;
 
         private void ButtonDrawClick(object sender, RoutedEventArgs e)
         {
@@ -25,14 +26,19 @@ namespace Grafer2
 
         private void Start()
         {
+            gFunction = null;
+            IsRangeValid = true;
             GetXRange();
 
-            gFunction = new Function(equationInput.Text, gMinimumX, gMaximumX, drawingCanvas);
-            gFunction.PrepareForCalculation();
-
-            if (gFunction.Relation.IsRelationValid)
+            if(IsRangeValid)
             {
-                gFunction.CalculatePoints();
+                gFunction = new Function(equationInput.Text, gMinimumX, gMaximumX, drawingCanvas);
+                gFunction.PrepareForCalculation();
+
+                if (gFunction.Relation.IsRelationValid)
+                {
+                    gFunction.CalculatePoints();
+                }
             }
 
             Draw();
@@ -44,6 +50,7 @@ namespace Grafer2
             {
                 gMinimumX = double.Parse(minimumXIpnut.Text);
                 gMaximumX = double.Parse(maximumXInput.Text);
+                CheckXRange();
             }
             else
             {
@@ -51,6 +58,15 @@ namespace Grafer2
                 gMaximumX = drawingCanvas.Width / 200;
             }
 
+        }
+
+        private void CheckXRange()
+        {
+            if(gMinimumX > gMaximumX)
+            {
+                MessageBox.Show("Minimum can't be higher than maximum");
+                IsRangeValid = false;
+            }
         }
 
         private void Draw()
