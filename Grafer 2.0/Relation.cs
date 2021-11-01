@@ -18,11 +18,11 @@ namespace Grafer2
             
             relation = InsertZero(relation);
 
-            IsRelationValid = EquationCheck.BasicCheck(relation);
-
             relation = InsertMultiplication(relation);
 
             relation = ConnectNumbers(relation);
+
+            IsRelationValid = EquationCheck.BasicCheck(relation);
 
             return relation;
         }

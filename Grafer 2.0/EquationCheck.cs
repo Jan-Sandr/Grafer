@@ -6,14 +6,15 @@ namespace Grafer2
     {
         public static bool BasicCheck(Relation relation)
         {
-            bool isRelationValid;
+            bool isRelationValid = true;
 
-            isRelationValid = AreEdgesValid(relation);
+            isRelationValid &= AreEdgesValid(relation);
 
-            if(isRelationValid)
-            {
-                isRelationValid = !AreTwoOperationsInRow(relation);
-            }
+            
+            isRelationValid &= !AreTwoOperationsInRow(relation);
+           
+
+            isRelationValid &= !CheckMissing(relation);
             
             return isRelationValid;
         }
@@ -50,6 +51,22 @@ namespace Grafer2
             }
 
             return areTwoOperationsInRow;
+        }
+
+        private static bool CheckMissing(Relation relation)
+        {
+            bool isMissingSomething = false;
+
+            for(int i =0; i < relation.Count-1; i++)
+            {
+                if((char.IsDigit(char.Parse(relation[i])) || relation[i] =="x") && !mathOperations.Contains(relation[i+1]))
+                {
+                    isMissingSomething = true;
+                    break;
+                }
+            }
+
+            return isMissingSomething;
         }
     }
 }
