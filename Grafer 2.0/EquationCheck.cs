@@ -18,7 +18,7 @@ namespace Grafer2
             return isRelationValid;
         }
 
-        private static readonly string[] mathOpertions = new string[4] { "+", "-", "*", "/" };
+        private static readonly string[] mathOperations = new string[4] { "+", "-", "*", "/" };
 
         private static bool AreEdgesValid(Relation relation)
         {
@@ -42,7 +42,7 @@ namespace Grafer2
 
             for (int i = 0; i < relation.Count-1; i++)
             {
-                if(mathOpertions.Contains(relation[i]) && mathOpertions.Contains(relation[i+1]))
+                if(mathOperations.Contains(relation[i]) && mathOperations.Contains(relation[i+1]))
                 {
                     areTwoOperationsInRow = true;
                     break;

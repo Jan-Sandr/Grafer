@@ -82,9 +82,9 @@ namespace Grafer2
             }
         }
 
-        private void RangeXInputCheck(object sender, KeyEventArgs e)
+        private void XRangeInputCheck(object sender, KeyEventArgs e)
         {
-            if (!Regex.IsMatch(e.Key.ToString(), "[0-9]") && e.Key.ToString() != "Subtract" && e.Key.ToString() != "Back" && e.Key.ToString() != "OemComma")
+            if (!Regex.IsMatch(e.Key.ToString(), "[0-9,Subtract,Back,OemComma,Left,Right]"))
             {
                 e.Handled = true;
             }
