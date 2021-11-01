@@ -5,7 +5,10 @@ namespace Grafer2
     public class Relation : List<string>
     {
         public int RemovedElementsCount { get; set; }
+
         public bool IsRelationValid { get; private set; }
+
+        public (int SelectionStart, int SelectionLength, string Message) InvalidSection { get; private set; }
 
         public Relation()
         {
@@ -13,7 +16,7 @@ namespace Grafer2
         }
 
         public Relation Adjust(Relation relation)
-        {
+        {          
             relation.RemoveAll(s => s == " ");
             
             relation = InsertZero(relation);
@@ -25,6 +28,11 @@ namespace Grafer2
             IsRelationValid = EquationCheck.BasicCheck(relation);
 
             return relation;
+        }
+
+        public void FillInvalidSection(int selectionStart,int selectionLength, string message)
+        {
+            InvalidSection = new(selectionStart, selectionLength, message);
         }
 
         private static Relation InsertZero(Relation relation)

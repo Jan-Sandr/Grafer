@@ -9,11 +9,9 @@ namespace Grafer2
             bool isRelationValid = true;
 
             isRelationValid &= AreEdgesValid(relation);
-
             
             isRelationValid &= !AreTwoOperationsInRow(relation);
            
-
             isRelationValid &= !CheckMissing(relation);
             
             return isRelationValid;
@@ -27,11 +25,13 @@ namespace Grafer2
             if (!char.IsDigit(char.Parse(relation[0])) && relation[0] != "x")
             {
                 areEdgesValid = false;
+                relation.FillInvalidSection(0, 1, "Relation begins with invalid character.");
             }
 
             if (!char.IsDigit(char.Parse(relation[^1])) && relation[^1] != "x")
             {
                 areEdgesValid = false;
+                relation.FillInvalidSection(relation.Count-1, 1, "Relation ends with invalid character.");
             }
 
             return areEdgesValid;
@@ -46,6 +46,7 @@ namespace Grafer2
                 if(mathOperations.Contains(relation[i]) && mathOperations.Contains(relation[i+1]))
                 {
                     areTwoOperationsInRow = true;
+                    relation.FillInvalidSection(i, 2, "Relation cannot contains two operations in row.");
                     break;
                 }
             }
@@ -62,6 +63,7 @@ namespace Grafer2
                 if((char.IsDigit(char.Parse(relation[i])) || relation[i] =="x") && !mathOperations.Contains(relation[i+1]))
                 {
                     isMissingSomething = true;
+                    relation.FillInvalidSection(i, 2, "Relation is missing operation between two characters.");
                     break;
                 }
             }
