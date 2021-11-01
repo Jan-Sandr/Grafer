@@ -1,6 +1,8 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace Grafer2
 {
@@ -18,6 +20,8 @@ namespace Grafer2
         private double gMinimumX;
         private double gMaximumX;
         private bool IsRangeValid;
+
+        private Brush? defaultSelectionBrush;
 
         private void ButtonDrawClick(object sender, RoutedEventArgs e)
         {
@@ -39,7 +43,12 @@ namespace Grafer2
                 {
                     gFunction.CalculatePoints();
                 }
+                else
+                {
+                    NotifyInvalidInput(gFunction.Relation.InvalidSection.SelectionStart, gFunction.Relation.InvalidSection.SelectionLength, gFunction.Relation.InvalidSection.Message);
+                }
             }
+
 
             Draw();
         }
@@ -96,11 +105,26 @@ namespace Grafer2
             {
                 e.Handled = true;
             }
+
+            if(equationInput.SelectionBrush == Brushes.Red)
+            {
+                equationInput.SelectionBrush = defaultSelectionBrush;
+            }
         }
 
         private void DrawingCanvasLoaded(object sender, RoutedEventArgs e)
         {
             Draw();
+        }
+
+        private void NotifyInvalidInput(int selectionStart, int selectionLength, string message)
+        {
+            defaultSelectionBrush = equationInput.SelectionBrush;
+            equationInput.Focus();
+            equationInput.SelectionBrush = Brushes.Red;
+            equationInput.Select(selectionStart, selectionLength);
+          
+            MessageBox.Show(message);
         }
     }
 }
