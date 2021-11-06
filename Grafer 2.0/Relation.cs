@@ -16,21 +16,24 @@ namespace Grafer2
         }
 
         public Relation Adjust(Relation relation)
-        {          
+        {
             relation.RemoveAll(s => s == " ");
-            
-            relation = InsertZero(relation);
 
-            relation = InsertMultiplication(relation);
+            if (relation.Count > 1)
+            {
+                relation = InsertZero(relation);
 
-            relation = ConnectNumbers(relation);
+                relation = InsertMultiplication(relation);
+
+                relation = ConnectNumbers(relation);
+            }
 
             IsRelationValid = EquationCheck.BasicCheck(relation);
 
             return relation;
         }
 
-        public void FillInvalidSection(int selectionStart,int selectionLength, string message)
+        public void FillInvalidSection(int selectionStart, int selectionLength, string message)
         {
             InvalidSection = new(selectionStart, selectionLength, message);
         }
@@ -48,7 +51,7 @@ namespace Grafer2
         {
             for (int i = 1; i < relation.Count; i++)
             {
-                if(relation[i] == "x" && char.IsLetterOrDigit(char.Parse(relation[i-1])))
+                if (relation[i] == "x" && char.IsLetterOrDigit(char.Parse(relation[i - 1])))
                 {
                     relation.Insert(i, "*");
                 }
@@ -61,14 +64,14 @@ namespace Grafer2
         {
             for (int i = 1; i < relation.Count; i++)
             {
-                if(char.IsDigit(char.Parse(relation[i])) && char.IsDigit(char.Parse(relation[i-1])))
+                if (char.IsDigit(char.Parse(relation[i])) && char.IsDigit(char.Parse(relation[i - 1])))
                 {
                     relation[i - 1] += relation[i];
                     relation.RemoveAt(i);
                 }
             }
 
-            return relation;               
+            return relation;
         }
 
         public void RemoveNeighbors(Relation relation, int index)

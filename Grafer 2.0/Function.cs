@@ -52,7 +52,7 @@ namespace Grafer2
                 x = Math.Round(x, 2);
                 GetBackup();
                 SubstituteX(x);
-                y = x;
+                y = (Relation.Count > 1) ? x : double.Parse(Relation[0]);
                 CalculateYForX();
                 SavePoint(x, y);
             }

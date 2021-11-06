@@ -6,15 +6,11 @@ namespace Grafer2
     {
         public static bool BasicCheck(Relation relation)
         {
-            bool isRelationValid = true;
-
-            isRelationValid &= AreEdgesValid(relation);
-            
-            isRelationValid &= !AreTwoOperationsInRow(relation);
-           
-            isRelationValid &= !CheckMissing(relation);
-            
-            return isRelationValid;
+            return (
+                             AreEdgesValid(relation) &&
+                    !AreTwoOperationsInRow(relation) &&
+                             !CheckMissing(relation)
+                    );
         }
 
         private static readonly string[] mathOperations = new string[4] { "+", "-", "*", "/" };
@@ -31,7 +27,7 @@ namespace Grafer2
             if (!char.IsDigit(char.Parse(relation[^1])) && relation[^1] != "x")
             {
                 areEdgesValid = false;
-                relation.FillInvalidSection(relation.Count-1, 1, "Relation ends with invalid character.");
+                relation.FillInvalidSection(relation.Count - 1, 1, "Relation ends with invalid character.");
             }
 
             return areEdgesValid;
@@ -41,9 +37,9 @@ namespace Grafer2
         {
             bool areTwoOperationsInRow = false;
 
-            for (int i = 0; i < relation.Count-1; i++)
+            for (int i = 0; i < relation.Count - 1; i++)
             {
-                if(mathOperations.Contains(relation[i]) && mathOperations.Contains(relation[i+1]))
+                if (mathOperations.Contains(relation[i]) && mathOperations.Contains(relation[i + 1]))
                 {
                     areTwoOperationsInRow = true;
                     relation.FillInvalidSection(i, 2, "Relation cannot contains two operations in row.");
@@ -58,9 +54,9 @@ namespace Grafer2
         {
             bool isMissingSomething = false;
 
-            for(int i =0; i < relation.Count-1; i++)
+            for (int i = 0; i < relation.Count - 1; i++)
             {
-                if((char.IsDigit(char.Parse(relation[i])) || relation[i] =="x") && !mathOperations.Contains(relation[i+1]))
+                if ((char.IsDigit(char.Parse(relation[i])) || relation[i] == "x") && !mathOperations.Contains(relation[i + 1]))
                 {
                     isMissingSomething = true;
                     relation.FillInvalidSection(i, 2, "Relation is missing operation between two characters.");
