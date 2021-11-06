@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Grafer2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1100">
+        Title="MainWindow" Height="720" Width="1130">
     <Grid Margin="0,0,-52,-48">
         <Canvas x:Name="drawingCanvas" Margin="360,0,0,141" Background="#FFF1EDED" Loaded="DrawingCanvasLoaded" ClipToBounds="True" Width="700" Height="700"/>
         <TextBox x:Name="equationInput" HorizontalAlignment="Left" Margin="66,156,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" Background="#FFF1E8E8" KeyDown="RelationInputCheck" FontSize="20" TextChanged="EquationInputTextChanged"/>

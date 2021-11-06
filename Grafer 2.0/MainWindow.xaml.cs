@@ -76,6 +76,20 @@ namespace Grafer2
                 MessageBox.Show("Minimum can't be higher than maximum");
                 IsRangeValid = false;
             }
+
+            if (IsRangeValid == true)
+            {
+                if (gMaximumX < -drawingCanvas.Width / 200 || gMinimumX > drawingCanvas.Width / 200)
+                {
+                    MessageBox.Show("Function won't be plotted because x's range is outside of drawing canvas.");
+                    IsRangeValid = false;
+                }
+            }  
+            
+            if(gMinimumX == gMaximumX)
+            {
+                MessageBox.Show("Minimum and maximum x can't be same.");
+            }
         }
 
         private void Draw()
