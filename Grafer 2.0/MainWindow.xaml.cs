@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -34,7 +33,7 @@ namespace Grafer2
             IsRangeValid = true;
             GetXRange();
 
-            if(IsRangeValid)
+            if (IsRangeValid)
             {
                 gFunction = new Function(equationInput.Text, gMinimumX, gMaximumX, drawingCanvas);
                 gFunction.PrepareForCalculation();
@@ -45,6 +44,7 @@ namespace Grafer2
                 }
                 else
                 {
+                    equationInput.Text = string.Join("",gFunction.Relation);
                     NotifyInvalidInput(gFunction.Relation.InvalidSection.SelectionStart, gFunction.Relation.InvalidSection.SelectionLength, gFunction.Relation.InvalidSection.Message);
                 }
             }
@@ -71,7 +71,7 @@ namespace Grafer2
 
         private void CheckXRange()
         {
-            if(gMinimumX > gMaximumX)
+            if (gMinimumX > gMaximumX)
             {
                 MessageBox.Show("Minimum can't be higher than maximum");
                 IsRangeValid = false;
@@ -106,7 +106,7 @@ namespace Grafer2
                 e.Handled = true;
             }
 
-            if(equationInput.SelectionBrush == Brushes.Red)
+            if (equationInput.SelectionBrush == Brushes.Red)
             {
                 equationInput.SelectionBrush = defaultSelectionBrush;
             }
@@ -123,8 +123,13 @@ namespace Grafer2
             equationInput.Focus();
             equationInput.SelectionBrush = Brushes.Red;
             equationInput.Select(selectionStart, selectionLength);
-          
+
             MessageBox.Show(message);
+        }
+
+        private void EquationInputTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        {
+            buttonDraw.IsEnabled = equationInput.Text.Trim() != "";
         }
     }
 }

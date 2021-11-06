@@ -43,24 +43,28 @@ namespace Grafer2
 
         private static int[] SortIndexes(int[] indexes, int[] priorities)
         {
-            int sameElementsCount = 0;
+            int sameElementsCount = 1;
             for (int i = 1; i < indexes.Length; i++)
             {
-                sameElementsCount++;
-
-                if (sameElementsCount > 1)
+                if (priorities[i] == priorities[i - 1])
                 {
-                    if (priorities[i] != priorities[i - 1])
+                    sameElementsCount++;
+                }
+                else
+                {
+                    if (sameElementsCount > 1)
                     {
                         Array.Sort(indexes, i - sameElementsCount, sameElementsCount);
-                        sameElementsCount = 0;
                     }
 
-                    if (i == indexes.Length - 1)
-                    {
-                        Array.Sort(indexes, i - sameElementsCount, sameElementsCount + 1);
-                    }
+                    sameElementsCount = 1;
                 }
+
+                if (i == indexes.Length - 1)
+                {
+                    Array.Sort(indexes, (i + 1) - sameElementsCount, sameElementsCount);
+                }
+
             }
 
             return indexes;
