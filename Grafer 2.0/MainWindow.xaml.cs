@@ -15,6 +15,7 @@ namespace Grafer2
             InitializeComponent();
         }
 
+        //rework input restriction, make jagged int array, do more methods and add enter and esc shortcut
         private Function? gFunction;
         private double gMinimumX;
         private double gMaximumX;
@@ -105,27 +106,6 @@ namespace Grafer2
             }
         }
 
-        private void XRangeInputCheck(object sender, KeyEventArgs e)
-        {
-            if (!Regex.IsMatch(e.Key.ToString(), "[0-9,Subtract,Back,OemComma,Left,Right]"))
-            {
-                e.Handled = true;
-            }
-        }
-
-        private void RelationInputCheck(object sender, KeyEventArgs e)
-        {
-            if (!Regex.IsMatch(e.Key.ToString(), "[0-9,X,Add,Subtract,Multiply,Divide]"))
-            {
-                e.Handled = true;
-            }
-
-            if (equationInput.SelectionBrush == Brushes.Red)
-            {
-                equationInput.SelectionBrush = defaultSelectionBrush;
-            }
-        }
-
         private void DrawingCanvasLoaded(object sender, RoutedEventArgs e)
         {
             Draw();
@@ -144,6 +124,30 @@ namespace Grafer2
         private void EquationInputTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             buttonDraw.IsEnabled = equationInput.Text.Trim() != "";
+        }
+
+        private void RelationInputCheck(object sender, TextCompositionEventArgs e)
+        {
+            if(!Regex.IsMatch(e.Text,"[0-9 x + * /]") && e.Text != "-")
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void XRangeInputCheck(object sender, TextCompositionEventArgs e)
+        {
+            if (!Regex.IsMatch(e.Text, "[0-9 ,]") && e.Text != "-")
+            {
+                e.Handled = true;
+            }
+        }
+
+        private void XRangeSpaceRestriction(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Space)
+            {
+                e.Handled = true;
+            }
         }
     }
 }
