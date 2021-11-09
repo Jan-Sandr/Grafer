@@ -19,22 +19,21 @@ namespace Grafer2
         private Function? gFunction;
         private double gMinimumX;
         private double gMaximumX;
-        private bool IsRangeValid;
+        private bool isXRangeValid;
 
         private Brush? defaultSelectionBrush;
 
         private void ButtonDrawClick(object sender, RoutedEventArgs e)
         {
-            Start();
+            DoProccess();
         }
 
-        private void Start()
+        private void DoProccess()
         {
-            gFunction = null;
-            IsRangeValid = true;
+            Reset();
             GetXRange();
 
-            if (IsRangeValid)
+            if (isXRangeValid)
             {
                 gFunction = new Function(equationInput.Text, gMinimumX, gMaximumX, drawingCanvas);
                 gFunction.PrepareForCalculation();
@@ -54,13 +53,22 @@ namespace Grafer2
             Draw();
         }
 
+        private void Reset()
+        {
+            gFunction = null;
+            isXRangeValid = true;
+        }
+
         private void GetXRange()
         {
             if (limitX.IsChecked == true)
             {
-                gMinimumX = double.Parse(minimumXIpnut.Text);
-                gMaximumX = double.Parse(maximumXInput.Text);
-                CheckXRange();
+                if(!IsRangeEmpty())
+                {
+                    gMinimumX = double.Parse(minimumXIpnut.Text);
+                    gMaximumX = double.Parse(maximumXInput.Text);
+                    isXRangeValid = IsXRangeValid();
+                }              
             }
             else
             {
@@ -70,27 +78,61 @@ namespace Grafer2
 
         }
 
-        private void CheckXRange()
+        private bool IsRangeEmpty()
         {
-            if (gMinimumX > gMaximumX)
+            bool isRangeEmpty = false;
+
+            if(minimumXIpnut.Text == "" || maximumXInput.Text == "")
             {
-                MessageBox.Show("Minimum can't be higher than maximum");
-                IsRangeValid = false;
+                NotifyError("Range is empty.");
+                isRangeEmpty = true;
             }
 
-            if (IsRangeValid == true)
+            return isRangeEmpty;
+        }
+
+        private bool IsXRangeValid()
+        {
+            return !IsMinimumHigher() && !IsRangeWidthZero() && !IsXRangeOut();        
+        }
+
+        private bool IsMinimumHigher()
+        {
+            bool isMinimumHigher = false;
+
+            if (gMinimumX > gMaximumX)
             {
-                if (gMaximumX < -drawingCanvas.Width / 200 || gMinimumX > drawingCanvas.Width / 200)
-                {
-                    MessageBox.Show("Function won't be plotted because x's range is outside of drawing canvas.");
-                    IsRangeValid = false;
-                }
-            }  
-            
-            if(gMinimumX == gMaximumX)
-            {
-                MessageBox.Show("Minimum and maximum x can't be same.");
+                NotifyError("Minimum can't be higher than maximum");
+                isMinimumHigher = true;
             }
+
+            return isMinimumHigher;
+        }
+
+        private bool IsXRangeOut()
+        {
+            bool isXRangeOut = false;
+
+            if (gMaximumX < -drawingCanvas.Width / 200 || gMinimumX > drawingCanvas.Width / 200)
+            {
+                NotifyError("Function won't be plotted because x's range is outside of drawing canvas.");
+                isXRangeOut = true;
+            }
+
+            return isXRangeOut;
+        }
+
+        private bool IsRangeWidthZero()
+        {
+            bool isRangeWidthZero = false;
+
+            if (gMinimumX == gMaximumX)
+            {
+                NotifyError("Minimum and maximum x can't be same.");
+                isRangeWidthZero = true;
+            }
+
+            return isRangeWidthZero;
         }
 
         private void Draw()
@@ -113,12 +155,16 @@ namespace Grafer2
 
         private void NotifyInvalidInput(int selectionStart, int selectionLength, string message)
         {
+            SelectInvalidSection(selectionStart, selectionLength);
+            NotifyError(message);
+        }
+
+        private void SelectInvalidSection(int selectionStart, int selectionLength)
+        {
             defaultSelectionBrush = equationInput.SelectionBrush;
             equationInput.Focus();
             equationInput.SelectionBrush = Brushes.Red;
             equationInput.Select(selectionStart, selectionLength);
-
-            MessageBox.Show(message);
         }
 
         private void EquationInputTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
@@ -131,6 +177,11 @@ namespace Grafer2
             if(!Regex.IsMatch(e.Text,"[0-9 x + * /]") && e.Text != "-")
             {
                 e.Handled = true;
+            }
+
+            if (equationInput.SelectionBrush == Brushes.Red)
+            {
+                equationInput.SelectionBrush = defaultSelectionBrush;
             }
         }
 
@@ -148,6 +199,11 @@ namespace Grafer2
             {
                 e.Handled = true;
             }
+        }
+
+        private static void NotifyError(string message)
+        {
+            MessageBox.Show(message);
         }
     }
 }
