@@ -20,8 +20,7 @@ namespace Grafer2
         private double y;
 
         private string[] relationBackup = Array.Empty<string>();
-        private int[] calculationOrderIndexesBackup = Array.Empty<int>();
-        private int[] calculationOrderPrioritiesBackup = Array.Empty<int>();
+        readonly private int[][] calculationOrderBackup = new int[2][];
         private double calculationMinimumX, calculationMaximumX;
 
 
@@ -174,23 +173,26 @@ namespace Grafer2
         private void SetBackup()
         {
             relationBackup = Relation.ToArray();
-            calculationOrderIndexesBackup = CalculationOrder[0].ToArray();
-            calculationOrderPrioritiesBackup = CalculationOrder[1].ToArray();
+            calculationOrderBackup[0] = CalculationOrder[0].ToArray();
+            calculationOrderBackup[1] = CalculationOrder[1].ToArray();
         }
 
         private void GetBackup()
+        {
+            ResetRelationAndOrder();
+
+            Relation.AddRange(relationBackup);
+
+            CalculationOrder[0] = new List<int>(calculationOrderBackup[0]);
+            CalculationOrder[1] = new List<int>(calculationOrderBackup[1]);
+        }
+
+        private void ResetRelationAndOrder()
         {
             Relation = new();
             CalculationOrder = new();
             CalculationOrder.Add(new List<int>());
             CalculationOrder.Add(new List<int>());
-
-            Relation.AddRange(relationBackup);
-
-            CalculationOrder[0].AddRange(calculationOrderIndexesBackup);
-            CalculationOrder[1].AddRange(calculationOrderPrioritiesBackup);
-
-
         }
     }
 }
