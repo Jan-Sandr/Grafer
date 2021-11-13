@@ -5,17 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Grafer2"
         mc:Ignorable="d"
-        Title="MainWindow" Height="720" Width="1130">
-    <Grid Margin="0,0,-52,-48">
-        <Canvas x:Name="drawingCanvas" Margin="360,0,0,141" Background="#FFF1EDED" Loaded="DrawingCanvasLoaded" ClipToBounds="True" Width="700" Height="700"/>
+        Title="MainWindow" Height="739" Width="1100" PreviewKeyDown="ShortcutsPress">
+    <Grid Height="700" VerticalAlignment="Top">
+        <Canvas x:Name="drawingCanvas" Margin="0,0,0,0" Background="#FFF1EDED" Loaded="DrawingCanvasLoaded" ClipToBounds="True" Width="700" Height="700" HorizontalAlignment="Right" VerticalAlignment="Top"/>
         <TextBox x:Name="equationInput" HorizontalAlignment="Left" Margin="66,156,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" Background="#FFF1E8E8" FontSize="20" TextChanged="EquationInputTextChanged" PreviewTextInput="RelationInputCheck"/>
         <Label Content="y =" HorizontalAlignment="Left" Margin="21,153,0,0" VerticalAlignment="Top" RenderTransformOrigin="-6.559,3.773" FontSize="20"/>
-        <TextBox x:Name="minimumXIpnut" HorizontalAlignment="Left" Margin="68,116,0,0" TextWrapping="Wrap" Text="-3" VerticalAlignment="Top" Width="57" RenderTransformOrigin="0.846,1.154" PreviewTextInput="XRangeInputCheck" PreviewKeyDown="XRangeSpaceRestriction"/>
-        <TextBox x:Name="maximumXInput" HorizontalAlignment="Left" Margin="180,116,0,0" TextWrapping="Wrap" Text="3" VerticalAlignment="Top" Width="57" RenderTransformOrigin="0.846,1.154" PreviewTextInput="XRangeInputCheck" PreviewKeyDown="XRangeSpaceRestriction"/>
-        <Label Content="min:" HorizontalAlignment="Left" Margin="30,111,0,0" VerticalAlignment="Top"/>
-        <Label Content="max:" HorizontalAlignment="Left" Margin="140,111,0,0" VerticalAlignment="Top"/>
+        <TextBox x:Name="minimumXIpnut" HorizontalAlignment="Left" Margin="62,116,0,0" TextWrapping="Wrap" Text="-3" VerticalAlignment="Top" Width="57" RenderTransformOrigin="0.846,1.154" PreviewTextInput="XRangeInputCheck" PreviewKeyDown="XRangeSpaceRestriction"/>
+        <TextBox x:Name="maximumXInput" HorizontalAlignment="Left" Margin="174,116,0,0" TextWrapping="Wrap" Text="3" VerticalAlignment="Top" Width="57" RenderTransformOrigin="0.846,1.154" PreviewTextInput="XRangeInputCheck" PreviewKeyDown="XRangeSpaceRestriction"/>
+        <Label Content="min:" HorizontalAlignment="Left" Margin="24,111,0,0" VerticalAlignment="Top"/>
+        <Label Content="max:" HorizontalAlignment="Left" Margin="134,111,0,0" VerticalAlignment="Top"/>
         <Button x:Name="buttonDraw" Content="Draw" HorizontalAlignment="Left" Margin="64,206,0,0" VerticalAlignment="Top" Height="37" Width="140" Click="ButtonDrawClick" IsEnabled="False"/>
-        <CheckBox x:Name="limitX" Content="limit x" HorizontalAlignment="Left" Margin="31,91,0,0" VerticalAlignment="Top" Width="94"/>
-
+        <CheckBox x:Name="limitX" Content="limit x" HorizontalAlignment="Left" Margin="28,91,0,0" VerticalAlignment="Top" Width="94"/>
     </Grid>
 </Window>
