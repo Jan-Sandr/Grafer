@@ -1,5 +1,6 @@
 ﻿using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -191,6 +192,37 @@ namespace Grafer2
             {
                 e.Handled = true;
             }
+
+            TextBox xRangeInput = (TextBox)sender;
+
+            if(e.Text == "," || e.Text == "-")
+            {
+                e.Handled = ContainsMultipleChars(xRangeInput.Text + e.Text, char.Parse(e.Text));
+            }
+        }
+
+        private bool ContainsMultipleChars(string input, char character)
+        {
+            int countOfChars = GetCountOfChars(input, character);
+            
+            if (countOfChars > 1)
+            {
+                NotifyError("Range can't contains more than one " + character);
+            }
+
+            return countOfChars > 1;
+        }
+
+        private int GetCountOfChars(string input, char character)
+        {
+            int countOfChars = 0;
+
+            foreach(char c in input)
+            {
+                countOfChars = (c == character) ? countOfChars +1: countOfChars;
+            }
+
+            return countOfChars;
         }
 
         private void XRangeSpaceRestriction(object sender, KeyEventArgs e)
