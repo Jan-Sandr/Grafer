@@ -25,10 +25,10 @@ namespace Grafer2
 
         private void ButtonDrawClick(object sender, RoutedEventArgs e)
         {
-            DoProccess();
+            DoProcess();
         }
 
-        private void DoProccess()
+        private void DoProcess()
         {
             Reset();
             GetXRange();
@@ -204,6 +204,19 @@ namespace Grafer2
         private static void NotifyError(string message)
         {
             MessageBox.Show(message);
+        }
+
+        private void ShortcutsPress(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter && equationInput.Text.Trim() != "")
+            {
+                DoProcess();
+            }
+
+            if(e.Key == Key.Escape)
+            {
+                equationInput.Text = "";
+            }
         }
     }
 }
