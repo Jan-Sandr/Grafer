@@ -16,7 +16,6 @@ namespace Grafer2
             InitializeComponent();
         }
 
-        //rework input restriction, make jagged int array, do more methods and add enter and esc shortcut
         private Function? gFunction;
         private double gMinimumX;
         private double gMaximumX;
@@ -36,22 +35,26 @@ namespace Grafer2
 
             if (isXRangeValid)
             {
-                gFunction = new Function(equationInput.Text, gMinimumX, gMaximumX, drawingCanvas);
-                gFunction.PrepareForCalculation();
-
-                if (gFunction.Relation.IsRelationValid)
-                {
-                    gFunction.CalculatePoints();
-                }
-                else
-                {
-                    equationInput.Text = string.Join("",gFunction.Relation);
-                    NotifyInvalidInput(gFunction.Relation.InvalidSection.SelectionStart, gFunction.Relation.InvalidSection.SelectionLength, gFunction.Relation.InvalidSection.Message);
-                }
+                CreateFunction();
             }
 
-
             Draw();
+        }
+
+        private void CreateFunction()
+        {
+            gFunction = new Function(equationInput.Text, gMinimumX, gMaximumX, drawingCanvas);
+            gFunction.PrepareForCalculation();
+
+            if (gFunction.Relation.IsRelationValid)
+            {
+                gFunction.CalculatePoints();
+            }
+            else
+            {
+                equationInput.Text = string.Join("", gFunction.Relation);
+                NotifyInvalidInput(gFunction.Relation.InvalidSection.SelectionStart, gFunction.Relation.InvalidSection.SelectionLength, gFunction.Relation.InvalidSection.Message);
+            }
         }
 
         private void Reset()
@@ -64,19 +67,29 @@ namespace Grafer2
         {
             if (limitX.IsChecked == true)
             {
-                if(!IsRangeEmpty())
-                {
-                    gMinimumX = double.Parse(minimumXIpnut.Text);
-                    gMaximumX = double.Parse(maximumXInput.Text);
-                    isXRangeValid = IsXRangeValid();
-                }              
+                GetXRangeFromInputs();          
             }
             else
             {
-                gMinimumX = -drawingCanvas.Width / 200;
-                gMaximumX = drawingCanvas.Width / 200;
+                GetXRangeFromCanvasWidth();
             }
 
+        }
+
+        private void GetXRangeFromInputs()
+        {
+            if (!IsRangeEmpty())
+            {
+                gMinimumX = double.Parse(minimumXIpnut.Text);
+                gMaximumX = double.Parse(maximumXInput.Text);
+                isXRangeValid = IsXRangeValid();
+            }
+        }
+
+        private void GetXRangeFromCanvasWidth()
+        {
+            gMinimumX = -drawingCanvas.Width / 200;
+            gMaximumX = drawingCanvas.Width / 200;
         }
 
         private bool IsRangeEmpty()
@@ -139,14 +152,20 @@ namespace Grafer2
         private void Draw()
         {
             drawingCanvas.Children.Clear();
-            CoordinateSystem coordinateSystem = new(drawingCanvas.Width, drawingCanvas.Height);
-            coordinateSystem.Create();
-            drawingCanvas.Children.Add(coordinateSystem);
+
+            DrawCoordinateSystem();
 
             if (gFunction != null)
             {
                 gFunction.Plot();
             }
+        }
+
+        private void DrawCoordinateSystem()
+        {
+            CoordinateSystem coordinateSystem = new(drawingCanvas.Width, drawingCanvas.Height);
+            coordinateSystem.Create();
+            drawingCanvas.Children.Add(coordinateSystem);
         }
 
         private void DrawingCanvasLoaded(object sender, RoutedEventArgs e)
@@ -213,7 +232,7 @@ namespace Grafer2
             return countOfChars > 1;
         }
 
-        private int GetCountOfChars(string input, char character)
+        private static int GetCountOfChars(string input, char character)
         {
             int countOfChars = 0;
 

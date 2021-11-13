@@ -69,10 +69,7 @@ namespace Grafer2
 
         private static TextBlock NewNumber(int value, double x, double y)
         {
-            TextBlock number = new();
-            number.Text = value.ToString();
-            number.FontFamily = new FontFamily("Arial");
-            number.FontSize = 13;
+            TextBlock number = DefaultTextBlock(value.ToString());
 
             number.RenderTransform = new TranslateTransform()
             {
@@ -81,6 +78,16 @@ namespace Grafer2
             };
 
             return number;
+        }
+
+        private static TextBlock DefaultTextBlock(string text)
+        {
+            return new TextBlock
+            {
+                Text = text,
+                FontFamily = new FontFamily("Arial"),
+                FontSize = 13
+            };
         }
 
         private void DrawGridLines(Direction direction, double size)
