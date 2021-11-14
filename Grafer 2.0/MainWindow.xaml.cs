@@ -78,12 +78,40 @@ namespace Grafer2
 
         private void GetXRangeFromInputs()
         {
-            if (!IsRangeEmpty())
+            if (isXRangeValid == IsXRangeInputValid())
             {
                 gMinimumX = double.Parse(minimumXIpnut.Text);
                 gMaximumX = double.Parse(maximumXInput.Text);
                 isXRangeValid = IsXRangeValid();
             }
+        }
+
+        private bool IsXRangeValid()
+        {
+            return !IsMinimumHigher() && !IsRangeWidthZero() && !IsXRangeOut();
+        }
+
+        private bool AreXRangeEdgesValid()
+        {
+            if(!AreEdgesValid(minimumXIpnut.Text) || !AreEdgesValid(maximumXInput.Text))
+            {
+                isXRangeValid = false;
+                NotifyError("Edge of range can't contains minus or comma.");
+            }
+
+            return isXRangeValid;
+        }
+
+        private static bool AreEdgesValid(string input)
+        {
+            bool areEdgesValid = true;
+
+            if(input[^1] == '-' || input[0] == ',' || input[^1] == ',')
+            {
+                areEdgesValid = false;
+            }
+
+            return areEdgesValid;
         }
 
         private void GetXRangeFromCanvasWidth()
@@ -105,9 +133,70 @@ namespace Grafer2
             return isRangeEmpty;
         }
 
-        private bool IsXRangeValid()
+        private bool ContainsMultipleChars()
         {
-            return !IsMinimumHigher() && !IsRangeWidthZero() && !IsXRangeOut();        
+            bool containsMultipleChars = false;
+
+            if (GetCountOfChars(minimumXIpnut.Text, '-') > 1 || GetCountOfChars(minimumXIpnut.Text, ',') > 1)
+            {
+                containsMultipleChars = true;
+            }
+
+            if (GetCountOfChars(maximumXInput.Text, '-') > 1 || GetCountOfChars(maximumXInput.Text, ',') > 1)
+            {
+                containsMultipleChars = true;            
+            }
+
+            if(containsMultipleChars == true)
+            {
+                NotifyError("Range can't contains more than one minus or comma.");
+            }
+
+            return containsMultipleChars;
+        }
+
+        private bool ContainsTwoInvalidcharsInRow()
+        {
+            bool containsTwoInvalidcharsInRow = false;
+
+            if (minimumXIpnut.Text.Contains("-,") || minimumXIpnut.Text.Contains(",-"))
+            {
+                containsTwoInvalidcharsInRow = true;
+            }
+
+            if (maximumXInput.Text.Contains("-,") || maximumXInput.Text.Contains(",-"))
+            {
+                containsTwoInvalidcharsInRow = true;
+            }
+
+            if(containsTwoInvalidcharsInRow)
+            {
+                NotifyError("Range can't contains abreast minus and comma");
+            }
+
+            return containsTwoInvalidcharsInRow;
+        }
+
+        private static int GetCountOfChars(string input, char character)
+        {
+            int countOfChars = 0;
+
+            foreach (char c in input)
+            {
+                countOfChars = (c == character) ? countOfChars + 1 : countOfChars;
+            }
+
+            return countOfChars;
+        }
+
+        private bool IsXRangeInputValid()
+        {
+            return (
+                                    !IsRangeEmpty() &&
+                              AreXRangeEdgesValid() &&
+                           !ContainsMultipleChars() &&
+                    !ContainsTwoInvalidcharsInRow()
+                   );
         }
 
         private bool IsMinimumHigher()
@@ -211,37 +300,6 @@ namespace Grafer2
             {
                 e.Handled = true;
             }
-
-            TextBox xRangeInput = (TextBox)sender;
-
-            if(e.Text == "," || e.Text == "-")
-            {
-                e.Handled = ContainsMultipleChars(xRangeInput.Text + e.Text, char.Parse(e.Text));
-            }
-        }
-
-        private bool ContainsMultipleChars(string input, char character)
-        {
-            int countOfChars = GetCountOfChars(input, character);
-            
-            if (countOfChars > 1)
-            {
-                NotifyError("Range can't contains more than one " + character);
-            }
-
-            return countOfChars > 1;
-        }
-
-        private static int GetCountOfChars(string input, char character)
-        {
-            int countOfChars = 0;
-
-            foreach(char c in input)
-            {
-                countOfChars = (c == character) ? countOfChars +1: countOfChars;
-            }
-
-            return countOfChars;
         }
 
         private void XRangeSpaceRestriction(object sender, KeyEventArgs e)
