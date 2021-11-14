@@ -6,7 +6,7 @@ Purpose of this journey is to recode my application **Grafer** which I did as Se
 ### Language:
 *C#*
 ### Framework:
-*.NET 6* WPF
+*.NET 6 WPF*
 ### IDE: 
 *Visual Studio Preview 2022*
 ### Started:
