@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -291,7 +292,7 @@ namespace Grafer2
             if (equationInput.SelectionBrush == Brushes.Red)
             {
                 equationInput.SelectionBrush = defaultSelectionBrush;
-            }
+            }          
         }
 
         private void XRangeInputCheck(object sender, TextCompositionEventArgs e)
@@ -325,7 +326,24 @@ namespace Grafer2
             if(e.Key == Key.Escape)
             {
                 equationInput.Text = "";
+                equationInput.Focus();
             }
+        }
+
+        private void SetButtonDrawMargin(object sender, KeyEventArgs e)
+        {
+            int marginTopMultiply;
+
+            if (e.Key == Key.Back)
+            {
+                marginTopMultiply = Convert.ToInt16(Math.Floor((double)((equationInput.Text.Length-2) / 14)));
+            }
+            else
+            {
+                marginTopMultiply = Convert.ToInt16(Math.Floor((double)((equationInput.Text.Length) / 14)));
+            }
+            
+            buttonDraw.Margin = new Thickness(64, 206 + (26 * marginTopMultiply), 0, 0);
         }
     }
 }
