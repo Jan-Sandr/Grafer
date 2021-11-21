@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
@@ -67,7 +68,7 @@ namespace Grafer2
         {
             if (limitX.IsChecked == true)
             {
-                GetXRangeFromInputs();
+                GetXRangeFromInputs();          
             }
             else
             {
@@ -93,7 +94,7 @@ namespace Grafer2
 
         private bool AreXRangeEdgesValid()
         {
-            if (!AreEdgesValid(minimumXIpnut.Text) || !AreEdgesValid(maximumXInput.Text))
+            if(!AreEdgesValid(minimumXIpnut.Text) || !AreEdgesValid(maximumXInput.Text))
             {
                 isXRangeValid = false;
                 NotifyError("Edge of range can't contains minus or comma.");
@@ -106,7 +107,7 @@ namespace Grafer2
         {
             bool areEdgesValid = true;
 
-            if (input[^1] == '-' || input[0] == ',' || input[^1] == ',')
+            if(input[^1] == '-' || input[0] == ',' || input[^1] == ',')
             {
                 areEdgesValid = false;
             }
@@ -124,7 +125,7 @@ namespace Grafer2
         {
             bool isRangeEmpty = false;
 
-            if (minimumXIpnut.Text == "" || maximumXInput.Text == "")
+            if(minimumXIpnut.Text == "" || maximumXInput.Text == "")
             {
                 NotifyError("Range is empty.");
                 isRangeEmpty = true;
@@ -144,10 +145,10 @@ namespace Grafer2
 
             if (GetCountOfChars(maximumXInput.Text, '-') > 1 || GetCountOfChars(maximumXInput.Text, ',') > 1)
             {
-                containsMultipleChars = true;
+                containsMultipleChars = true;            
             }
 
-            if (containsMultipleChars == true)
+            if(containsMultipleChars == true)
             {
                 NotifyError("Range can't contains more than one minus or comma.");
             }
@@ -169,7 +170,7 @@ namespace Grafer2
                 containsTwoInvalidcharsInRow = true;
             }
 
-            if (containsTwoInvalidcharsInRow)
+            if(containsTwoInvalidcharsInRow)
             {
                 NotifyError("Range can't contains abreast minus and comma");
             }
@@ -279,22 +280,11 @@ namespace Grafer2
         private void EquationInputTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
         {
             buttonDraw.IsEnabled = equationInput.Text.Trim() != "";
-
-            if (equationInput.Text.Trim() != "" && equationInput.Text[^1] == '(')
-            {
-                CloseBracket();
-            }
-        }
-
-        private void CloseBracket()
-        {
-            equationInput.Text += ')';
-            equationInput.SelectionStart = equationInput.Text.Length - 1;
         }
 
         private void RelationInputCheck(object sender, TextCompositionEventArgs e)
         {
-            if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( )]") && e.Text != "-")
+            if(!Regex.IsMatch(e.Text,"[0-9 x + * /]") && e.Text != "-")
             {
                 e.Handled = true;
             }
@@ -302,7 +292,7 @@ namespace Grafer2
             if (equationInput.SelectionBrush == Brushes.Red)
             {
                 equationInput.SelectionBrush = defaultSelectionBrush;
-            }
+            }          
         }
 
         private void XRangeInputCheck(object sender, TextCompositionEventArgs e)
@@ -328,12 +318,12 @@ namespace Grafer2
 
         private void ShortcutsPress(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter && equationInput.Text.Trim() != "")
+            if(e.Key == Key.Enter && equationInput.Text.Trim() != "")
             {
                 DoProcess();
             }
 
-            if (e.Key == Key.Escape)
+            if(e.Key == Key.Escape)
             {
                 equationInput.Text = "";
                 equationInput.Focus();
@@ -346,13 +336,13 @@ namespace Grafer2
 
             if (e.Key == Key.Back)
             {
-                marginTopMultiply = Convert.ToInt16(Math.Floor((double)((equationInput.Text.Length - 2) / 14)));
+                marginTopMultiply = Convert.ToInt16(Math.Floor((double)((equationInput.Text.Length-2) / 14)));
             }
             else
             {
                 marginTopMultiply = Convert.ToInt16(Math.Floor((double)((equationInput.Text.Length) / 14)));
             }
-
+            
             buttonDraw.Margin = new Thickness(64, 206 + (26 * marginTopMultiply), 0, 0);
         }
     }

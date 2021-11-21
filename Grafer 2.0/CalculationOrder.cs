@@ -6,24 +6,19 @@ namespace Grafer2
 {
     public class CalculationOrder : List<List<int>>
     {
-        private readonly string[] mathCharacters = new string[] { "+-", "*/", "", "", "()" };
+        private readonly string[] mathOperations = new string[] { "+-", "*/" };
 
         public CalculationOrder GetOrder(Relation relation, CalculationOrder calculationOrder)
         {
-            int additionalPriority = 0;
 
             for (int i = 0; i < relation.Count; i++)
             {
-                int priority = Array.FindIndex(mathCharacters, s => s.Contains(relation[i]));
+                int index = Array.FindIndex(mathOperations, s => s.Contains(relation[i]));
 
-                if (priority == 4)
-                {
-                    additionalPriority = relation[i] == "(" ? additionalPriority + 4 : additionalPriority - 4;
-                }
-                else if (priority != -1)
+                if (index != -1)
                 {
                     calculationOrder[0].Add(i);
-                    calculationOrder[1].Add(priority + additionalPriority);
+                    calculationOrder[1].Add(index);
                 }
             }
             calculationOrder = SortOrder(calculationOrder);

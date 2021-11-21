@@ -9,7 +9,6 @@ namespace Grafer2
             return (
                              AreEdgesValid(relation) &&
                     !AreTwoOperationsInRow(relation) &&
-                             CheckBrackets(relation) &&
                              !CheckMissing(relation)
                     );
         }
@@ -19,13 +18,13 @@ namespace Grafer2
         private static bool AreEdgesValid(Relation relation)
         {
             bool areEdgesValid = true;
-            if (!double.TryParse(relation[0], out _) && relation[0] != "x" && relation[0] != "(")
+            if (!double.TryParse(relation[0], out _) && relation[0] != "x")
             {
                 areEdgesValid = false;
                 relation.FillInvalidSection(0, 1, "Relation begins with invalid character.");
             }
 
-            if (!double.TryParse(relation[^1], out _) && relation[^1] != "x" && relation[^1] != ")")
+            if (!double.TryParse(relation[^1], out _) && relation[^1] != "x")
             {
                 areEdgesValid = false;
                 relation.FillInvalidSection(relation.Count - 1, 1, "Relation ends with invalid character.");
@@ -57,7 +56,7 @@ namespace Grafer2
 
             for (int i = 0; i < relation.Count - 1; i++)
             {
-                if (IsMissingSomething(relation[i], relation[i + 1]))
+                if ((double.TryParse(relation[i], out _) || relation[i] == "x") && !mathOperations.Contains(relation[i + 1]))
                 {
                     isMissingSomething = true;
                     relation.FillInvalidSection(i, 2, "Relation is missing operation between two characters.");
@@ -66,71 +65,6 @@ namespace Grafer2
             }
 
             return isMissingSomething;
-        }
-
-        private static bool IsMissingSomething(string left, string right)
-        {
-            bool isMissingSomething = false;
-
-            if ((double.TryParse(left, out _) || left == "x") && (!mathOperations.Contains(right) && right != ")" && right != "x"))
-            {
-                isMissingSomething = true;
-            }
-
-            if (left == "(" && (!double.TryParse(right, out _) && right != "x"))
-            {
-                isMissingSomething = true;
-            }
-
-            return isMissingSomething;
-        }
-
-        private static bool CheckBrackets(Relation relation)
-        {
-            return AreBracketsCorrect(relation) && !AreBracketsEmpty(relation);
-        }
-
-        private static bool AreBracketsCorrect(Relation relation)
-        {
-            int countOfBrackets = 0;
-            int openingBracketIndex = 0;
-
-            for (int i = 0; i < relation.Count; i++)
-            {
-                countOfBrackets = relation[i] == "(" ? countOfBrackets + 1 : relation[i] == ")" ? countOfBrackets - 1 : countOfBrackets;
-
-                openingBracketIndex = relation[i] == "(" ? i : openingBracketIndex;
-
-                if (countOfBrackets == -1)
-                {
-                    relation.FillInvalidSection(i, 1, "Relation can't have closing bracket before opening bracket.");
-                    break;
-                }
-            }
-
-            if (countOfBrackets > 0)
-            {
-                relation.FillInvalidSection(openingBracketIndex, 1, "Relation can't contain opening bracket without closing one.");
-            }
-
-            return countOfBrackets == 0;
-        }
-
-        private static bool AreBracketsEmpty(Relation relation)
-        {
-            bool containsEmptyBrackets = false;
-
-            for (int i = 0; i < relation.Count - 1; i++)
-            {
-                if (relation[i] == "(" && relation[i + 1] == ")")
-                {
-                    containsEmptyBrackets = true;
-                    relation.FillInvalidSection(i, 2, "Ralation can't contain empty brackets.");
-                    break;
-                }
-            }
-
-            return containsEmptyBrackets;
         }
     }
 }
