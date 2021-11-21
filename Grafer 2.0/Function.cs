@@ -54,12 +54,12 @@ namespace Grafer2
                 y = (Relation.Count > 1) ? x : double.Parse(Relation[0]);
                 CalculateYForX();
 
-                if(y > 1000000)
+                if (y > 1000000)
                 {
                     y = 1000000;
                 }
 
-                if(y < -1000000)
+                if (y < -1000000)
                 {
                     y = -1000000;
                 }
@@ -146,7 +146,7 @@ namespace Grafer2
         {
             point = new Point()
             {
-                X = Math.Round(Canvas.Width / 2 + point.X * 100,2),
+                X = Math.Round(Canvas.Width / 2 + point.X * 100, 2),
                 Y = (-y * 100) + Canvas.Height / 2
             };
             return point;
