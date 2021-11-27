@@ -16,7 +16,7 @@ namespace Grafer2
         }
 
         public Relation Adjust(Relation relation)
-        {
+        {       
             relation.RemoveAll(s => s == " ");
 
             if (relation.Count > 1)
@@ -31,7 +31,7 @@ namespace Grafer2
             }
 
             IsRelationValid = EquationCheck.BasicCheck(relation);
-
+            
             return relation;
         }
 

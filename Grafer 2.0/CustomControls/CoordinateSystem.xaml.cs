@@ -1,6 +1,7 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows;
 
 namespace Grafer2.CustomControls
 {
@@ -14,17 +15,27 @@ namespace Grafer2.CustomControls
             InitializeComponent();
         }
 
-        public enum Direction
+        private enum Direction
         {
             X,
             Y
         }
+
+        private int defaultElementsCount;
+
 
         public void Create()
         {
             DrawAxes();
             DrawGrid();
             DrawNumbers();
+
+            defaultElementsCount = Children.Count;
+        }
+
+        public void RemoveFunctions()
+        {
+            Children.RemoveRange(defaultElementsCount, Children.Count - defaultElementsCount);
         }
 
         private void DrawGrid()
