@@ -45,7 +45,6 @@ namespace Grafer2
         private void CreateFunction()
         {
             gFunction = new Function(equationInput.Text, gMinimumX, gMaximumX, coordinateSystem);
-            gFunction.PrepareForCalculation();
 
             if (gFunction.Relation.IsRelationValid)
             {
@@ -167,8 +166,7 @@ namespace Grafer2
 
         private void Draw()
         {
-            coordinateSystem.Children.Clear();
-            coordinateSystem.Create();
+            coordinateSystem.RemoveFunctions();
 
             if (gFunction != null)
             {
@@ -202,6 +200,11 @@ namespace Grafer2
             if (equationInput.Text.Trim() != "" && equationInput.Text[^1] == '(')
             {
                 CloseBracket();
+            }
+
+            if(!buttonDraw.IsEnabled)
+            {
+                coordinateSystem.RemoveFunctions();
             }
         }
 

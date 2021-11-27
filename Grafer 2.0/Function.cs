@@ -16,9 +16,9 @@ namespace Grafer2
         public CalculationOrder CalculationOrder { get; set; }
         public List<Polyline> Curves { get; set; }
         public Canvas Canvas { get; }
+
         private List<Point> points;
         private double y;
-
         private string[] relationBackup = Array.Empty<string>();
         readonly private int[][] calculationOrderBackup = new int[2][];
         private double calculationMinimumX, calculationMaximumX;
@@ -28,6 +28,7 @@ namespace Grafer2
         {
             Relation = new();
             Relation.AddRange(relation.Select(s => s.ToString()));
+            Relation.Adjust(Relation);
             MinimumX = minimumX;
             MaximumX = maximumX;
             CalculationOrder = new CalculationOrder() { new List<int>(), new List<int>() };
@@ -36,24 +37,42 @@ namespace Grafer2
             Canvas = canvas;
         }
 
-        public void PrepareForCalculation()
-        {
-            Relation = Relation.Adjust(Relation);
-            CalculationOrder = CalculationOrder.GetOrder(Relation, CalculationOrder);
-        }
-
         public void CalculatePoints()
         {
-            SetBackup();
-            SetCalculationXRange();
+            PrepareForCalculation();
+            DoCalculation();
+            SaveCurve(points);
+            points = new List<Point>();
+        }
+
+        private void DoCalculation()
+        {
             for (double x = calculationMinimumX; x <= calculationMaximumX; x += 0.01)
             {
                 x = Math.Round(x, 2);
-                GetBackup();
-                SubstituteX(x);
-                y = (Relation.Count > 1) ? x : double.Parse(Relation[0]);
-                CalculateYForX();
 
+                GetBackup();
+
+                SubstituteX(x);
+
+                y = (Relation.Count > 1) ? CalculateYForX() : double.Parse(Relation[0]);
+
+                SavePoint(x, y);
+            }
+
+        }
+
+        private void PrepareForCalculation()
+        {
+            CalculationOrder = CalculationOrder.GetOrder(Relation, CalculationOrder);
+            SetBackup();
+            SetCalculationXRange();
+        }
+
+        private double LimitY()
+        {
+            if(!double.IsInfinity(y))
+            {
                 if (y > 1000000)
                 {
                     y = 1000000;
@@ -63,12 +82,9 @@ namespace Grafer2
                 {
                     y = -1000000;
                 }
-
-                SavePoint(x, y);
             }
 
-            SaveCurve(points);
-            points = new List<Point>();
+            return y;
         }
 
         public void Plot()
@@ -94,19 +110,34 @@ namespace Grafer2
             }
         }
 
-        private void CalculateYForX()
+        private double CalculateYForX()
         {
             int orderProgression = 0;
+
             while (Relation.Count > 1)
             {
-                int index = CalculationOrder[0][orderProgression];
-                Relation[index] = Operation(index).ToString();
-                Relation.RemoveNeighbors(Relation, index);
-                CalculationOrder.ShiftPosition(CalculationOrder, Relation.RemovedElementsCount, orderProgression);
-                Relation.RemovedElementsCount = 0;
+                y = CalculateY(orderProgression);
                 orderProgression++;
             }
 
+            y = Math.Abs(y) > 1000000 ? LimitY() : y;
+
+            return y;
+        }
+
+        private double CalculateY(int orderProgression)
+        {
+            int index = CalculationOrder[0][orderProgression];
+
+            Relation[index] = Operation(index).ToString();
+
+            Relation.RemoveNeighbors(Relation, index);
+
+            CalculationOrder.ShiftPosition(CalculationOrder, Relation.RemovedElementsCount, orderProgression);
+
+            Relation.RemovedElementsCount = 0;
+
+            return y;
         }
 
         private void SavePoint(double x, double y)
