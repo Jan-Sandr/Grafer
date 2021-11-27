@@ -2,21 +2,22 @@
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Grafer2
+namespace Grafer2.CustomControls
 {
-    public class CoordinateSystem : Canvas
+    /// <summary>
+    /// Interaction logic for CoordinateSystem.xaml
+    /// </summary>
+    public partial class CoordinateSystem : Canvas
     {
+        public CoordinateSystem()
+        {
+            InitializeComponent();
+        }
 
         public enum Direction
         {
             X,
             Y
-        }
-
-        public CoordinateSystem(double width, double height)
-        {
-            Width = width;
-            Height = height;
         }
 
         public void Create()
@@ -126,7 +127,6 @@ namespace Grafer2
 
         private Line NewLine(Direction direction, double lineX = 0, double lineY = 0, SolidColorBrush? brushes = null, double strokeThickness = 1)
         {
-
             Line line = new()
             {
                 X1 = (direction == Direction.X) ? 0 : lineX,
