@@ -14,7 +14,7 @@ namespace Grafer2
                     );
         }
 
-        private static readonly string[] mathOperations = new string[4] { "+", "-", "*", "/" };
+        private static readonly string[] mathOperations = new string[5] { "+", "-", "*", "/", "^" };
 
         private static bool AreEdgesValid(Relation relation)
         {
@@ -57,10 +57,17 @@ namespace Grafer2
 
             for (int i = 0; i < relation.Count - 1; i++)
             {
-                if (IsMissingSomething(relation[i], relation[i + 1]))
+                if (IsMissingOperation(relation[i], relation[i + 1]))
                 {
                     isMissingSomething = true;
                     relation.FillInvalidSection(i, 2, "Relation is missing operation between two characters.");
+                    break;
+                }
+
+                if (relation[i] == "^" && relation[i + 1] != "(")
+                {
+                    isMissingSomething = true;
+                    relation.FillInvalidSection(i, 2, "After power brackets are required.");
                     break;
                 }
             }
@@ -68,7 +75,7 @@ namespace Grafer2
             return isMissingSomething;
         }
 
-        private static bool IsMissingSomething(string left, string right)
+        private static bool IsMissingOperation(string left, string right)
         {
             bool isMissingSomething = false;
 

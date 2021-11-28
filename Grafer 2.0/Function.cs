@@ -23,7 +23,6 @@ namespace Grafer2
         readonly private int[][] calculationOrderBackup = new int[2][];
         private double calculationMinimumX, calculationMaximumX;
 
-
         public Function(string relation, double minimumX, double maximumX, Canvas canvas)
         {
             Relation = new();
@@ -146,11 +145,15 @@ namespace Grafer2
             {
                 Point point = new(x, y);
                 point = ConvertToCoordinatePoint(point);
-                points.Add(point);
+                points.Add(point);              
             }
-            else if (points.Count > 1)
+            else if (points.Count > 0)
             {
-                SaveCurve(points);
+                if(points.Count > 1)
+                {
+                    SaveCurve(points);
+                }
+
                 points = new List<Point>();
             }
         }
@@ -205,6 +208,11 @@ namespace Grafer2
                 case "/":
                     {
                         y = double.Parse(Relation[index - 1]) / double.Parse(Relation[index + 1]);
+                        break;
+                    }
+                case "^":
+                    {
+                        y = Math.Pow(double.Parse(Relation[index - 1]), double.Parse(Relation[index + 1]));
                         break;
                     }
             }

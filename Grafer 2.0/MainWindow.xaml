@@ -17,5 +17,6 @@
         <control:CoordinateSystem x:Name="coordinateSystem" Margin="0,67,0,0" Background="#FFF1EDED" Height="700" Width="700" Loaded="CoordinateSystemLoaded" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
         <control:RangeInput x:Name="minimumXInput" HorizontalAlignment="Left" Margin="62,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="19" DisplayName="Minimum"/>
         <control:RangeInput x:Name="maximumXInput" HorizontalAlignment="Left" Margin="174,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="19" DisplayName="Maximum"/>
+        <Button x:Name="buttonExponent" Content="^" HorizontalAlignment="Left" Margin="17,258,0,0" VerticalAlignment="Top" Width="28" FontSize="20" Click="InsertionButtonClick"/>
     </Grid>
 </Window>
