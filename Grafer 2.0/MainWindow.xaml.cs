@@ -197,11 +197,6 @@ namespace Grafer2
         {
             buttonDraw.IsEnabled = equationInput.Text.Trim() != "";
 
-            if (equationInput.Text.Trim() != "" && equationInput.Text[^1] == '(')
-            {
-                CloseBracket();
-            }
-
             if(!buttonDraw.IsEnabled)
             {
                 coordinateSystem.RemoveFunctions();
@@ -216,7 +211,7 @@ namespace Grafer2
 
         private void RelationInputCheck(object sender, TextCompositionEventArgs e)
         {
-            if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( )]") && e.Text != "-")
+            if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( ) ^]") && e.Text != "-")
             {
                 e.Handled = true;
             }
@@ -224,6 +219,11 @@ namespace Grafer2
             if (equationInput.SelectionBrush == Brushes.Red)
             {
                 equationInput.SelectionBrush = defaultSelectionBrush;
+            }
+
+            if (e.Text == "(" && equationInput.SelectionStart == equationInput.Text.Length)
+            {
+                CloseBracket();
             }
         }
 
@@ -265,6 +265,21 @@ namespace Grafer2
         private void CoordinateSystemLoaded(object sender, RoutedEventArgs e)
         {
             coordinateSystem.Create();
+        }
+
+        private void InsertionButtonClick(object sender, RoutedEventArgs e)
+        {
+            int inputCursorIndex = equationInput.SelectionStart;
+
+            Button button = (Button)sender;
+
+            if(button.Name == "buttonExponent")
+            {
+                equationInput.Text = equationInput.Text.Insert(inputCursorIndex, "^()");
+            }
+
+            equationInput.Focus();
+            equationInput.SelectionStart = inputCursorIndex + 2;
         }
     }
 }

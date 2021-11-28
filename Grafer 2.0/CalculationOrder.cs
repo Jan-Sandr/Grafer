@@ -6,7 +6,7 @@ namespace Grafer2
 {
     public class CalculationOrder : List<List<int>>
     {
-        private readonly string[] mathCharacters = new string[] { "+-", "*/", "", "", "()" };
+        private readonly string[] mathCharacters = new string[] { "+-", "*/", "^", "", "()" };
 
         public CalculationOrder GetOrder(Relation relation, CalculationOrder calculationOrder)
         {
@@ -59,7 +59,10 @@ namespace Grafer2
                 {
                     if (sameElementsCount > 1)
                     {
-                        Array.Sort(indexes, i - sameElementsCount, sameElementsCount);
+                        if (priorities[i-1] != 2)
+                        {
+                            Array.Sort(indexes, i - sameElementsCount, sameElementsCount);
+                        }
                     }
 
                     sameElementsCount = 1;
@@ -67,7 +70,10 @@ namespace Grafer2
 
                 if (i == indexes.Length - 1)
                 {
-                    Array.Sort(indexes, (i + 1) - sameElementsCount, sameElementsCount);
+                    if (priorities[i] != 2)
+                    {
+                        Array.Sort(indexes, (i + 1) - sameElementsCount, sameElementsCount);
+                    }                   
                 }
 
             }

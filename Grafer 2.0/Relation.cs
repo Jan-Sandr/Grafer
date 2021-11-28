@@ -25,13 +25,13 @@ namespace Grafer2
 
                 relation = ConnectNumbers(relation);
 
-                relation = RemoveUnnecessaryBrackets(relation);
-
                 relation = InsertZero(relation);
             }
 
             IsRelationValid = EquationCheck.BasicCheck(relation);
-            
+
+            relation = RemoveUnnecessaryBrackets(relation);
+
             return relation;
         }
 
