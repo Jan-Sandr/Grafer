@@ -25,9 +25,7 @@ namespace Grafer2
 
         public Function(string relation, double minimumX, double maximumX, Canvas canvas)
         {
-            Relation = new();
-            Relation.AddRange(relation.Select(s => s.ToString()));
-            Relation.Adjust(Relation);
+            Relation = new(relation);
             MinimumX = minimumX;
             MaximumX = maximumX;
             CalculationOrder = new CalculationOrder() { new List<int>(), new List<int>() };
@@ -130,7 +128,7 @@ namespace Grafer2
 
             Relation[index] = Operation(index).ToString();
 
-            Relation.RemoveNeighbors(Relation, index);
+            Relation.RemoveNeighbors(index);
 
             CalculationOrder.ShiftPosition(CalculationOrder, Relation.RemovedElementsCount, orderProgression);
 

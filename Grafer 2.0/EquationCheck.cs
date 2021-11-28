@@ -19,7 +19,7 @@ namespace Grafer2
         private static bool AreEdgesValid(Relation relation)
         {
             bool areEdgesValid = true;
-            if (!double.TryParse(relation[0], out _) && relation[0] != "x" && relation[0] != "(")
+            if (!double.TryParse(relation[0], out _) && relation[0] != "-" && relation[0] != "x" && relation[0] != "(")
             {
                 areEdgesValid = false;
                 relation.FillInvalidSection(0, 1, "Relation begins with invalid character.");
@@ -79,14 +79,38 @@ namespace Grafer2
         {
             bool isMissingSomething = false;
 
-            if ((double.TryParse(left, out _) || left == "x") && (!mathOperations.Contains(right) && right != ")" && right != "x"))
+            switch (left)
             {
-                isMissingSomething = true;
+                case "x":
+                    {
+                        isMissingSomething = ( !mathOperations.Contains(right) &&
+                                                !double.TryParse(right, out _) &&
+                                                                  right != "x" &&
+                                                                  right != "(" &&
+                                                                  right != ")"
+                                             );
+                        break;
+                    }
+                case "(":
+                    {
+                        isMissingSomething = (  !double.TryParse(right, out _) &&
+                                                                  right != "x" &&
+                                                                  right != "-" &&
+                                                                  right != "(" &&
+                                                                  right != ")"
+
+                                             );
+                        break;
+                    }
+
             }
 
-            if (left == "(" && (!double.TryParse(right, out _) && right != "x"))
+            if(mathOperations.Contains(left))
             {
-                isMissingSomething = true;
+                isMissingSomething = ( !double.TryParse(right, out _) &&
+                                                         right != "x" &&
+                                                         right != "("
+                                     );
             }
 
             return isMissingSomething;

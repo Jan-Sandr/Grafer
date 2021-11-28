@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace Grafer2
 {
@@ -15,24 +16,27 @@ namespace Grafer2
             RemovedElementsCount = 0;
         }
 
-        public Relation Adjust(Relation relation)
+        public Relation(string input)
+        {
+            AddRange(input.Select(s => s.ToString()));
+            RemoveAll(s => s == " ");  
+            RemovedElementsCount = 0;
+            IsRelationValid = EquationCheck.BasicCheck(this);
+            Adjust();
+        }
+
+        private void Adjust()
         {       
-            relation.RemoveAll(s => s == " ");
-
-            if (relation.Count > 1)
+            if (Count > 1 && IsRelationValid)
             {
-                relation = InsertMultiplication(relation);
+                InsertMultiplication();
 
-                relation = ConnectNumbers(relation);
+                ConnectNumbers();
 
-                relation = InsertZero(relation);
+                RemoveUnnecessaryBrackets();
+
+                InsertZero();
             }
-
-            IsRelationValid = EquationCheck.BasicCheck(relation);
-
-            relation = RemoveUnnecessaryBrackets(relation);
-
-            return relation;
         }
 
         public void FillInvalidSection(int selectionStart, int selectionLength, string message)
@@ -40,46 +44,40 @@ namespace Grafer2
             InvalidSection = new(selectionStart, selectionLength, message);
         }
 
-        private Relation RemoveUnnecessaryBrackets(Relation relation)
+        private void RemoveUnnecessaryBrackets()
         {
-            for (int i = 1; i < relation.Count - 1; i++)
+            for (int i = 1; i < Count - 1; i++)
             {
-                CheckNeighbors(relation, i);
+                CheckNeighbors(i);
             }
-
-            return relation;
         }
 
-        private static Relation InsertZero(Relation relation)
+        private void InsertZero()
         {
-            if (relation[0] == "-")
+            if (this[0] == "-")
             {
-                relation.Insert(0, "0");
+                Insert(0, "0");
             }
 
-            for (int i = 1; i < relation.Count; i++)
+            for (int i = 1; i < Count; i++)
             {
-                if (relation[i] == "-" && relation[i - 1] == "(")
+                if (this[i] == "-" && this[i - 1] == "(")
                 {
-                    relation.Insert(i, "0");
+                    Insert(i, "0");
                     i++;
                 }
             }
-
-            return relation;
         }
 
-        private static Relation InsertMultiplication(Relation relation)
+        private void InsertMultiplication()
         {
-            for (int i = 1; i < relation.Count; i++)
+            for (int i = 1; i < Count; i++)
             {
-                if (CanInsertMultiplication(relation[i - 1], relation[i]))
+                if (CanInsertMultiplication(this[i - 1], this[i]))
                 {
-                    relation.Insert(i, "*");
+                    Insert(i, "*");
                 }
             }
-
-            return relation;
         }
 
         private static bool CanInsertMultiplication(string left, string right)
@@ -94,40 +92,38 @@ namespace Grafer2
                    );
         }
 
-        private static Relation ConnectNumbers(Relation relation)
+        private void ConnectNumbers()
         {
-            for (int i = 1; i < relation.Count; i++)
+            for (int i = 1; i < Count; i++)
             {
-                if (char.IsDigit(char.Parse(relation[i])) && char.IsDigit(char.Parse(relation[i - 1])))
+                if (char.IsDigit(char.Parse(this[i])) && char.IsDigit(char.Parse(this[i - 1])))
                 {
-                    relation[i - 1] += relation[i];
-                    relation.RemoveAt(i);
+                    this[i - 1] += this[i];
+                    RemoveAt(i);
                     i--;
                 }
             }
-
-            return relation;
         }
 
-        public void RemoveNeighbors(Relation relation, int index)
+        public void RemoveNeighbors(int index)
         {
-            relation.RemoveAt(index + 1);
-            relation.RemoveAt(index - 1);
+            RemoveAt(index + 1);
+            RemoveAt(index - 1);
 
             index--;
 
             RemovedElementsCount += 2;
 
-            CheckNeighbors(relation, index);
+            CheckNeighbors(index);
         }
 
-        private void CheckNeighbors(Relation relation, int index)
+        private void CheckNeighbors(int index)
         {
-            if (index != 0 && index < relation.Count - 1)
+            if (index != 0 && index < Count - 1)
             {
-                if (relation[index - 1] == "(" && relation[index + 1] == ")")
+                if (this[index - 1] == "(" && this[index + 1] == ")")
                 {
-                    RemoveNeighbors(relation, index);
+                    RemoveNeighbors(index);
                 }
             }
         }
