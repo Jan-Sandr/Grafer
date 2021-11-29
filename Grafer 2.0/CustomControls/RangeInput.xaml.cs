@@ -31,9 +31,7 @@ namespace Grafer2.CustomControls
             }
         }
 
-        public (int SelectionStart, int SelectionLength, string Message) InvalidSection { get; private set; }
-
-        public string DisplayName { get; set; } = string.Empty;
+        public (int SelectionStart, int SelectionLength, int MessageID) InvalidSection { get; private set; } = (0, 0, -1);
 
         public RangeInput()
         {
@@ -42,34 +40,34 @@ namespace Grafer2.CustomControls
 
         private bool IsRangeEmpty()
         {
-            InvalidSection = Text == "" ? new(0, 0, DisplayName + " is empty.") : new(0, 0, "");
+            InvalidSection = Text == "" ? new(0, 0, 0) : new(0, 0, -1);
 
-            return InvalidSection.Message.Length != 0;
+            return InvalidSection.MessageID != -1;
         }
 
         private bool AreEdgesValid()
         {
             if (Text[0] == ',')
             {
-                InvalidSection = new(0, 1, DisplayName + " begins with invalid character.");
+                InvalidSection = new(0, 1, 1);
             }
 
             if (Text[^1] == '-' || Text[^1] == ',')
             {
-                InvalidSection = new(Text.Length - 1, 1, DisplayName + " ends with invalid character.");
+                InvalidSection = new(Text.Length - 1, 1, 2);
             }
 
-            return InvalidSection.Message.Length == 0;
+            return InvalidSection.MessageID == -1;
         }
 
         private bool ContainsMultipleChars()
         {
             if (GetCountOfChars(Text, '-') > 1 || GetCountOfChars(Text, ',') > 1)
             {
-                InvalidSection = new(0, 0, DisplayName + " can't contain more than one minus or comma.");
+                InvalidSection = new(0, 0, 3);
             }
 
-            return InvalidSection.Message.Length != 0;
+            return InvalidSection.MessageID != -1;
         }
 
         private static int GetCountOfChars(string input, char character)
@@ -89,9 +87,9 @@ namespace Grafer2.CustomControls
         {
             if (Text.Contains("-,") || Text.Contains(",-"))
             {
-                InvalidSection = new(0, 0, DisplayName + " can't contains abreast minus and comma");
+                InvalidSection = new(0, 0, 4);
             }
-            return InvalidSection.Message.Length != 0;
+            return InvalidSection.MessageID != -1;
         }
 
         private void InputCheck(object sender, TextCompositionEventArgs e)

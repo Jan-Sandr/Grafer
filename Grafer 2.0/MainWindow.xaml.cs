@@ -17,10 +17,19 @@ namespace Grafer2
             InitializeComponent();
         }
 
+        private new enum Language
+        {
+            English,
+            Czech
+        }
+
+        private Language language;
         private Function? gFunction;
         private double gMinimumX;
         private double gMaximumX;
         private bool isXRangeValid;
+
+        private string[] messages = Array.Empty<string>();
 
         private Brush? defaultSelectionBrush;
 
@@ -53,7 +62,7 @@ namespace Grafer2
             else
             {
                 equationInput.Text = string.Join("", gFunction.Relation);
-                NotifyInvalidInput(equationInput, gFunction.Relation.InvalidSection.SelectionStart, gFunction.Relation.InvalidSection.SelectionLength, gFunction.Relation.InvalidSection.Message);
+                NotifyInvalidInput(equationInput, gFunction.Relation.InvalidSection.SelectionStart, gFunction.Relation.InvalidSection.SelectionLength, gFunction.Relation.InvalidSection.MessageID);
             }
         }
 
@@ -91,12 +100,12 @@ namespace Grafer2
             if (!minimumXInput.IsValid)
             {
                 isXRangeValid = false;
-                NotifyInvalidInput(minimumXInput, minimumXInput.InvalidSection.SelectionStart, minimumXInput.InvalidSection.SelectionLength, minimumXInput.InvalidSection.Message);
+                NotifyInvalidInput(minimumXInput, minimumXInput.InvalidSection.SelectionStart, minimumXInput.InvalidSection.SelectionLength, minimumXInput.InvalidSection.MessageID);
             }
             else if (!maximumXInput.IsValid)
             {
                 isXRangeValid = false;
-                NotifyInvalidInput(maximumXInput, maximumXInput.InvalidSection.SelectionStart, maximumXInput.InvalidSection.SelectionLength, maximumXInput.InvalidSection.Message);
+                NotifyInvalidInput(maximumXInput, maximumXInput.InvalidSection.SelectionStart, maximumXInput.InvalidSection.SelectionLength, maximumXInput.InvalidSection.MessageID);
             }
 
             return isXRangeValid;
@@ -179,10 +188,16 @@ namespace Grafer2
             Draw();
         }
 
-        private void NotifyInvalidInput(TextBox textBox, int selectionStart, int selectionLength, string message)
+        private void NotifyInvalidInput(TextBox textBox, int selectionStart, int selectionLength, int messageID)
         {
             SelectInvalidSection(textBox, selectionStart, selectionLength);
-            NotifyError(message);
+            NotifyError(textBox.Uid + " " + GetMessageFromID(messageID));
+        }
+
+        private string GetMessageFromID(int ID)
+        {
+            string message = (language == Language.English) ? messages[ID].Split(';')[0] : messages[ID].Split(';')[1];
+            return message;
         }
 
         private void SelectInvalidSection(TextBox textBox, int selectionStart, int selectionLength)
@@ -280,6 +295,17 @@ namespace Grafer2
 
             equationInput.Focus();
             equationInput.SelectionStart = inputCursorIndex + 2;
+        }
+
+        private void ApplicationLoaded(object sender, RoutedEventArgs e)
+        {
+            language = Language.Czech;
+
+            FileCompiler fileCompiler = new("Messages.csv", false);
+
+            fileCompiler.Read();
+
+            messages = fileCompiler.Data.ToArray();
         }
     }
 }

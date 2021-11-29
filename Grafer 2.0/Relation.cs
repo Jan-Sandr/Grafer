@@ -9,25 +9,31 @@ namespace Grafer2
 
         public bool IsRelationValid { get; private set; }
 
-        public (int SelectionStart, int SelectionLength, string Message) InvalidSection { get; private set; }
+        public (int SelectionStart, int SelectionLength, int MessageID) InvalidSection { get; private set; }
 
         public Relation()
         {
-            RemovedElementsCount = 0;
+
         }
 
         public Relation(string input)
         {
             AddRange(input.Select(s => s.ToString()));
             RemoveAll(s => s == " ");  
-            RemovedElementsCount = 0;
-            IsRelationValid = EquationCheck.BasicCheck(this);
-            Adjust();
+
+            if (IsRelationValid = EquationCheck.IsInputCorrect(this))
+            {
+                Adjust();
+            }
+            else
+            {
+                InvalidSection = EquationCheck.InvalidSection;
+            }           
         }
 
         private void Adjust()
         {       
-            if (Count > 1 && IsRelationValid)
+            if (Count > 1)
             {
                 InsertMultiplication();
 
@@ -37,11 +43,6 @@ namespace Grafer2
 
                 InsertZero();
             }
-        }
-
-        public void FillInvalidSection(int selectionStart, int selectionLength, string message)
-        {
-            InvalidSection = new(selectionStart, selectionLength, message);
         }
 
         private void RemoveUnnecessaryBrackets()
