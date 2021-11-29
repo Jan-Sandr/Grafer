@@ -4,8 +4,12 @@ namespace Grafer2
 {
     public static class EquationCheck
     {
-        public static bool BasicCheck(Relation relation)
+        public static (int SelectionStart, int SelectionLength, int MessageID) InvalidSection { get; private set; } = (0, 0, -1);
+
+        public static bool IsInputCorrect(Relation relation)
         {
+            InvalidSection = new(0, 0, -1);
+
             return (
                              AreEdgesValid(relation) &&
                     !AreTwoOperationsInRow(relation) &&
@@ -22,13 +26,13 @@ namespace Grafer2
             if (!double.TryParse(relation[0], out _) && relation[0] != "-" && relation[0] != "x" && relation[0] != "(")
             {
                 areEdgesValid = false;
-                relation.FillInvalidSection(0, 1, "Relation begins with invalid character.");
+                InvalidSection = new(0, 1, 1);
             }
 
             if (!double.TryParse(relation[^1], out _) && relation[^1] != "x" && relation[^1] != ")")
             {
                 areEdgesValid = false;
-                relation.FillInvalidSection(relation.Count - 1, 1, "Relation ends with invalid character.");
+                InvalidSection = new(relation.Count - 1, 1, 2);
             }
 
             return areEdgesValid;
@@ -43,7 +47,7 @@ namespace Grafer2
                 if (mathOperations.Contains(relation[i]) && mathOperations.Contains(relation[i + 1]))
                 {
                     areTwoOperationsInRow = true;
-                    relation.FillInvalidSection(i, 2, "Relation cannot contains two operations in row.");
+                    InvalidSection = new(i, 2, 5);
                     break;
                 }
             }
@@ -53,53 +57,27 @@ namespace Grafer2
 
         private static bool CheckMissing(Relation relation)
         {
-            bool isMissingSomething = false;
-
             for (int i = 0; i < relation.Count - 1; i++)
             {
-                if (IsMissingOperation(relation[i], relation[i + 1]))
+                if (IsMissingSomething(i, relation[i], relation[i + 1]))
                 {
-                    isMissingSomething = true;
-                    relation.FillInvalidSection(i, 2, "Relation is missing operation between two characters.");
-                    break;
-                }
-
-                if (relation[i] == "^" && relation[i + 1] != "(")
-                {
-                    isMissingSomething = true;
-                    relation.FillInvalidSection(i, 2, "After power brackets are required.");
                     break;
                 }
             }
 
-            return isMissingSomething;
+            return InvalidSection.MessageID != -1;
         }
 
-        private static bool IsMissingOperation(string left, string right)
+        private static bool IsMissingSomething(int index, string left, string right)
         {
-            bool isMissingSomething = false;
-
             switch (left)
             {
-                case "x":
-                    {
-                        isMissingSomething = ( !mathOperations.Contains(right) &&
-                                                !double.TryParse(right, out _) &&
-                                                                  right != "x" &&
-                                                                  right != "(" &&
-                                                                  right != ")"
-                                             );
-                        break;
-                    }
                 case "(":
                     {
-                        isMissingSomething = (  !double.TryParse(right, out _) &&
-                                                                  right != "x" &&
-                                                                  right != "-" &&
-                                                                  right != "(" &&
-                                                                  right != ")"
-
-                                             );
+                        if(mathOperations.Contains(right) && right != "-")
+                        {
+                            InvalidSection = new(index, 2, 10);
+                        }
                         break;
                     }
 
@@ -107,13 +85,28 @@ namespace Grafer2
 
             if(mathOperations.Contains(left))
             {
-                isMissingSomething = ( !double.TryParse(right, out _) &&
-                                                         right != "x" &&
-                                                         right != "("
-                                     );
+                switch(left)
+                {
+                    case "^":
+                        {
+                            if(right != "(")
+                            {
+                                InvalidSection = new(index, 2, 6);
+                            }
+                            break;
+                        }
+                    default:
+                        {
+                            if(right == ")")
+                            {
+                                InvalidSection = new(index, 2, 11);
+                            }
+                            break;
+                        }
+                }
             }
 
-            return isMissingSomething;
+            return InvalidSection.MessageID != -1;
         }
 
         private static bool CheckBrackets(Relation relation)
@@ -134,14 +127,14 @@ namespace Grafer2
 
                 if (countOfBrackets == -1)
                 {
-                    relation.FillInvalidSection(i, 1, "Relation can't have closing bracket before opening bracket.");
+                    InvalidSection = new(i, 1, 7);
                     break;
                 }
             }
 
             if (countOfBrackets > 0)
             {
-                relation.FillInvalidSection(openingBracketIndex, 1, "Relation can't contain opening bracket without closing one.");
+                InvalidSection = new(openingBracketIndex, 1, 8);
             }
 
             return countOfBrackets == 0;
@@ -156,7 +149,7 @@ namespace Grafer2
                 if (relation[i] == "(" && relation[i + 1] == ")")
                 {
                     containsEmptyBrackets = true;
-                    relation.FillInvalidSection(i, 2, "Ralation can't contain empty brackets.");
+                    InvalidSection = new(i, 2, 9);
                     break;
                 }
             }
