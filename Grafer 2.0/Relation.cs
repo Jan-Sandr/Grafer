@@ -19,9 +19,9 @@ namespace Grafer2
         public Relation(string input)
         {
             AddRange(input.Select(s => s.ToString()));
-            RemoveAll(s => s == " ");  
+            RemoveAll(s => s == " ");
 
-            if (IsRelationValid = EquationCheck.IsInputCorrect(this))
+            if (IsRelationValid = EquationCheck.IsEquationCorrect(string.Join("", this)))
             {
                 Adjust();
             }
