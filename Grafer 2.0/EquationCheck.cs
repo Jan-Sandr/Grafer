@@ -6,45 +6,45 @@ namespace Grafer2
     {
         public static (int SelectionStart, int SelectionLength, int MessageID) InvalidSection { get; private set; } = (0, 0, -1);
 
-        public static bool IsInputCorrect(Relation relation)
+        public static bool IsEquationCorrect(string equation)
         {
             InvalidSection = new(0, 0, -1);
 
             return (
-                             AreEdgesValid(relation) &&
-                    !AreTwoOperationsInRow(relation) &&
-                             CheckBrackets(relation) &&
-                             !CheckMissing(relation)
+                             AreEdgesValid(equation) &&
+                    !AreTwoOperationsInRow(equation) &&
+                             CheckBrackets(equation) &&
+                             !CheckMissing(equation)
                     );
         }
 
-        private static readonly string[] mathOperations = new string[5] { "+", "-", "*", "/", "^" };
+        private static readonly char[] mathOperations = new char[5] { '+', '-', '*', '/', '^' };
 
-        private static bool AreEdgesValid(Relation relation)
+        private static bool AreEdgesValid(string equation)
         {
             bool areEdgesValid = true;
-            if (!double.TryParse(relation[0], out _) && relation[0] != "-" && relation[0] != "x" && relation[0] != "(")
+            if (!char.IsDigit(equation[0]) && equation[0] != '-' && equation[0] != 'x' && equation[0] != '(')
             {
                 areEdgesValid = false;
                 InvalidSection = new(0, 1, 1);
             }
 
-            if (!double.TryParse(relation[^1], out _) && relation[^1] != "x" && relation[^1] != ")")
+            if (!char.IsDigit(equation[^1]) && equation[^1] != 'x' && equation[^1] != ')')
             {
                 areEdgesValid = false;
-                InvalidSection = new(relation.Count - 1, 1, 2);
+                InvalidSection = new(equation.Length - 1, 1, 2);
             }
 
             return areEdgesValid;
         }
 
-        private static bool AreTwoOperationsInRow(Relation relation)
+        private static bool AreTwoOperationsInRow(string equation)
         {
             bool areTwoOperationsInRow = false;
 
-            for (int i = 0; i < relation.Count - 1; i++)
+            for (int i = 0; i < equation.Length - 1; i++)
             {
-                if (mathOperations.Contains(relation[i]) && mathOperations.Contains(relation[i + 1]))
+                if (mathOperations.Contains(equation[i]) && mathOperations.Contains(equation[i + 1]))
                 {
                     areTwoOperationsInRow = true;
                     InvalidSection = new(i, 2, 5);
@@ -55,11 +55,11 @@ namespace Grafer2
             return areTwoOperationsInRow;
         }
 
-        private static bool CheckMissing(Relation relation)
+        private static bool CheckMissing(string equation)
         {
-            for (int i = 0; i < relation.Count - 1; i++)
+            for (int i = 0; i < equation.Length - 1; i++)
             {
-                if (IsMissingSomething(i, relation[i], relation[i + 1]))
+                if (IsMissingSomething(i, equation[i], equation[i + 1]))
                 {
                     break;
                 }
@@ -68,13 +68,13 @@ namespace Grafer2
             return InvalidSection.MessageID != -1;
         }
 
-        private static bool IsMissingSomething(int index, string left, string right)
+        private static bool IsMissingSomething(int index, char left, char right)
         {
             switch (left)
             {
-                case "(":
+                case '(':
                     {
-                        if(mathOperations.Contains(right) && right != "-")
+                        if(mathOperations.Contains(right) && right != '-')
                         {
                             InvalidSection = new(index, 2, 10);
                         }
@@ -87,9 +87,9 @@ namespace Grafer2
             {
                 switch(left)
                 {
-                    case "^":
+                    case '^':
                         {
-                            if(right != "(")
+                            if(right != '(')
                             {
                                 InvalidSection = new(index, 2, 6);
                             }
@@ -97,7 +97,7 @@ namespace Grafer2
                         }
                     default:
                         {
-                            if(right == ")")
+                            if(right == ')')
                             {
                                 InvalidSection = new(index, 2, 11);
                             }
@@ -109,21 +109,21 @@ namespace Grafer2
             return InvalidSection.MessageID != -1;
         }
 
-        private static bool CheckBrackets(Relation relation)
+        private static bool CheckBrackets(string equation)
         {
-            return AreBracketsCorrect(relation) && !AreBracketsEmpty(relation);
+            return AreBracketsCorrect(equation) && !AreBracketsEmpty(equation);
         }
 
-        private static bool AreBracketsCorrect(Relation relation)
+        private static bool AreBracketsCorrect(string equation)
         {
             int countOfBrackets = 0;
             int openingBracketIndex = 0;
 
-            for (int i = 0; i < relation.Count; i++)
+            for (int i = 0; i < equation.Length; i++)
             {
-                countOfBrackets = relation[i] == "(" ? countOfBrackets + 1 : relation[i] == ")" ? countOfBrackets - 1 : countOfBrackets;
+                countOfBrackets = equation[i] == '(' ? countOfBrackets + 1 : equation[i] == ')' ? countOfBrackets - 1 : countOfBrackets;
 
-                openingBracketIndex = relation[i] == "(" ? i : openingBracketIndex;
+                openingBracketIndex = equation[i] == '(' ? i : openingBracketIndex;
 
                 if (countOfBrackets == -1)
                 {
@@ -140,13 +140,13 @@ namespace Grafer2
             return countOfBrackets == 0;
         }
 
-        private static bool AreBracketsEmpty(Relation relation)
+        private static bool AreBracketsEmpty(string equation)
         {
             bool containsEmptyBrackets = false;
 
-            for (int i = 0; i < relation.Count - 1; i++)
+            for (int i = 0; i < equation.Length - 1; i++)
             {
-                if (relation[i] == "(" && relation[i + 1] == ")")
+                if (equation[i] == '(' && equation[i + 1] == ')')
                 {
                     containsEmptyBrackets = true;
                     InvalidSection = new(i, 2, 9);
