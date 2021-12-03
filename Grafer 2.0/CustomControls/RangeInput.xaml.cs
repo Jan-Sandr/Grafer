@@ -40,7 +40,7 @@ namespace Grafer2.CustomControls
 
         private bool IsRangeEmpty()
         {
-            InvalidSection = Text == "" ? new(0, 0, 0) : new(0, 0, -1);
+            InvalidSection = Text == "" ? new(0, 0, 3) : new(0, 0, -1);
 
             return InvalidSection.MessageID != -1;
         }
@@ -54,7 +54,7 @@ namespace Grafer2.CustomControls
 
             if (Text[^1] == '-' || Text[^1] == ',')
             {
-                InvalidSection = new(Text.Length - 1, 1, 2);
+                InvalidSection = new(Text.Length - 1, 1, 5);
             }
 
             return InvalidSection.MessageID == -1;
@@ -64,7 +64,7 @@ namespace Grafer2.CustomControls
         {
             if (GetCountOfChars(Text, '-') > 1 || GetCountOfChars(Text, ',') > 1)
             {
-                InvalidSection = new(0, 0, 3);
+                InvalidSection = new(0, 0, 6);
             }
 
             return InvalidSection.MessageID != -1;
@@ -87,7 +87,7 @@ namespace Grafer2.CustomControls
         {
             if (Text.Contains("-,") || Text.Contains(",-"))
             {
-                InvalidSection = new(0, 0, 4);
+                InvalidSection = new(0, 0, 7);
             }
             return InvalidSection.MessageID != -1;
         }
