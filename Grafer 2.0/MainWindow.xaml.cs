@@ -19,8 +19,8 @@ namespace Grafer2
 
         private new enum Language
         {
-            English,
-            Czech
+            English = 1,
+            Czech = 2
         }
 
         private Language language;
@@ -31,7 +31,29 @@ namespace Grafer2
 
         private string[] messages = Array.Empty<string>();
 
+        private string[] localizationData = Array.Empty<string>();
+
         private Brush? defaultSelectionBrush;
+
+        private void ApplicationLoad(object sender, RoutedEventArgs e)
+        {
+            LoadDataFromFiles();
+            LoadData();
+            LocalizeUserInterface();
+        }
+
+        private void LoadData()
+        {
+            language = Language.English;
+            languageSelect.Items.Add(Language.English);
+            languageSelect.Items.Add(Language.Czech);
+        }
+
+        private void LoadDataFromFiles()
+        {
+            messages = ReadFile("Messages.csv", false);
+            localizationData = ReadFile("UILocalization.csv", true);
+        }
 
         private void ButtonDrawClick(object sender, RoutedEventArgs e)
         {
@@ -140,24 +162,12 @@ namespace Grafer2
 
             if (gMinimumX > gMaximumX)
             {
-                NotifyError("Minimum can't be higher than maximum");
+                string message = (language == Language.English) ? messages[0].Split(';')[0] : messages[0].Split(';')[1];
+                NotifyError(message);
                 isMinimumHigher = true;
             }
 
             return isMinimumHigher;
-        }
-
-        private bool IsXRangeOut()
-        {
-            bool isXRangeOut = false;
-
-            if (gMaximumX < -coordinateSystem.Width / 200 || gMinimumX > coordinateSystem.Width / 200)
-            {
-                NotifyError("Function won't be plotted because x's range is outside of drawing canvas.");
-                isXRangeOut = true;
-            }
-
-            return isXRangeOut;
         }
 
         private bool IsRangeWidthZero()
@@ -166,11 +176,26 @@ namespace Grafer2
 
             if (gMinimumX == gMaximumX)
             {
-                NotifyError("Minimum and maximum x can't be same.");
+                string message = (language == Language.English) ? messages[1].Split(';')[0] : messages[1].Split(';')[1];
+                NotifyError(message);
                 isRangeWidthZero = true;
             }
 
             return isRangeWidthZero;
+        }
+
+        private bool IsXRangeOut()
+        {
+            bool isXRangeOut = false;
+
+            if (gMaximumX < -coordinateSystem.Width / 200 || gMinimumX > coordinateSystem.Width / 200)
+            {
+                string message = (language == Language.English) ? messages[2].Split(';')[0] : messages[2].Split(';')[1];
+                NotifyError(message);
+                isXRangeOut = true;
+            }
+
+            return isXRangeOut;
         }
 
         private void Draw()
@@ -297,15 +322,29 @@ namespace Grafer2
             equationInput.SelectionStart = inputCursorIndex + 2;
         }
 
-        private void ApplicationLoaded(object sender, RoutedEventArgs e)
+        private static string[] ReadFile(string filePath, bool haveHead)
         {
-            language = Language.Czech;
-
-            FileCompiler fileCompiler = new("Messages.csv", false);
+            FileCompiler fileCompiler = new(filePath, haveHead );
 
             fileCompiler.Read();
 
-            messages = fileCompiler.Data.ToArray();
+            return fileCompiler.Data.ToArray();
+        } 
+
+        private void LocalizeUserInterface()
+        {
+            int index = Convert.ToInt16(language);
+
+            labelLanguage.Content = localizationData[0].Split(';')[index];
+            limitX.Content = localizationData[1].Split(';')[index];
+            equationInput.Uid = localizationData[2].Split(';')[index];
+            buttonDraw.Content = localizationData[3].Split(';')[index];
+        }
+
+        private void LanguageSelectionChange(object sender, SelectionChangedEventArgs e)
+        {
+            language = (Language)languageSelect.SelectedItem;
+            LocalizeUserInterface();
         }
     }
 }

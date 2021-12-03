@@ -6,10 +6,10 @@
         xmlns:local="clr-namespace:Grafer2"
         xmlns:control="clr-namespace:Grafer2.CustomControls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="739" Width="1100" PreviewKeyDown="ShortcutsPress" ResizeMode="NoResize" Loaded="ApplicationLoaded">
+        Title="MainWindow" Height="739" Width="1100" PreviewKeyDown="ShortcutsPress" ResizeMode="NoResize" Loaded="ApplicationLoad">
     <Grid Height="700" VerticalAlignment="Top">
         <TextBox x:Name="equationInput" HorizontalAlignment="Left" Margin="66,156,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" Background="#FFF1E8E8" FontSize="20" TextChanged="EquationInputTextChanged" PreviewTextInput="RelationInputCheck" PreviewKeyDown="SetButtonDrawMargin" MaxLength="98" Uid="Relation"/>
-        <Label Content="y =" HorizontalAlignment="Left" Margin="21,153,0,0" VerticalAlignment="Top" RenderTransformOrigin="-6.559,3.773" FontSize="20"/>
+        <Label x:Name="labelY" Content="y =" HorizontalAlignment="Left" Margin="21,153,0,0" VerticalAlignment="Top" RenderTransformOrigin="-6.559,3.773" FontSize="20"/>
         <Label Content="min:" HorizontalAlignment="Left" Margin="24,111,0,0" VerticalAlignment="Top"/>
         <Label Content="max:" HorizontalAlignment="Left" Margin="134,111,0,0" VerticalAlignment="Top"/>
         <Button x:Name="buttonDraw" Content="Draw" HorizontalAlignment="Left" Margin="64,206,0,0" VerticalAlignment="Top" Height="37" Width="140" Click="ButtonDrawClick" IsEnabled="False"/>
@@ -18,5 +18,7 @@
         <control:RangeInput x:Name="minimumXInput" HorizontalAlignment="Left" Margin="62,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="19" Uid="Minimum"/>
         <control:RangeInput x:Name="maximumXInput" HorizontalAlignment="Left" Margin="174,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="19" Uid="Maximum"/>
         <Button x:Name="buttonExponent" Content="^" HorizontalAlignment="Left" Margin="17,258,0,0" VerticalAlignment="Top" Width="28" FontSize="20" Click="InsertionButtonClick"/>
+        <ComboBox x:Name="languageSelect" HorizontalAlignment="Left" Margin="91,10,0,0" VerticalAlignment="Top" Width="120" IsReadOnly="True" SelectedIndex="0" SelectionChanged="LanguageSelectionChange"/>
+        <Label x:Name="labelLanguage" Content="Language:" HorizontalAlignment="Left" Margin="17,8,0,0" VerticalAlignment="Top"/>
     </Grid>
 </Window>
