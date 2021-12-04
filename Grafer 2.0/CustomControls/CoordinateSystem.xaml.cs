@@ -26,6 +26,7 @@ namespace Grafer2.CustomControls
 
         public void Create()
         {
+            Children.Clear(); 
             DrawAxes();
             DrawGrid();
             DrawNumbers();
@@ -111,15 +112,15 @@ namespace Grafer2.CustomControls
                 {
                     case Direction.X:
                         {
-                            Children.Add(NewLine(direction, lineY: (size / 2) - i, brushes: brush));
-                            Children.Add(NewLine(direction, lineY: (size / 2) + i, brushes: brush));
+                            Children.Add(NewLine(direction, lineX: (size / 2) - i, brushes: brush));
+                            Children.Add(NewLine(direction, lineX: (size / 2) + i, brushes: brush));
                             break;
                         }
 
                     case Direction.Y:
                         {
-                            Children.Add(NewLine(direction, lineX: (size / 2) - i, brushes: brush));
-                            Children.Add(NewLine(direction, lineX: (size / 2) + i, brushes: brush));
+                            Children.Add(NewLine(direction, lineY: (size / 2) - i, brushes: brush));
+                            Children.Add(NewLine(direction, lineY: (size / 2) + i, brushes: brush));
                             break;
                         }
                 }
@@ -128,9 +129,9 @@ namespace Grafer2.CustomControls
 
         private void DrawAxes()
         {
-            Line axisX = NewLine(Direction.X, lineY: Height / 2, strokeThickness: 1.5);
+            Line axisX = NewLine(Direction.X, lineX: Width / 2, strokeThickness: 1.5);
 
-            Line axisY = NewLine(Direction.Y, lineX: Width / 2, strokeThickness: 1.5);
+            Line axisY = NewLine(Direction.Y, lineY: Height / 2, strokeThickness: 1.5);
 
             Children.Add(axisX);
             Children.Add(axisY);
@@ -140,10 +141,10 @@ namespace Grafer2.CustomControls
         {
             Line line = new()
             {
-                X1 = (direction == Direction.X) ? 0 : lineX,
-                Y1 = (direction == Direction.X) ? lineY : 0,
-                X2 = (direction == Direction.X) ? Width : lineX,
-                Y2 = (direction == Direction.X) ? lineY : Height,
+                X1 = (direction == Direction.X) ? lineX : 0,
+                Y1 = (direction == Direction.X) ? 0 : lineY,
+                X2 = (direction == Direction.X) ? lineX : Width,
+                Y2 = (direction == Direction.X) ? Height : lineY,
                 Stroke = brushes ?? Brushes.Black,
                 StrokeThickness = strokeThickness,
             };
