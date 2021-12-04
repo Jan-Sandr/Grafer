@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -34,7 +33,7 @@ namespace Grafer2
 
         private string[] localizationData = Array.Empty<string>();
 
-        private Brush? defaultSelectionBrush;
+        private readonly Brush defaultSelectionBrush = new SolidColorBrush(Color.FromRgb(0, 120, 215));
 
         protected override void OnActivated(EventArgs e)
         {
@@ -59,14 +58,26 @@ namespace Grafer2
         private void ButtonDrawClick(object sender, RoutedEventArgs e)
         {
             onlyFunctionPlot = true;
-            DoProcess();
+            Start();
         }
 
-        private void DoProcess()
+        private void Start()
         {
             Reset();
 
             if (equationInput.Text.Trim() != "")
+            {
+                DoProcess();
+            }
+
+            Draw();
+
+            onlyFunctionPlot = false;
+        }
+
+        private void DoProcess()
+        {
+            if (equationInput.IsEquationValid)
             {
                 GetXRange();
 
@@ -75,24 +86,16 @@ namespace Grafer2
                     CreateFunction();
                 }
             }
-
-            Draw();
-            onlyFunctionPlot = false;
+            else
+            {
+                NotifyInvalidInput(equationInput, equationInput.InvalidSection.SelectionStart, equationInput.InvalidSection.SelectionLength, equationInput.InvalidSection.MessageID);
+            }
         }
 
         private void CreateFunction()
         {
             gFunction = new Function(equationInput.Text, gMinimumX, gMaximumX, coordinateSystem);
-
-            if (gFunction.Relation.IsRelationValid)
-            {
-                gFunction.CalculatePoints();
-            }
-            else
-            {
-                equationInput.Text = string.Join("", gFunction.Relation);
-                NotifyInvalidInput(equationInput, gFunction.Relation.InvalidSection.SelectionStart, gFunction.Relation.InvalidSection.SelectionLength, gFunction.Relation.InvalidSection.MessageID);
-            }
+            gFunction.CalculatePoints();
         }
 
         private void Reset()
@@ -111,6 +114,12 @@ namespace Grafer2
             {
                 GetXRangeFromCanvasWidth();
             }
+        }
+
+        private void GetXRangeFromCanvasWidth()
+        {
+            gMinimumX = -coordinateSystem.Width / 200;
+            gMaximumX = coordinateSystem.Width / 200;
         }
 
         private void GetXRangeFromInputs()
@@ -142,24 +151,6 @@ namespace Grafer2
         private bool IsXRangeValid()
         {
             return !IsMinimumHigher() && !IsRangeWidthZero() && !IsXRangeOut();
-        }
-
-        private static bool AreEdgesValid(string input)
-        {
-            bool areEdgesValid = true;
-
-            if (input[^1] == '-' || input[0] == ',' || input[^1] == ',')
-            {
-                areEdgesValid = false;
-            }
-
-            return areEdgesValid;
-        }
-
-        private void GetXRangeFromCanvasWidth()
-        {
-            gMinimumX = -coordinateSystem.Width / 200;
-            gMaximumX = coordinateSystem.Width / 200;
         }
 
         private bool IsMinimumHigher()
@@ -207,7 +198,7 @@ namespace Grafer2
         private void Draw()
         {
             RefreshCoordinateSystem();
-            
+
             if (gFunction != null)
             {
                 gFunction.Plot();
@@ -238,52 +229,20 @@ namespace Grafer2
             return message;
         }
 
-        private void SelectInvalidSection(TextBox textBox, int selectionStart, int selectionLength)
+        private static void SelectInvalidSection(TextBox textBox, int selectionStart, int selectionLength)
         {
-            defaultSelectionBrush = textBox.SelectionBrush;
             textBox.Focus();
             textBox.Select(selectionStart, selectionLength);
             textBox.SelectionBrush = Brushes.Red;
         }
 
-        private void EquationInputTextChanged(object sender, TextChangedEventArgs e)
+        private void OnSelectionChanged(object sender, RoutedEventArgs e)
         {
-            buttonDraw.IsEnabled = equationInput.Text.Trim() != "";
+            TextBox textBox = (TextBox)sender;
 
-            if(!buttonDraw.IsEnabled)
+            if (textBox.SelectionBrush == Brushes.Red)
             {
-                coordinateSystem.RemoveFunctions();
-            }
-        }
-
-        private void PreviewEquationInputTextChanged(object sender, TextCompositionEventArgs e)
-        {
-            RelationInputCheck(e);
-            CloseBracket(e.Text);
-        }
-
-        private static void RelationInputCheck(TextCompositionEventArgs e)
-        {
-            if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( ) ^]") && e.Text != "-")
-            {
-                e.Handled = true;
-            }
-        }
-
-        private void SetDefaultSelectionBrush()
-        {
-            if (equationInput.SelectionBrush == Brushes.Red)
-            {
-                equationInput.SelectionBrush = defaultSelectionBrush;
-            }
-        }
-
-        private void CloseBracket(string input)
-        {
-            if (input == "(" && equationInput.SelectionStart == equationInput.Text.Length)
-            {
-                equationInput.Text += ')';
-                equationInput.SelectionStart = equationInput.Text.Length - 1;
+                textBox.SelectionBrush = defaultSelectionBrush;
             }
         }
 
@@ -297,7 +256,7 @@ namespace Grafer2
             if (e.Key == Key.Enter)
             {
                 onlyFunctionPlot = true;
-                DoProcess();
+                Start();
             }
 
             if (e.Key == Key.Escape)
@@ -334,7 +293,7 @@ namespace Grafer2
 
             Button button = (Button)sender;
 
-            if(button.Name == "buttonExponent")
+            if (button.Name == "buttonExponent")
             {
                 equationInput.Text = equationInput.Text.Insert(inputCursorIndex, "^()");
             }
@@ -345,12 +304,12 @@ namespace Grafer2
 
         private static string[] ReadFile(string filePath, bool haveHead)
         {
-            FileCompiler fileCompiler = new(filePath, haveHead );
+            FileCompiler fileCompiler = new(filePath, haveHead);
 
             fileCompiler.Read();
 
             return fileCompiler.Data.ToArray();
-        } 
+        }
 
         private void LocalizeUserInterface()
         {
@@ -383,12 +342,17 @@ namespace Grafer2
         private void ApplicationResize(object sender, SizeChangedEventArgs e)
         {
             AdjustComponentsToApplicationSize();
-            DoProcess();
+            Start();
         }
 
-        private void EquationInputSelectionChanged(object sender, RoutedEventArgs e)
+        private void EquationInputTextChanged(object sender, TextChangedEventArgs e)
         {
-            SetDefaultSelectionBrush();
+            buttonDraw.IsEnabled = equationInput.Text.Trim() != "";
+
+            if (!buttonDraw.IsEnabled)
+            {
+                coordinateSystem.RemoveFunctions();
+            }
         }
     }
 }

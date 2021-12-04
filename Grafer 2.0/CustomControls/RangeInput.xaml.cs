@@ -11,7 +11,6 @@ namespace Grafer2.CustomControls
     {
         public double Value
         {
-
             get
             {
                 return double.Parse(Text);
@@ -49,7 +48,7 @@ namespace Grafer2.CustomControls
         {
             if (Text[0] == ',')
             {
-                InvalidSection = new(0, 1, 1);
+                InvalidSection = new(0, 1, 4);
             }
 
             if (Text[^1] == '-' || Text[^1] == ',')

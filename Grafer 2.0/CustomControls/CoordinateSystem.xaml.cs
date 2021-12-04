@@ -1,7 +1,6 @@
 ﻿using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Windows;
 
 namespace Grafer2.CustomControls
 {
@@ -26,7 +25,7 @@ namespace Grafer2.CustomControls
 
         public void Create()
         {
-            Children.Clear(); 
+            Children.Clear();
             DrawAxes();
             DrawGrid();
             DrawNumbers();
