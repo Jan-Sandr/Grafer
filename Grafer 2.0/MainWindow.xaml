@@ -6,15 +6,15 @@
         xmlns:local="clr-namespace:Grafer2"
         xmlns:control="clr-namespace:Grafer2.CustomControls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="739" Width="1100" PreviewKeyDown="ShortcutsPress" ResizeMode="NoResize" Loaded="ApplicationLoad">
+        Title="Grafer" Height="739" Width="1100" PreviewKeyDown="ShortcutsPress" ResizeMode="CanResize" SizeChanged="ApplicationResize" MinWidth="600" MinHeight="400">
     <Grid Height="700" VerticalAlignment="Top">
-        <TextBox x:Name="equationInput" HorizontalAlignment="Left" Margin="66,156,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" Background="#FFF1E8E8" FontSize="20" TextChanged="EquationInputTextChanged" PreviewTextInput="RelationInputCheck" PreviewKeyDown="SetButtonDrawMargin" MaxLength="98" Uid="Relation"/>
+        <TextBox x:Name="equationInput" HorizontalAlignment="Left" Margin="66,156,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="136" Background="#FFF1E8E8" FontSize="20" TextChanged="EquationInputTextChanged" PreviewTextInput="PreviewEquationInputTextChanged" PreviewKeyDown="SetButtonDrawMargin" MaxLength="98" Uid="Relation" SelectionChanged="EquationInputSelectionChanged"/>
         <Label x:Name="labelY" Content="y =" HorizontalAlignment="Left" Margin="21,153,0,0" VerticalAlignment="Top" RenderTransformOrigin="-6.559,3.773" FontSize="20"/>
         <Label Content="min:" HorizontalAlignment="Left" Margin="24,111,0,0" VerticalAlignment="Top"/>
         <Label Content="max:" HorizontalAlignment="Left" Margin="134,111,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="buttonDraw" Content="Draw" HorizontalAlignment="Left" Margin="64,206,0,0" VerticalAlignment="Top" Height="37" Width="140" Click="ButtonDrawClick" IsEnabled="False"/>
+        <Button x:Name="buttonDraw" Content="Draw" HorizontalAlignment="Left" Margin="64,206,0,0" VerticalAlignment="Top" Height="37" Width="140" Click="ButtonDrawClick"/>
         <CheckBox x:Name="limitX" Content="limit x" HorizontalAlignment="Left" Margin="28,91,0,0" VerticalAlignment="Top" Width="94"/>
-        <control:CoordinateSystem x:Name="coordinateSystem" Margin="0,67,0,0" Background="#FFF1EDED" Height="700" Width="700" Loaded="CoordinateSystemLoaded" HorizontalAlignment="Right" VerticalAlignment="Bottom"/>
+        <control:CoordinateSystem x:Name="coordinateSystem" Margin="384,0,0,0" Background="#FFF1EDED" Height="700" Width="700" Loaded="CoordinateSystemLoaded" ClipToBounds="True"/>
         <control:RangeInput x:Name="minimumXInput" HorizontalAlignment="Left" Margin="62,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="19" Uid="Minimum"/>
         <control:RangeInput x:Name="maximumXInput" HorizontalAlignment="Left" Margin="174,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="19" Uid="Maximum"/>
         <Button x:Name="buttonExponent" Content="^" HorizontalAlignment="Left" Margin="17,258,0,0" VerticalAlignment="Top" Width="28" FontSize="20" Click="InsertionButtonClick"/>

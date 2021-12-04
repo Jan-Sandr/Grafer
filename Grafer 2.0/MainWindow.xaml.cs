@@ -28,6 +28,7 @@ namespace Grafer2
         private double gMinimumX;
         private double gMaximumX;
         private bool isXRangeValid;
+        private bool onlyFunctionPlot;
 
         private string[] messages = Array.Empty<string>();
 
@@ -35,7 +36,7 @@ namespace Grafer2
 
         private Brush? defaultSelectionBrush;
 
-        private void ApplicationLoad(object sender, RoutedEventArgs e)
+        protected override void OnActivated(EventArgs e)
         {
             LoadDataFromFiles();
             LoadData();
@@ -57,20 +58,26 @@ namespace Grafer2
 
         private void ButtonDrawClick(object sender, RoutedEventArgs e)
         {
+            onlyFunctionPlot = true;
             DoProcess();
         }
 
         private void DoProcess()
         {
             Reset();
-            GetXRange();
 
-            if (isXRangeValid)
+            if (equationInput.Text.Trim() != "")
             {
-                CreateFunction();
+                GetXRange();
+
+                if (isXRangeValid)
+                {
+                    CreateFunction();
+                }
             }
 
             Draw();
+            onlyFunctionPlot = false;
         }
 
         private void CreateFunction()
@@ -104,7 +111,6 @@ namespace Grafer2
             {
                 GetXRangeFromCanvasWidth();
             }
-
         }
 
         private void GetXRangeFromInputs()
@@ -200,17 +206,24 @@ namespace Grafer2
 
         private void Draw()
         {
-            coordinateSystem.RemoveFunctions();
-
+            RefreshCoordinateSystem();
+            
             if (gFunction != null)
             {
                 gFunction.Plot();
             }
         }
 
-        private void DrawingCanvasLoaded(object sender, RoutedEventArgs e)
+        private void RefreshCoordinateSystem()
         {
-            Draw();
+            if (!onlyFunctionPlot)
+            {
+                coordinateSystem.Create();
+            }
+            else
+            {
+                coordinateSystem.RemoveFunctions();
+            }
         }
 
         private void NotifyInvalidInput(TextBox textBox, int selectionStart, int selectionLength, int messageID)
@@ -229,11 +242,11 @@ namespace Grafer2
         {
             defaultSelectionBrush = textBox.SelectionBrush;
             textBox.Focus();
-            textBox.SelectionBrush = Brushes.Red;
             textBox.Select(selectionStart, selectionLength);
+            textBox.SelectionBrush = Brushes.Red;
         }
 
-        private void EquationInputTextChanged(object sender, System.Windows.Controls.TextChangedEventArgs e)
+        private void EquationInputTextChanged(object sender, TextChangedEventArgs e)
         {
             buttonDraw.IsEnabled = equationInput.Text.Trim() != "";
 
@@ -243,27 +256,34 @@ namespace Grafer2
             }
         }
 
-        private void CloseBracket()
+        private void PreviewEquationInputTextChanged(object sender, TextCompositionEventArgs e)
         {
-            equationInput.Text += ')';
-            equationInput.SelectionStart = equationInput.Text.Length - 1;
+            RelationInputCheck(e);
+            CloseBracket(e.Text);
         }
 
-        private void RelationInputCheck(object sender, TextCompositionEventArgs e)
+        private static void RelationInputCheck(TextCompositionEventArgs e)
         {
             if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( ) ^]") && e.Text != "-")
             {
                 e.Handled = true;
             }
+        }
 
+        private void SetDefaultSelectionBrush()
+        {
             if (equationInput.SelectionBrush == Brushes.Red)
             {
                 equationInput.SelectionBrush = defaultSelectionBrush;
             }
+        }
 
-            if (e.Text == "(" && equationInput.SelectionStart == equationInput.Text.Length)
+        private void CloseBracket(string input)
+        {
+            if (input == "(" && equationInput.SelectionStart == equationInput.Text.Length)
             {
-                CloseBracket();
+                equationInput.Text += ')';
+                equationInput.SelectionStart = equationInput.Text.Length - 1;
             }
         }
 
@@ -274,8 +294,9 @@ namespace Grafer2
 
         private void ShortcutsPress(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.Enter && equationInput.Text.Trim() != "")
+            if (e.Key == Key.Enter)
             {
+                onlyFunctionPlot = true;
                 DoProcess();
             }
 
@@ -345,6 +366,29 @@ namespace Grafer2
         {
             language = (Language)languageSelect.SelectedItem;
             LocalizeUserInterface();
+        }
+
+        private void AdjustComponentsToApplicationSize()
+        {
+            AdjustCoordinateSystemSize();
+        }
+
+        private void AdjustCoordinateSystemSize()
+        {
+            coordinateSystem.Width = ActualWidth - 400;
+            coordinateSystem.Height = ActualHeight - 39;
+            coordinateSystem.Margin = new Thickness(384, 0, 0, 700 - coordinateSystem.Height);
+        }
+
+        private void ApplicationResize(object sender, SizeChangedEventArgs e)
+        {
+            AdjustComponentsToApplicationSize();
+            DoProcess();
+        }
+
+        private void EquationInputSelectionChanged(object sender, RoutedEventArgs e)
+        {
+            SetDefaultSelectionBrush();
         }
     }
 }
