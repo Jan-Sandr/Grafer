@@ -6,7 +6,7 @@ namespace Grafer2
     {
         public static (int SelectionStart, int SelectionLength, int MessageID) InvalidSection { get; private set; } = (0, 0, -1);
 
-        public static bool IsEquationCorrect(string equation)
+        public static bool IsEquationValid(string equation)
         {
             InvalidSection = new(0, 0, -1);
 
@@ -74,7 +74,7 @@ namespace Grafer2
             {
                 case '(':
                     {
-                        if(mathOperations.Contains(right) && right != '-')
+                        if (mathOperations.Contains(right) && right != '-')
                         {
                             InvalidSection = new(index, 2, 13);
                         }
@@ -83,13 +83,13 @@ namespace Grafer2
 
             }
 
-            if(mathOperations.Contains(left))
+            if (mathOperations.Contains(left))
             {
-                switch(left)
+                switch (left)
                 {
                     case '^':
                         {
-                            if(right != '(')
+                            if (right != '(')
                             {
                                 InvalidSection = new(index, 2, 9);
                             }
@@ -97,7 +97,7 @@ namespace Grafer2
                         }
                     default:
                         {
-                            if(right == ')')
+                            if (right == ')')
                             {
                                 InvalidSection = new(index, 2, 14);
                             }

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -68,7 +67,7 @@ namespace Grafer2
 
         private double LimitY()
         {
-            if(!double.IsInfinity(y))
+            if (!double.IsInfinity(y))
             {
                 if (y > 1000000)
                 {
@@ -143,11 +142,11 @@ namespace Grafer2
             {
                 Point point = new(x, y);
                 point = ConvertToCoordinatePoint(point);
-                points.Add(point);              
+                points.Add(point);
             }
             else if (points.Count > 0)
             {
-                if(points.Count > 1)
+                if (points.Count > 1)
                 {
                     SaveCurve(points);
                 }

@@ -7,10 +7,6 @@ namespace Grafer2
     {
         public int RemovedElementsCount { get; set; }
 
-        public bool IsRelationValid { get; private set; }
-
-        public (int SelectionStart, int SelectionLength, int MessageID) InvalidSection { get; private set; }
-
         public Relation()
         {
 
@@ -19,20 +15,13 @@ namespace Grafer2
         public Relation(string input)
         {
             AddRange(input.Select(s => s.ToString()));
-            RemoveAll(s => s == " ");
-
-            if (IsRelationValid = EquationCheck.IsEquationCorrect(string.Join("", this)))
-            {
-                Adjust();
-            }
-            else
-            {
-                InvalidSection = EquationCheck.InvalidSection;
-            }           
+            Adjust();
         }
 
         private void Adjust()
-        {       
+        {
+            RemoveAll(s => s == " ");
+
             if (Count > 1)
             {
                 InsertMultiplication();
@@ -97,7 +86,7 @@ namespace Grafer2
         {
             for (int i = 1; i < Count; i++)
             {
-                if (char.IsDigit(char.Parse(this[i])) && char.IsDigit(char.Parse(this[i - 1])))
+                if (double.TryParse(this[i], out _) && double.TryParse(this[i - 1], out _))
                 {
                     this[i - 1] += this[i];
                     RemoveAt(i);
