@@ -9,6 +9,7 @@ namespace Grafer2.CustomControls
     /// </summary>
     public partial class RangeInput : TextBox
     {
+        //Získání čísla rovnou.
         public double Value
         {
             get
@@ -17,6 +18,7 @@ namespace Grafer2.CustomControls
             }
         }
 
+        //Jestli je obsah v pořádku.
         public bool IsValid
         {
             get
@@ -30,6 +32,7 @@ namespace Grafer2.CustomControls
             }
         }
 
+        //Invalidní sekce
         public (int SelectionStart, int SelectionLength, int MessageID) InvalidSection { get; private set; } = (0, 0, -1);
 
         public RangeInput()
@@ -37,6 +40,7 @@ namespace Grafer2.CustomControls
             InitializeComponent();
         }
 
+        //Jestli je prázdný.
         private bool IsRangeEmpty()
         {
             InvalidSection = Text == "" ? new(0, 0, 3) : new(0, 0, -1);
@@ -44,6 +48,7 @@ namespace Grafer2.CustomControls
             return InvalidSection.MessageID != -1;
         }
 
+        //Zda  začíná a končí validním znakem.
         private bool AreEdgesValid()
         {
             if (Text[0] == ',')
@@ -59,6 +64,7 @@ namespace Grafer2.CustomControls
             return InvalidSection.MessageID == -1;
         }
 
+        //Jestli obsahuje třeba více minusů nebo čárek.
         private bool ContainsMultipleChars()
         {
             if (GetCountOfChars(Text, '-') > 1 || GetCountOfChars(Text, ',') > 1)
@@ -69,6 +75,7 @@ namespace Grafer2.CustomControls
             return InvalidSection.MessageID != -1;
         }
 
+        //Získání počtu konkrétních znaků ve stringu.
         private static int GetCountOfChars(string input, char character)
         {
             int countOfChars = 0;
@@ -81,7 +88,7 @@ namespace Grafer2.CustomControls
             return countOfChars;
         }
 
-
+        //Jestli obsahuje dva znaky za sebou, které nejsou možné.
         private bool ContainsTwoInvalidcharsInRow()
         {
             if (Text.Contains("-,") || Text.Contains(",-"))
@@ -91,6 +98,7 @@ namespace Grafer2.CustomControls
             return InvalidSection.MessageID != -1;
         }
 
+        //Omezení znaků, které lze napsat.
         private void InputCheck(object sender, TextCompositionEventArgs e)
         {
             if (!Regex.IsMatch(e.Text, "[0-9 ,]") && e.Text != "-")
@@ -99,6 +107,7 @@ namespace Grafer2.CustomControls
             }
         }
 
+        //Zakázení použití mezerníku.
         private void SpaceRestriction(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.Space)

@@ -22,7 +22,7 @@ namespace Grafer2.CustomControls
 
         private int defaultElementsCount;
 
-
+        //Vytvoření soustavy.
         public void Create()
         {
             Children.Clear();
@@ -33,23 +33,27 @@ namespace Grafer2.CustomControls
             defaultElementsCount = Children.Count;
         }
 
+        //Odebrání funkcí.
         public void RemoveFunctions()
         {
             Children.RemoveRange(defaultElementsCount, Children.Count - defaultElementsCount);
         }
 
+        //Vykreslení mřížky.
         private void DrawGrid()
         {
             DrawGridLines(Direction.X, Width);
             DrawGridLines(Direction.Y, Height);
         }
 
+        //Vykreslení čísel.
         private void DrawNumbers()
         {
             DrawGridNumbers(Direction.X, Width);
             DrawGridNumbers(Direction.Y, Height);
         }
 
+        //Vykreslení čísel pro určitý směr.
         private void DrawGridNumbers(Direction direction, double size)
         {
             for (int i = 100; i < size / 2; i += 100)
@@ -79,6 +83,7 @@ namespace Grafer2.CustomControls
 
         }
 
+        //Vytvoření čísla.
         private static TextBlock NewNumber(int value, double x, double y)
         {
             TextBlock number = DefaultTextBlock(value.ToString());
@@ -92,6 +97,7 @@ namespace Grafer2.CustomControls
             return number;
         }
 
+        //Defaultní textblok.
         private static TextBlock DefaultTextBlock(string text)
         {
             return new TextBlock
@@ -102,6 +108,7 @@ namespace Grafer2.CustomControls
             };
         }
 
+        //Vykreslení mřížky pro určitý směr.
         private void DrawGridLines(Direction direction, double size)
         {
             SolidColorBrush brush = new(Color.FromArgb(75, 0, 0, 0));
@@ -126,6 +133,7 @@ namespace Grafer2.CustomControls
             }
         }
 
+        //Vykreslení os.
         private void DrawAxes()
         {
             Line axisX = NewLine(Direction.X, lineX: Width / 2, strokeThickness: 1.5);
@@ -136,6 +144,7 @@ namespace Grafer2.CustomControls
             Children.Add(axisY);
         }
 
+        //Vytvoření nové úsečky.
         private Line NewLine(Direction direction, double lineX = 0, double lineY = 0, SolidColorBrush? brushes = null, double strokeThickness = 1)
         {
             Line line = new()

@@ -8,15 +8,16 @@ namespace Grafer2
     {
         private readonly string[] mathCharacters = new string[] { "+-", "*/", "^", "", "()" };
 
+        //Získání výpočetního postupu na základě priorit operací a závorek.
         public CalculationOrder GetOrder(Relation relation, CalculationOrder calculationOrder)
         {
-            int additionalPriority = 0;
+            int additionalPriority = 0;  // pro závorku
 
             for (int i = 0; i < relation.Count; i++)
             {
                 int priority = Array.FindIndex(mathCharacters, s => s.Contains(relation[i]));
 
-                if (priority == 4)
+                if (priority == 4) // případ závorky
                 {
                     additionalPriority = relation[i] == "(" ? additionalPriority + 4 : additionalPriority - 4;
                 }
@@ -30,6 +31,7 @@ namespace Grafer2
             return calculationOrder;
         }
 
+        //Seřazení priority na základě jejich výše se zachováním pozice v předpisu.
         private static CalculationOrder SortOrder(CalculationOrder calculationOrder)
         {
             int[] indexes = calculationOrder[0].ToArray();
@@ -46,6 +48,7 @@ namespace Grafer2
             return calculationOrder;
         }
 
+        //Když je více operací se stejnou prioritou za sebou, tak aby postup výpočtu šel z leva.
         private static int[] SortIndexes(int[] indexes, int[] priorities)
         {
             int sameElementsCount = 1;
@@ -59,7 +62,7 @@ namespace Grafer2
                 {
                     if (sameElementsCount > 1)
                     {
-                        if (priorities[i - 1] != 2)
+                        if (priorities[i - 1] != 2) // Výjimka pro mocninua a odmocninu u těch se jde nejdříve zprava. 
                         {
                             Array.Sort(indexes, i - sameElementsCount, sameElementsCount);
                         }
@@ -81,6 +84,7 @@ namespace Grafer2
             return indexes;
         }
 
+        //Posunutí indexů priority na základě počtu odebraných elemetnů z předpisu.
         public static void ShiftPosition(CalculationOrder calculationOrder, int removeCount, int index)
         {
             for (int i = 0; i < calculationOrder[0].Count; i++)

@@ -100,11 +100,13 @@ namespace Grafer2
             }
         }
 
+        //Jestli je soubor v pořádku.
         private bool IsFileOK()
         {
             return FileExists() && HaveFileExtension() && IsFileTypeOK();
         }
 
+        //Získání informací o souboru.
         private void SetFileInfo()
         {
             Name = GetFileName();
@@ -112,12 +114,14 @@ namespace Grafer2
             Type = Name.Split('.')[1];
         }
 
+        //Jestli má soubor příponu.
         private bool HaveFileExtension()
         {
             ErrorMessage = (fileInfo.Extension == "") ? "File doesn't have extension" : "";
             return ErrorMessage.Length == 0;
         }
 
+        //Získání jména souboru.
         private string GetFileName()
         {
             string[] filePath = Path.Split('\\');
@@ -146,6 +150,7 @@ namespace Grafer2
             }
         }
 
+        //Přečtení souboru.
         private void ReadFile()
         {
             try
@@ -160,6 +165,7 @@ namespace Grafer2
             }
         }
 
+        //Kontrola zda nikde nechybí středník.
         private void CheckData()
         {
             if (Type == FileType.CSV.ToString().ToLower() && !IsFileEmpty())
@@ -170,6 +176,7 @@ namespace Grafer2
             IsDataOK = ErrorMessage.Length == 0;
         }
 
+        //Získání hlavičky souboru.
         private void GetFileHead()
         {
             if (Data.Count != 0)
@@ -179,6 +186,7 @@ namespace Grafer2
             }
         }
 
+        //Odebrání prázdných řádků.
         private void RemoveBlankLines()
         {
             Data.RemoveAll(s => s.Trim() == "");
@@ -201,6 +209,7 @@ namespace Grafer2
             WriteToFile(path, data);
         }
 
+        //Zápis do souboru.
         private void WriteToFile(string path, List<string> data)
         {
             try
@@ -213,7 +222,8 @@ namespace Grafer2
                 WrittenSuccesfuly = false;
             }
         }
-
+        
+        //Porovnání zda má každý řádek stejný počet oddělovacích znaků.
         private bool EqualSplittingCharCount()
         {
             splittingCharCount = GetDefaultSplittingCharCount();
@@ -229,11 +239,13 @@ namespace Grafer2
             return splittingCharCountErrorLine == -1;
         }
 
+        //Získání základního počtu oddělovačů na řádku.
         private int GetDefaultSplittingCharCount()
         {
             return HaveHead ? GetLineSplitingCharCount(Head) : GetLineSplitingCharCount(Data[0]);
         }
 
+        //Získání počtu oddělovacích znaků.
         private int GetLineSplitingCharCount(string line)
         {
             int lineSplitingCharCount = 0;
@@ -249,18 +261,21 @@ namespace Grafer2
             return lineSplitingCharCount;
         }
 
+        //Je soubor txt nebo csv.
         private bool IsFileTypeOK()
         {
             ErrorMessage = Enum.IsDefined(typeof(FileType), fileInfo.Extension.Remove(0, 1).ToUpper()) ? "" : "File is not txt or csv type.";
             return ErrorMessage.Length == 0;
         }
 
+        //Jestli existuje soubor.
         private bool FileExists()
         {
             ErrorMessage = File.Exists(Path) ? "" : "File doesn't exists.";
             return ErrorMessage.Length == 0;
         }
 
+        //Jestli je soubor prádzný.
         private bool IsFileEmpty()
         {
             ErrorMessage = Data.Count == 0 ? "File is empty." : "";
