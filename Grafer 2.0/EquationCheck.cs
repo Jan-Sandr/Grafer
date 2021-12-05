@@ -6,6 +6,7 @@ namespace Grafer2
     {
         public static (int SelectionStart, int SelectionLength, int MessageID) InvalidSection { get; private set; } = (0, 0, -1);
 
+        //Kontrola rovnice
         public static bool IsEquationValid(string equation)
         {
             InvalidSection = new(0, 0, -1);
@@ -20,6 +21,7 @@ namespace Grafer2
 
         private static readonly char[] mathOperations = new char[5] { '+', '-', '*', '/', '^' };
 
+        //Zda předpis začíná a končí validním znakem.
         private static bool AreEdgesValid(string equation)
         {
             bool areEdgesValid = true;
@@ -38,6 +40,7 @@ namespace Grafer2
             return areEdgesValid;
         }
 
+        //Jestli jsou 2 operace za sebou.
         private static bool AreTwoOperationsInRow(string equation)
         {
             bool areTwoOperationsInRow = false;
@@ -55,6 +58,7 @@ namespace Grafer2
             return areTwoOperationsInRow;
         }
 
+        //Jestli něco chybí mezi členy.
         private static bool CheckMissing(string equation)
         {
             for (int i = 0; i < equation.Length - 1; i++)
@@ -68,6 +72,7 @@ namespace Grafer2
             return InvalidSection.MessageID != -1;
         }
 
+        //Tabulka pro detekci chybějících elementů.
         private static bool IsMissingSomething(int index, char left, char right)
         {
             switch (left)
@@ -109,11 +114,13 @@ namespace Grafer2
             return InvalidSection.MessageID != -1;
         }
 
+        //Kontrola závorek.
         private static bool CheckBrackets(string equation)
         {
             return AreBracketsCorrect(equation) && !AreBracketsEmpty(equation);
         }
 
+        //Jestli nejsou případy třeba nejdříve koncová závorka, nebo jejich počet si není roven.
         private static bool AreBracketsCorrect(string equation)
         {
             int countOfBrackets = 0;
@@ -140,6 +147,7 @@ namespace Grafer2
             return countOfBrackets == 0;
         }
 
+        //Jestli se v předpisu náchází prázdné závorky.
         private static bool AreBracketsEmpty(string equation)
         {
             bool containsEmptyBrackets = false;

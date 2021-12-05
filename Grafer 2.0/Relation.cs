@@ -12,6 +12,7 @@ namespace Grafer2
 
         }
 
+        //Naplnění předpisu.
         public Relation(string input)
         {
             AddRange(input.Select(s => s.ToString()));
@@ -34,6 +35,7 @@ namespace Grafer2
             }
         }
 
+        //Odebrání zbytečných závorek x + (2).
         private void RemoveUnnecessaryBrackets()
         {
             for (int i = 1; i < Count - 1; i++)
@@ -42,6 +44,7 @@ namespace Grafer2
             }
         }
 
+        //Vložení nulu. Když předpis začíná minusem a nebo (-.
         private void InsertZero()
         {
             if (this[0] == "-")
@@ -59,6 +62,7 @@ namespace Grafer2
             }
         }
 
+        //Vložení znaku  pro násobení .
         private void InsertMultiplication()
         {
             for (int i = 1; i < Count; i++)
@@ -70,6 +74,7 @@ namespace Grafer2
             }
         }
 
+        //Tabulka pro vložení znaku pro násobení.
         private static bool CanInsertMultiplication(string left, string right)
         {
             return (
@@ -82,6 +87,7 @@ namespace Grafer2
                    );
         }
 
+        //Spojení čísel do políčka třeba 10 je v základu jako 1 a 0. 
         private void ConnectNumbers()
         {
             for (int i = 1; i < Count; i++)
@@ -95,6 +101,7 @@ namespace Grafer2
             }
         }
 
+        //Odebrání sousedů elementu.
         public void RemoveNeighbors(int index)
         {
             RemoveAt(index + 1);
@@ -107,6 +114,7 @@ namespace Grafer2
             CheckNeighbors(index);
         }
 
+        //Zda jsou sousedé závorky.
         private void CheckNeighbors(int index)
         {
             if (index != 0 && index < Count - 1)

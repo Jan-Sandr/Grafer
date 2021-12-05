@@ -18,9 +18,9 @@ namespace Grafer2
 
         private List<Point> points;
         private double y;
-        private string[] relationBackup = Array.Empty<string>();
-        readonly private int[][] calculationOrderBackup = new int[2][];
-        private double calculationMinimumX, calculationMaximumX;
+        private string[] relationBackup = Array.Empty<string>(); // Záloha předpisu.
+        readonly private int[][] calculationOrderBackup = new int[2][]; // záloha výpočetního postupu.
+        private double calculationMinimumX, calculationMaximumX; // Výpočetní minimum a maximum.
 
         public Function(string relation, double minimumX, double maximumX, Canvas canvas)
         {
@@ -33,6 +33,7 @@ namespace Grafer2
             Canvas = canvas;
         }
 
+        //Výpočítání křivky.
         public void CalculatePoints()
         {
             PrepareForCalculation();
@@ -41,6 +42,7 @@ namespace Grafer2
             points = new List<Point>();
         }
 
+        //Výpoočet bodů.
         private void DoCalculation()
         {
             for (double x = calculationMinimumX; x <= calculationMaximumX; x += 0.01)
@@ -58,6 +60,7 @@ namespace Grafer2
 
         }
 
+        //Příprava pro výpoočet.
         private void PrepareForCalculation()
         {
             CalculationOrder = CalculationOrder.GetOrder(Relation, CalculationOrder);
@@ -65,6 +68,7 @@ namespace Grafer2
             SetCalculationXRange();
         }
 
+        //Omezení y pro případ velkých čísel.
         private double LimitY()
         {
             if (!double.IsInfinity(y))
@@ -83,6 +87,7 @@ namespace Grafer2
             return y;
         }
 
+        //Vykreslení funkce do plátna.
         public void Plot()
         {
             for (int i = 0; i < Curves.Count; i++)
@@ -91,12 +96,14 @@ namespace Grafer2
             }
         }
 
+        //Nastavení výpočetního rozsahu. Pokud by byl rozsah větší než plátno, omezí to jen na viditelnou plochu interně.
         private void SetCalculationXRange()
         {
             calculationMinimumX = (Math.Abs(MinimumX) > Canvas.Width / 200) ? -(Canvas.Width / 200) : MinimumX;
             calculationMaximumX = (MaximumX > Canvas.Width / 200) ? Canvas.Width / 200 : MaximumX;
         }
 
+        //Dosazení za x.
         private void SubstituteX(double x)
         {
             for (int i = 0; i < Relation.Count; i++)
@@ -106,6 +113,7 @@ namespace Grafer2
             }
         }
 
+        //Výpočet y pro x.
         private double CalculateYForX()
         {
             int orderProgression = 0;
@@ -121,6 +129,7 @@ namespace Grafer2
             return y;
         }
 
+        //Výpočet y.
         private double CalculateY(int orderProgression)
         {
             int index = CalculationOrder[0][orderProgression];
@@ -136,9 +145,10 @@ namespace Grafer2
             return y;
         }
 
+        //Uložení bodu.
         private void SavePoint(double x, double y)
         {
-            if (!double.IsNaN(y) && !double.IsInfinity(y))
+            if (!double.IsNaN(y) && !double.IsInfinity(y)) // Pokud bod není definovaný, vzniká mezera.
             {
                 Point point = new(x, y);
                 point = ConvertToCoordinatePoint(point);
@@ -146,7 +156,7 @@ namespace Grafer2
             }
             else if (points.Count > 0)
             {
-                if (points.Count > 1)
+                if (points.Count > 1) // Křivka minimálně ze 2 bodů.
                 {
                     SaveCurve(points);
                 }
@@ -155,6 +165,7 @@ namespace Grafer2
             }
         }
 
+        //Uložení křivky.
         private void SaveCurve(List<Point> points)
         {
             Polyline polyline = new()
@@ -173,6 +184,7 @@ namespace Grafer2
             Curves.Add(polyline);
         }
 
+        //Převedení bodu na bod do soustavy.
         private Point ConvertToCoordinatePoint(Point point)
         {
             point = new Point()
@@ -183,6 +195,7 @@ namespace Grafer2
             return point;
         }
 
+        //Operace mezi 2 členy v předpisu.
         private double Operation(int index)
         {
             switch (Relation[index])
@@ -217,6 +230,7 @@ namespace Grafer2
             return y;
         }
 
+        //Vytvoření zálohy pro výpočet.
         private void SetBackup()
         {
             relationBackup = Relation.ToArray();
@@ -224,6 +238,7 @@ namespace Grafer2
             calculationOrderBackup[1] = CalculationOrder[1].ToArray();
         }
 
+        //Načtení zálohy.
         private void GetBackup()
         {
             ResetRelationAndOrder();
@@ -234,6 +249,7 @@ namespace Grafer2
             CalculationOrder[1] = new List<int>(calculationOrderBackup[1]);
         }
 
+        //Vyčištění předpisu a výpočetního postupu.
         private void ResetRelationAndOrder()
         {
             Relation = new();
