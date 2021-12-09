@@ -9,5 +9,5 @@ Purpose of this journey is to recode my application **Grafer** which I did as Se
 ### IDE: 
 *Visual Studio Preview 2022*
 ### Started:
-*17 August 2022*
+*17 August 2021*
 
