@@ -34,6 +34,7 @@ namespace Grafer2
         private string[] localizationData = Array.Empty<string>(); // Pole pro lokalizaci prostředí.
 
         private readonly Brush defaultSelectionBrush = new SolidColorBrush(Color.FromRgb(0, 120, 215)); // Výchozí označovací barva.
+        private readonly Color defaultStatusColor = Color.FromRgb(125, 255, 99); // výchozí barva statusu.
 
         //Spuštení aplikce - jako load ve formsech.
         protected override void OnActivated(EventArgs e)
@@ -75,7 +76,7 @@ namespace Grafer2
                 DoProcess(); // 3. Získávání dat.
             }
 
-            Draw();
+            Draw(); // 4. Vykreslení funkce.
 
             onlyFunctionPlot = false;
         }
@@ -109,6 +110,7 @@ namespace Grafer2
         {
             gFunction = null;
             isXRangeValid = true;
+            SetStatus("OK", defaultStatusColor);
         }
 
         //Získání rozsahu x.
@@ -141,7 +143,7 @@ namespace Grafer2
                 isXRangeValid = IsXRangeValid();
             }
         }
-        
+
         //Zjištení zda je rozsah v pořádku.
         private bool IsXRangeInputValid()
         {
@@ -269,9 +271,16 @@ namespace Grafer2
         }
 
         //Oznámení chyby.
-        private static void NotifyError(string message)
+        private void NotifyError(string message)
         {
-            MessageBox.Show(message);
+            SetStatus(message, Colors.Red);
+        }
+
+        //Nastaví zprávu status a jeho barvu.
+        private void SetStatus(string message, Color color)
+        {
+            textBlockStatus.Text = $"Status: {message}";
+            textBlockStatus.Foreground = new SolidColorBrush(color);
         }
 
         //Ovládácí zkratky.
@@ -287,6 +296,7 @@ namespace Grafer2
             {
                 equationInput.Text = "";
                 equationInput.Focus();
+                Reset();
             }
         }
 
@@ -355,6 +365,7 @@ namespace Grafer2
         {
             language = (Language)languageSelect.SelectedItem;
             LocalizeUserInterface();
+            Start();
         }
 
         //Přizpůsobení prostředí velikosti aplikace.
