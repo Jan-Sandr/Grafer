@@ -1,17 +1,26 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 
 namespace Grafer2
 {
-    public class CalculationOrder : List<List<int>>
+    public class CalculationOrder
     {
         private readonly string[] mathCharacters = new string[] { "+-", "*/", "^", "", "()" };
 
-        //Získání výpočetního postupu na základě priorit operací a závorek.
-        public CalculationOrder GetOrder(Relation relation, CalculationOrder calculationOrder)
+        public int[] Indexes { get; private set; } = Array.Empty<int>();
+        public int[] Priorities { get; private set; } = Array.Empty<int>();
+
+        public CalculationOrder()
         {
+
+        }
+
+        //Získání výpočetního postupu na základě priorit operací a závorek.
+        public void Create(Relation relation)
+        {
+            SetOrderLength(relation);
+
             int additionalPriority = 0;  // pro závorku
+            int index = 0;
 
             for (int i = 0; i < relation.Count; i++)
             {
@@ -23,38 +32,59 @@ namespace Grafer2
                 }
                 else if (priority != -1)
                 {
-                    calculationOrder[0].Add(i);
-                    calculationOrder[1].Add(priority + additionalPriority);
+                    Indexes[index] = i;
+                    Priorities[index] = priority + additionalPriority;
+                    index++;
                 }
             }
-            calculationOrder = SortOrder(calculationOrder);
-            return calculationOrder;
+
+            SortOrder();
+        }
+
+        //Nastaví délku indexů a priority
+        private void SetOrderLength(Relation relation)
+        {
+            int length = GetCountOfOperations(relation);
+
+            Indexes = new int[length];
+            Priorities = new int[length];
+        }
+
+        //Získá délká pro indexy a priority
+        private int GetCountOfOperations(Relation relation)
+        {
+            int countOfOperations = 0;
+
+            for (int i = 0; i < relation.Count; i++)
+            {
+                int index = Array.FindIndex(mathCharacters, 0, 3, s => s.Contains(relation[i]));
+
+                if (index != -1)
+                {
+                    countOfOperations++;
+                }
+            }
+
+            return countOfOperations;
         }
 
         //Seřazení priority na základě jejich výše se zachováním pozice v předpisu.
-        private static CalculationOrder SortOrder(CalculationOrder calculationOrder)
+        private void SortOrder()
         {
-            int[] indexes = calculationOrder[0].ToArray();
-            int[] priorities = calculationOrder[1].ToArray();
+            Array.Sort(Priorities, Indexes);
+            Array.Reverse(Priorities);
+            Array.Reverse(Indexes);
 
-            Array.Sort(priorities, indexes);
-            Array.Reverse(indexes);
-            Array.Reverse(priorities);
-
-            indexes = SortIndexes(indexes, priorities);
-
-            calculationOrder[0] = indexes.ToList();
-            calculationOrder[1] = priorities.ToList();
-            return calculationOrder;
+            Indexes = SortIndexes();
         }
 
         //Když je více operací se stejnou prioritou za sebou, tak aby postup výpočtu šel z leva.
-        private static int[] SortIndexes(int[] indexes, int[] priorities)
+        private int[] SortIndexes()
         {
             int sameElementsCount = 1;
-            for (int i = 1; i < indexes.Length; i++)
+            for (int i = 1; i < Indexes.Length; i++)
             {
-                if (priorities[i] == priorities[i - 1])
+                if (Priorities[i] == Priorities[i - 1])
                 {
                     sameElementsCount++;
                 }
@@ -62,36 +92,36 @@ namespace Grafer2
                 {
                     if (sameElementsCount > 1)
                     {
-                        if (priorities[i - 1] != 2) // Výjimka pro mocninua a odmocninu u těch se jde nejdříve zprava. 
+                        if (Priorities[i - 1] != 2) // Výjimka pro mocninua a odmocninu u těch se jde nejdříve zprava. 
                         {
-                            Array.Sort(indexes, i - sameElementsCount, sameElementsCount);
+                            Array.Sort(Indexes, i - sameElementsCount, sameElementsCount);
                         }
                     }
 
                     sameElementsCount = 1;
                 }
 
-                if (i == indexes.Length - 1)
+                if (i == Indexes.Length - 1)
                 {
-                    if (priorities[i] != 2)
+                    if (Priorities[i] != 2)
                     {
-                        Array.Sort(indexes, (i + 1) - sameElementsCount, sameElementsCount);
+                        Array.Sort(Indexes, (i + 1) - sameElementsCount, sameElementsCount);
                     }
                 }
 
             }
 
-            return indexes;
+            return Indexes;
         }
 
         //Posunutí indexů priority na základě počtu odebraných elemetnů z předpisu.
-        public static void ShiftPosition(CalculationOrder calculationOrder, int removeCount, int index)
+        public void ShiftPosition(int removeCount, int index)
         {
-            for (int i = 0; i < calculationOrder[0].Count; i++)
+            for (int i = 0; i < Indexes.Length; i++)
             {
-                if (calculationOrder[0][index] < calculationOrder[0][i])
+                if (Indexes[index] < Indexes[i])
                 {
-                    calculationOrder[0][i] -= removeCount;
+                    Indexes[i] -= removeCount;
                 }
             }
         }

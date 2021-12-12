@@ -19,7 +19,7 @@ namespace Grafer2
         private List<Point> points;
         private double y;
         private string[] relationBackup = Array.Empty<string>(); // Záloha předpisu.
-        readonly private int[][] calculationOrderBackup = new int[2][]; // záloha výpočetního postupu.
+        private int[] calculationOrderIndexesBackup = Array.Empty<int>(); // záloha výpočetního postupu.
         private double calculationMinimumX, calculationMaximumX; // Výpočetní minimum a maximum.
 
         public Function(string relation, double minimumX, double maximumX, Canvas canvas)
@@ -27,7 +27,7 @@ namespace Grafer2
             Relation = new(relation);
             MinimumX = minimumX;
             MaximumX = maximumX;
-            CalculationOrder = new CalculationOrder() { new List<int>(), new List<int>() };
+            CalculationOrder = new();
             Curves = new List<Polyline>();
             points = new List<Point>();
             Canvas = canvas;
@@ -63,7 +63,7 @@ namespace Grafer2
         //Příprava pro výpoočet.
         private void PrepareForCalculation()
         {
-            CalculationOrder = CalculationOrder.GetOrder(Relation, CalculationOrder);
+            CalculationOrder.Create(Relation);
             SetBackup();
             SetCalculationXRange();
         }
@@ -132,13 +132,13 @@ namespace Grafer2
         //Výpočet y.
         private double CalculateY(int orderProgression)
         {
-            int index = CalculationOrder[0][orderProgression];
+            int index = CalculationOrder.Indexes[orderProgression];
 
             Relation[index] = Operation(index).ToString();
 
             Relation.RemoveNeighbors(index);
 
-            CalculationOrder.ShiftPosition(CalculationOrder, Relation.RemovedElementsCount, orderProgression);
+            CalculationOrder.ShiftPosition(Relation.RemovedElementsCount, orderProgression);
 
             Relation.RemovedElementsCount = 0;
 
@@ -234,28 +234,16 @@ namespace Grafer2
         private void SetBackup()
         {
             relationBackup = Relation.ToArray();
-            calculationOrderBackup[0] = CalculationOrder[0].ToArray();
-            calculationOrderBackup[1] = CalculationOrder[1].ToArray();
+            calculationOrderIndexesBackup = new int[CalculationOrder.Indexes.Length];
+            CalculationOrder.Indexes.CopyTo(calculationOrderIndexesBackup, 0);
         }
 
         //Načtení zálohy.
         private void GetBackup()
         {
-            ResetRelationAndOrder();
-
-            Relation.AddRange(relationBackup);
-
-            CalculationOrder[0] = new List<int>(calculationOrderBackup[0]);
-            CalculationOrder[1] = new List<int>(calculationOrderBackup[1]);
-        }
-
-        //Vyčištění předpisu a výpočetního postupu.
-        private void ResetRelationAndOrder()
-        {
             Relation = new();
-            CalculationOrder = new();
-            CalculationOrder.Add(new List<int>());
-            CalculationOrder.Add(new List<int>());
+            Relation.AddRange(relationBackup);
+            calculationOrderIndexesBackup.CopyTo(CalculationOrder.Indexes, 0);
         }
     }
 }
