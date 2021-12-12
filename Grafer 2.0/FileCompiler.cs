@@ -222,7 +222,7 @@ namespace Grafer2
                 WrittenSuccesfuly = false;
             }
         }
-        
+
         //Porovnání zda má každý řádek stejný počet oddělovacích znaků.
         private bool EqualSplittingCharCount()
         {

@@ -141,7 +141,7 @@ namespace Grafer2
                 isXRangeValid = IsXRangeValid();
             }
         }
-        
+
         //Zjištení zda je rozsah v pořádku.
         private bool IsXRangeInputValid()
         {
