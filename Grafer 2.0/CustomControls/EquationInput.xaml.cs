@@ -22,7 +22,6 @@ namespace Grafer2.CustomControls
         {
             get
             {
-                Text = Text.Replace(" ", "");
                 bool isValid = EquationCheck.IsEquationValid(Text);
 
                 if (!isValid)
