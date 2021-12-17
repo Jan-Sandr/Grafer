@@ -43,7 +43,7 @@ namespace Grafer2.CustomControls
         //Jestli je prázdný.
         private bool IsRangeEmpty()
         {
-            InvalidSection = Text == "" ? new(0, 0, 3) : new(0, 0, -1);
+            InvalidSection = Text == "" ? (0, 0, 3) : (0, 0, -1);
 
             return InvalidSection.MessageID != -1;
         }
@@ -53,12 +53,12 @@ namespace Grafer2.CustomControls
         {
             if (Text[0] == ',')
             {
-                InvalidSection = new(0, 1, 4);
+                InvalidSection = (0, 1, 4);
             }
 
             if (Text[^1] == '-' || Text[^1] == ',')
             {
-                InvalidSection = new(Text.Length - 1, 1, 5);
+                InvalidSection = (Text.Length - 1, 1, 5);
             }
 
             return InvalidSection.MessageID == -1;
@@ -69,7 +69,7 @@ namespace Grafer2.CustomControls
         {
             if (GetCountOfChars(Text, '-') > 1 || GetCountOfChars(Text, ',') > 1)
             {
-                InvalidSection = new(0, 0, 6);
+                InvalidSection = (0, 0, 6);
             }
 
             return InvalidSection.MessageID != -1;
@@ -93,7 +93,7 @@ namespace Grafer2.CustomControls
         {
             if (Text.Contains("-,") || Text.Contains(",-"))
             {
-                InvalidSection = new(0, 0, 7);
+                InvalidSection = (0, 0, 7);
             }
             return InvalidSection.MessageID != -1;
         }

@@ -111,7 +111,7 @@ namespace Grafer2.CustomControls
         //Vykreslení mřížky pro určitý směr.
         private void DrawGridLines(Direction direction, double size)
         {
-            SolidColorBrush brush = new(Color.FromArgb(75, 0, 0, 0));
+            SolidColorBrush brush = new SolidColorBrush(Color.FromArgb(75, 0, 0, 0));
             for (int i = 100; i < size / 2; i += 100)
             {
                 switch (direction)
@@ -147,7 +147,7 @@ namespace Grafer2.CustomControls
         //Vytvoření nové úsečky.
         private Line NewLine(Direction direction, double lineX = 0, double lineY = 0, SolidColorBrush? brushes = null, double strokeThickness = 1)
         {
-            Line line = new()
+            Line line = new Line()
             {
                 X1 = (direction == Direction.X) ? lineX : 0,
                 Y1 = (direction == Direction.X) ? 0 : lineY,

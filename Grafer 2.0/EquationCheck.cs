@@ -11,7 +11,7 @@ namespace Grafer2
         //Kontrola rovnice
         public static bool IsEquationValid(string equation)
         {
-            InvalidSection = new(0, 0, -1);
+            InvalidSection = (0, 0, -1);
 
             elementsIndex = FillElementsIndex(equation);
 
@@ -53,13 +53,13 @@ namespace Grafer2
             if (!char.IsDigit(equation[elementsIndex[0]]) && equation[elementsIndex[0]] != '-' && equation[elementsIndex[0]] != 'x' && equation[elementsIndex[0]] != '(')
             {
                 areEdgesValid = false;
-                InvalidSection = new(elementsIndex[0], 1, 4);
+                InvalidSection = (elementsIndex[0], 1, 4);
             }
 
             if (!char.IsDigit(equation[elementsIndex[^1]]) && equation[elementsIndex[^1]] != 'x' && equation[elementsIndex[^1]] != ')')
             {
                 areEdgesValid = false;
-                InvalidSection = new(elementsIndex[^1], 1, 5);
+                InvalidSection = (elementsIndex[^1], 1, 5);
             }
 
             return areEdgesValid;
@@ -75,7 +75,7 @@ namespace Grafer2
                 if (mathOperations.Contains(equation[elementsIndex[i]]) && mathOperations.Contains(equation[elementsIndex[i + 1]]))
                 {
                     areTwoOperationsInRow = true;
-                    InvalidSection = new(elementsIndex[i], elementsIndex[i + 1] - elementsIndex[i] + 1, 8);
+                    InvalidSection = (elementsIndex[i], elementsIndex[i + 1] - elementsIndex[i] + 1, 8);
                     break;
                 }
             }
@@ -109,7 +109,7 @@ namespace Grafer2
                     {
                         if (mathOperations.Contains(right) && right != '-')
                         {
-                            InvalidSection = new(leftIndex, compareLength, 13);
+                            InvalidSection = (leftIndex, compareLength, 13);
                         }
                         break;
                     }
@@ -124,7 +124,7 @@ namespace Grafer2
                         {
                             if (right != '(')
                             {
-                                InvalidSection = new(leftIndex, compareLength, 9);
+                                InvalidSection = (leftIndex, compareLength, 9);
                             }
                             break;
                         }
@@ -132,7 +132,7 @@ namespace Grafer2
                         {
                             if (right == ')')
                             {
-                                InvalidSection = new(leftIndex, compareLength, 14);
+                                InvalidSection = (leftIndex, compareLength, 14);
                             }
                             break;
                         }
@@ -162,14 +162,14 @@ namespace Grafer2
 
                 if (countOfBrackets == -1)
                 {
-                    InvalidSection = new(i, 1, 10);
+                    InvalidSection = (i, 1, 10);
                     break;
                 }
             }
 
             if (countOfBrackets > 0)
             {
-                InvalidSection = new(openingBracketIndex, 1, 11);
+                InvalidSection = (openingBracketIndex, 1, 11);
             }
 
             return countOfBrackets == 0;
@@ -185,7 +185,7 @@ namespace Grafer2
                 if (equation[elementsIndex[i]] == '(' && equation[elementsIndex[i + 1]] == ')')
                 {
                     containsEmptyBrackets = true;
-                    InvalidSection = new(elementsIndex[i], elementsIndex[i + 1] - elementsIndex[i] + 1, 12);
+                    InvalidSection = (elementsIndex[i], elementsIndex[i + 1] - elementsIndex[i] + 1, 12);
                     break;
                 }
             }

@@ -342,7 +342,7 @@ namespace Grafer2
         //Čtení souboru.
         private static string[] ReadFile(string filePath, bool haveHead)
         {
-            FileCompiler fileCompiler = new(filePath, haveHead);
+            FileCompiler fileCompiler = new FileCompiler(filePath, haveHead);
 
             fileCompiler.Read();
 

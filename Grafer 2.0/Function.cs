@@ -24,10 +24,10 @@ namespace Grafer2
 
         public Function(string relation, double minimumX, double maximumX, Canvas canvas)
         {
-            Relation = new(relation);
+            Relation = new Relation(relation);
             MinimumX = minimumX;
             MaximumX = maximumX;
-            CalculationOrder = new();
+            CalculationOrder = new CalculationOrder();
             Curves = new List<Polyline>();
             points = new List<Point>();
             Canvas = canvas;
@@ -150,7 +150,7 @@ namespace Grafer2
         {
             if (!double.IsNaN(y) && !double.IsInfinity(y)) // Pokud bod není definovaný, vzniká mezera.
             {
-                Point point = new(x, y);
+                Point point = new Point(x, y);
                 point = ConvertToCoordinatePoint(point);
                 points.Add(point);
             }
@@ -168,7 +168,7 @@ namespace Grafer2
         //Uložení křivky.
         private void SaveCurve(List<Point> points)
         {
-            Polyline polyline = new()
+            Polyline polyline = new Polyline()
             {
                 Stroke = Brushes.Black,
                 StrokeThickness = 2
@@ -241,7 +241,7 @@ namespace Grafer2
         //Načtení zálohy.
         private void GetBackup()
         {
-            Relation = new();
+            Relation = new Relation();
             Relation.AddRange(relationBackup);
             calculationOrderIndexesBackup.CopyTo(CalculationOrder.Indexes, 0);
         }
