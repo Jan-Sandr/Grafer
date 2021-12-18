@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Grafer2.CustomControls
+namespace Grafer.CustomControls
 {
     /// <summary>
     /// Interaction logic for RangeInput.xaml

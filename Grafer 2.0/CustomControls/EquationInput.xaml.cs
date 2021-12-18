@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace Grafer2.CustomControls
+namespace Grafer.CustomControls
 {
     /// <summary>
     /// Interaction logic for EquationInput.xaml
@@ -58,6 +58,5 @@ namespace Grafer2.CustomControls
                 SelectionStart = Text.Length - 1;
             }
         }
-
     }
 }
