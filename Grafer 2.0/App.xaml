@@ -1,7 +1,7 @@
-﻿<Application x:Class="Grafer2.App"
+﻿<Application x:Class="Grafer.App"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Grafer2"
+             xmlns:local="clr-namespace:Grafer"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
          

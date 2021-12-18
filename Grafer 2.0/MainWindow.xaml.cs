@@ -4,7 +4,7 @@ using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
 
-namespace Grafer2
+namespace Grafer
 {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
@@ -303,18 +303,7 @@ namespace Grafer2
         //Posunutí tlačítka vykreslit.
         private void SetButtonDrawMargin(object sender, KeyEventArgs e)
         {
-            int marginTopMultiply;
 
-            if (e.Key == Key.Back)
-            {
-                marginTopMultiply = Convert.ToInt16(Math.Floor((double)((equationInput.Text.Length - 2) / 14)));
-            }
-            else
-            {
-                marginTopMultiply = Convert.ToInt16(Math.Floor((double)((equationInput.Text.Length) / 14)));
-            }
-
-            buttonDraw.Margin = new Thickness(64, 206 + (26 * marginTopMultiply), 0, 0);
         }
 
         //První vykreslení plátna po načtení aplikace.
@@ -395,6 +384,14 @@ namespace Grafer2
             {
                 coordinateSystem.RemoveFunctions();
             }
+        }
+
+        //Posunutí tlačítka vykreslit.
+        private void EquationInputSizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            double marginTopMultiply = equationInput.LineCount - 1;
+
+            buttonDraw.Margin = new Thickness(64, 206 + (26 * marginTopMultiply), 0, 0);
         }
     }
 }

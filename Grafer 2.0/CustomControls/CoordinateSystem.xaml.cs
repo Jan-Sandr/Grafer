@@ -2,7 +2,7 @@
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace Grafer2.CustomControls
+namespace Grafer.CustomControls
 {
     /// <summary>
     /// Interaction logic for CoordinateSystem.xaml

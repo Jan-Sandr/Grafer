@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace Grafer2
+namespace Grafer
 {
     /// <summary>
     /// Interaction logic for App.xaml

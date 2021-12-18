@@ -1,6 +1,6 @@
-﻿using System.Linq;
+﻿using Grafer.ExtensionMethods;
 
-namespace Grafer2
+namespace Grafer
 {
     public static class EquationCheck
     {
@@ -44,8 +44,6 @@ namespace Grafer2
             return charactersIndex;
         }
 
-        public static readonly char[] mathOperations = new char[6] { '+', '-', '*', '/', '^', '√' };
-
         //Zda předpis začíná a končí validním znakem.
         private static bool AreEdgesValid(string equation)
         {
@@ -73,7 +71,7 @@ namespace Grafer2
 
             for (int i = 0; i < elementsIndex.Length; i++)
             {
-                if (mathOperations.Contains(equation[elementsIndex[i]]) && equation[elementsIndex[i]] != '√' && mathOperations.Contains(equation[elementsIndex[i + 1]]) && equation[elementsIndex[i + 1]] != '√')
+                if (equation[elementsIndex[i]].IsMathOperation(0, 5) && equation[elementsIndex[i + 1]].IsMathOperation(0, 5))
                 {
                     areTwoOperationsInRow = true;
                     InvalidSection = (elementsIndex[i], elementsIndex[i + 1] - elementsIndex[i] + 1, 8);
@@ -108,7 +106,7 @@ namespace Grafer2
             {
                 case '(':
                     {
-                        if (mathOperations.Contains(right) && right != '-' && right != '√')
+                        if (right.IsMathOperation() && right != '-' && right != '√')
                         {
                             InvalidSection = (leftIndex, compareLength, 13);
                         }
@@ -117,7 +115,7 @@ namespace Grafer2
 
             }
 
-            if (mathOperations.Contains(left))
+            if (left.IsMathOperation())
             {
                 switch (left)
                 {

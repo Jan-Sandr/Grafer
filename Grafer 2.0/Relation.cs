@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using Grafer.ExtensionMethods;
+using System.Collections.Generic;
 using System.Linq;
 
-namespace Grafer2
+namespace Grafer
 {
     public class Relation : List<string>
     {
@@ -118,7 +119,7 @@ namespace Grafer2
         {
             for (int i = 1; i < Count; i++)
             {
-                if (this[i] == "√" && (EquationCheck.mathOperations.Contains(char.Parse(this[i - 1])) || this[i - 1] == "("))
+                if (this[i] == "√" && (this[i - 1].IsMathOperation() || this[i - 1] == "("))
                 {
                     Insert(i, "2");
                     i++;

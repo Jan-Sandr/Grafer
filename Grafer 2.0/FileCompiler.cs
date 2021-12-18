@@ -5,7 +5,7 @@ using System.Text;
 
 #pragma warning disable CS8602 // Dereference of a possibly null reference.
 
-namespace Grafer2
+namespace Grafer
 {
     public class FileCompiler
     {

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Grafer2
+namespace Grafer
 {
     public class CalculationOrder
     {
