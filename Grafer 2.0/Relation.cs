@@ -25,13 +25,17 @@ namespace Grafer2
 
             if (Count > 1)
             {
+                InsertAtBeginning();
+
                 InsertMultiplication();
+
+                InsertRootIndex();
+
+                InsertZero();
 
                 ConnectNumbers();
 
                 RemoveUnnecessaryBrackets();
-
-                InsertZero();
             }
         }
 
@@ -44,14 +48,22 @@ namespace Grafer2
             }
         }
 
-        //Vložení nulu. Když předpis začíná minusem a nebo (-.
-        private void InsertZero()
+        private void InsertAtBeginning()
         {
             if (this[0] == "-")
             {
                 Insert(0, "0");
             }
 
+            if (this[0] == "√")
+            {
+                Insert(0, "2");
+            }
+        }
+
+        //Vložení nulu. Když předpis začíná minusem a nebo (-.
+        private void InsertZero()
+        {
             for (int i = 1; i < Count; i++)
             {
                 if (this[i] == "-" && this[i - 1] == "(")
@@ -97,6 +109,19 @@ namespace Grafer2
                     this[i - 1] += this[i];
                     RemoveAt(i);
                     i--;
+                }
+            }
+        }
+
+        //Pokud uživatel napsal jenom odmocninu převede to na 2. odmocninu, protože ta se dá napsat bez indexu.
+        private void InsertRootIndex()
+        {
+            for (int i = 1; i < Count; i++)
+            {
+                if (this[i] == "√" && (EquationCheck.mathOperations.Contains(char.Parse(this[i - 1])) || this[i - 1] == "("))
+                {
+                    Insert(i, "2");
+                    i++;
                 }
             }
         }

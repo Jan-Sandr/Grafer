@@ -225,9 +225,20 @@ namespace Grafer2
                         y = Math.Pow(double.Parse(Relation[index - 1]), double.Parse(Relation[index + 1]));
                         break;
                     }
+                case "√":
+                    {
+                        y = Root(double.Parse(Relation[index + 1]), 1 / double.Parse(Relation[index - 1]));
+                        break;
+                    }
             }
 
             return y;
+        }
+
+        //Odmocnění
+        private double Root(double number, double index)
+        {
+            return (index > 0 && !double.IsInfinity(index)) ? Math.Pow(number, index) : double.NaN;
         }
 
         //Vytvoření zálohy pro výpočet.

@@ -43,7 +43,7 @@ namespace Grafer2.CustomControls
         //Omezení možných znaků.
         private static void RelationInputCheck(TextCompositionEventArgs e)
         {
-            if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( ) ^]") && e.Text != "-")
+            if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( ) ^ √]") && e.Text != "-")
             {
                 e.Handled = true;
             }
