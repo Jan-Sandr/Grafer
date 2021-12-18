@@ -17,10 +17,11 @@
         <control:CoordinateSystem x:Name="coordinateSystem" Margin="384,0,0,0" Background="#FFF1EDED" Height="700" Width="700" Loaded="CoordinateSystemLoaded" ClipToBounds="True"/>
         <control:RangeInput x:Name="minimumXInput" HorizontalAlignment="Left" Margin="62,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="19" Uid="Minimum" SelectionChanged="OnSelectionChanged"/>
         <control:RangeInput x:Name="maximumXInput" HorizontalAlignment="Left" Margin="174,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="19" Uid="Maximum" SelectionChanged="OnSelectionChanged"/>
-        <Button x:Name="buttonExponent" Content="^" HorizontalAlignment="Left" Margin="17,258,0,0" VerticalAlignment="Top" Width="28" FontSize="20" Click="InsertionButtonClick"/>
+        <Button x:Name="buttonExponent" Content="^" HorizontalAlignment="Left" Margin="17,258,0,0" VerticalAlignment="Top" Width="28" FontSize="20" Click="InsertionButtonClick" Uid="^"/>
+        <Button x:Name="buttonRoot" Content="√" HorizontalAlignment="Left" Margin="17,294,0,0" VerticalAlignment="Top" Width="28" FontSize="20" Click="InsertionButtonClick" Uid="√"/>
         <ComboBox x:Name="languageSelect" HorizontalAlignment="Left" Margin="91,10,0,0" VerticalAlignment="Top" Width="120" IsReadOnly="True" SelectedIndex="0" SelectionChanged="LanguageSelectionChange"/>
         <Label x:Name="labelLanguage" Content="Language:" HorizontalAlignment="Left" Margin="17,8,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="labelStatus" HorizontalAlignment="Left" Margin="17,313,0,0" VerticalAlignment="Top" RenderTransformOrigin="-6.559,3.773" FontSize="25" FontWeight="Bold" FontFamily="Segoe UI" Foreground="#FF7DFF63" Width="364" Height="Auto">
+        <Label x:Name="labelStatus" HorizontalAlignment="Left" Margin="17,346,0,0" VerticalAlignment="Top" RenderTransformOrigin="-6.559,3.773" FontSize="25" FontWeight="Bold" FontFamily="Segoe UI" Foreground="#FF7DFF63" Width="364" Height="Auto">
             <TextBlock x:Name="textBlockStatus" TextWrapping="Wrap">
                  Status: OK
             </TextBlock>

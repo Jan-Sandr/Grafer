@@ -19,7 +19,8 @@ namespace Grafer2
                                              AreEdgesValid(equation) &&
                                     !AreTwoOperationsInRow(equation) &&
                                              CheckBrackets(equation) &&
-                                             !CheckMissing(equation)
+                                             !CheckMissing(equation) &&
+                                          IsRootIndexValid(equation)
                                     );
 
             return isEquationValid;
@@ -43,14 +44,14 @@ namespace Grafer2
             return charactersIndex;
         }
 
-        private static readonly char[] mathOperations = new char[5] { '+', '-', '*', '/', '^' };
+        public static readonly char[] mathOperations = new char[6] { '+', '-', '*', '/', '^', '√' };
 
         //Zda předpis začíná a končí validním znakem.
         private static bool AreEdgesValid(string equation)
         {
             bool areEdgesValid = true;
 
-            if (!char.IsDigit(equation[elementsIndex[0]]) && equation[elementsIndex[0]] != '-' && equation[elementsIndex[0]] != 'x' && equation[elementsIndex[0]] != '(')
+            if (!char.IsDigit(equation[elementsIndex[0]]) && equation[elementsIndex[0]] != '-' && equation[elementsIndex[0]] != 'x' && equation[elementsIndex[0]] != '(' && equation[elementsIndex[0]] != '√')
             {
                 areEdgesValid = false;
                 InvalidSection = (elementsIndex[0], 1, 4);
@@ -72,7 +73,7 @@ namespace Grafer2
 
             for (int i = 0; i < elementsIndex.Length; i++)
             {
-                if (mathOperations.Contains(equation[elementsIndex[i]]) && mathOperations.Contains(equation[elementsIndex[i + 1]]))
+                if (mathOperations.Contains(equation[elementsIndex[i]]) && equation[elementsIndex[i]] != '√' && mathOperations.Contains(equation[elementsIndex[i + 1]]) && equation[elementsIndex[i + 1]] != '√')
                 {
                     areTwoOperationsInRow = true;
                     InvalidSection = (elementsIndex[i], elementsIndex[i + 1] - elementsIndex[i] + 1, 8);
@@ -107,7 +108,7 @@ namespace Grafer2
             {
                 case '(':
                     {
-                        if (mathOperations.Contains(right) && right != '-')
+                        if (mathOperations.Contains(right) && right != '-' && right != '√')
                         {
                             InvalidSection = (leftIndex, compareLength, 13);
                         }
@@ -121,6 +122,14 @@ namespace Grafer2
                 switch (left)
                 {
                     case '^':
+                        {
+                            if (right != '(')
+                            {
+                                InvalidSection = (leftIndex, compareLength, 9);
+                            }
+                            break;
+                        }
+                    case '√':
                         {
                             if (right != '(')
                             {
@@ -191,6 +200,23 @@ namespace Grafer2
             }
 
             return containsEmptyBrackets;
+        }
+
+        private static bool IsRootIndexValid(string equation)
+        {
+            bool isRootIndexValid = true;
+
+            for (int i = 1; i < elementsIndex.Length; i++)
+            {
+                if (equation[elementsIndex[i]] == '√' && equation[elementsIndex[i - 1]] == '0')
+                {
+                    isRootIndexValid = false;
+                    InvalidSection = (elementsIndex[i - 1], elementsIndex[i] - elementsIndex[i - 1], 15);
+                    break;
+                }
+            }
+
+            return isRootIndexValid;
         }
     }
 }

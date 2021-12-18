@@ -330,13 +330,10 @@ namespace Grafer2
 
             Button button = (Button)sender;
 
-            if (button.Name == "buttonExponent")
-            {
-                equationInput.Text = equationInput.Text.Insert(inputCursorIndex, "^()");
-            }
+            equationInput.Text = equationInput.Text.Insert(inputCursorIndex, button.Uid + "()");
 
             equationInput.Focus();
-            equationInput.SelectionStart = inputCursorIndex + 2;
+            equationInput.SelectionStart = inputCursorIndex + button.Uid.Length + 1;
         }
 
         //Čtení souboru.
