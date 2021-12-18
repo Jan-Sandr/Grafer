@@ -1,7 +1,7 @@
 # Grafer
 *Future is bright*
 ## About
-Purpose of this journey is to recode my application **Grafer-Old** which I did as Seminar work in school.
+Purpose of this journey is to recode my application **Grafer-Old (in original Grafer)** which I did as Seminar work in school.
 ### Language:
 *C#*
 ### Framework:
