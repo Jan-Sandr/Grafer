@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31606.5
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grafer", "Grafer 2.0\Grafer.csproj", "{29BE8412-C463-4482-A8E2-AD8F99ED7C13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grafer", "Grafer\Grafer.csproj", "{29BE8412-C463-4482-A8E2-AD8F99ED7C13}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External classes", "External classes", "{F28EB56C-2D0F-492B-B1F5-B54CE6D0277D}"
 	ProjectSection(SolutionItems) = preProject
