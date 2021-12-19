@@ -8,6 +8,7 @@ namespace Grafer
     {
         public int RemovedElementsCount { get; set; }
 
+        //Prázdný konstruktor.
         public Relation()
         {
 
@@ -20,24 +21,31 @@ namespace Grafer
             Adjust();
         }
 
+        //Úprava předpisu pro výpočet.
         private void Adjust()
         {
             RemoveAll(s => s == " ");
 
             if (Count > 1)
             {
-                InsertAtBeginning();
-
-                InsertMultiplication();
-
-                InsertRootIndex();
-
-                InsertZero();
+                Insertions();
 
                 ConnectNumbers();
 
                 RemoveUnnecessaryBrackets();
             }
+        }
+
+        //Vkládání znaků dle potřeby pro standard.
+        private void Insertions()
+        {
+            InsertAtBeginning();
+
+            InsertMultiplication();
+
+            InsertRootIndex();
+
+            InsertZero();
         }
 
         //Odebrání zbytečných závorek x + (2).

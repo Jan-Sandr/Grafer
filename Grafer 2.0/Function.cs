@@ -47,17 +47,31 @@ namespace Grafer
         {
             for (double x = calculationMinimumX; x <= calculationMaximumX; x += 0.01)
             {
-                x = Math.Round(x, 2);
-
                 GetBackup();
 
-                SubstituteX(x);
+                SetXInRelation(x);
 
-                y = (Relation.Count > 1) ? CalculateYForX() : double.Parse(Relation[0]);
+                ComputeY();
 
                 SavePoint(x, y);
             }
 
+        }
+
+        //Nastevní aktuální hodnoty x v předpisu.
+        private void SetXInRelation(double x)
+        {
+            x = Math.Round(x, 2);
+
+            SubstituteX(x);
+        }
+
+        //Vypočet y.
+        private void ComputeY()
+        {
+            y = 0;
+
+            y = (Relation.Count > 1) ? CalculateYForX() : double.Parse(Relation[0]);
         }
 
         //Příprava pro výpoočet.
@@ -118,9 +132,9 @@ namespace Grafer
         {
             int orderProgression = 0;
 
-            while (Relation.Count > 1)
+            while (Relation.Count > 1 && !double.IsNaN(y))
             {
-                y = CalculateY(orderProgression);
+                y = CalculateYValue(orderProgression);
                 orderProgression++;
             }
 
@@ -129,8 +143,8 @@ namespace Grafer
             return y;
         }
 
-        //Výpočet y.
-        private double CalculateY(int orderProgression)
+        //Výpočet hodnoty y.
+        private double CalculateYValue(int orderProgression)
         {
             int index = CalculationOrder.Indexes[orderProgression];
 
