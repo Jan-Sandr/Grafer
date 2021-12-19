@@ -1,4 +1,5 @@
 ﻿using Grafer.ExtensionMethods;
+using System.Linq;
 
 namespace Grafer
 {
@@ -7,6 +8,10 @@ namespace Grafer
         public static (int SelectionStart, int SelectionLength, int MessageID) InvalidSection { get; private set; } = (0, 0, -1);
 
         private static int[] elementsIndex = System.Array.Empty<int>();
+
+        private readonly static char[] allowedBeginningChars = new char[4] { 'x', '-', '(', '√' }; // Povolené znaky na začátku předpisu
+
+        private readonly static char[] allowedEndeningChars = new char[2] { 'x', ')' }; // Povolené znaky na konci předpisu
 
         //Kontrola rovnice
         public static bool IsEquationValid(string equation)
@@ -49,13 +54,13 @@ namespace Grafer
         {
             bool areEdgesValid = true;
 
-            if (!char.IsDigit(equation[elementsIndex[0]]) && equation[elementsIndex[0]] != '-' && equation[elementsIndex[0]] != 'x' && equation[elementsIndex[0]] != '(' && equation[elementsIndex[0]] != '√')
+            if (!char.IsDigit(equation[elementsIndex[0]]) && !allowedBeginningChars.Contains(equation[elementsIndex[0]]))
             {
                 areEdgesValid = false;
                 InvalidSection = (elementsIndex[0], 1, 4);
             }
 
-            if (!char.IsDigit(equation[elementsIndex[^1]]) && equation[elementsIndex[^1]] != 'x' && equation[elementsIndex[^1]] != ')')
+            if (!char.IsDigit(equation[elementsIndex[^1]]) && !allowedEndeningChars.Contains(equation[elementsIndex[^1]]))
             {
                 areEdgesValid = false;
                 InvalidSection = (elementsIndex[^1], 1, 5);
