@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Grafer.CustomControls;
+using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -14,7 +14,7 @@ namespace Grafer
         public double MaximumX { get; set; }
         public CalculationOrder CalculationOrder { get; set; }
         public List<Polyline> Curves { get; set; }
-        public Canvas Canvas { get; }
+        public CoordinateSystem CoordinateSystem { get; }
 
         private List<Point> points;
         private double y;
@@ -22,7 +22,7 @@ namespace Grafer
         private int[] calculationOrderIndexesBackup = Array.Empty<int>(); // záloha výpočetního postupu.
         private double calculationMinimumX, calculationMaximumX; // Výpočetní minimum a maximum.
 
-        public Function(string relation, double minimumX, double maximumX, Canvas canvas)
+        public Function(string relation, double minimumX, double maximumX, CoordinateSystem coordinateSystem)
         {
             Relation = new Relation(relation);
             MinimumX = minimumX;
@@ -30,7 +30,7 @@ namespace Grafer
             CalculationOrder = new CalculationOrder();
             Curves = new List<Polyline>();
             points = new List<Point>();
-            Canvas = canvas;
+            CoordinateSystem = coordinateSystem;
         }
 
         //Výpočítání křivky.
@@ -49,21 +49,22 @@ namespace Grafer
             {
                 GetBackup();
 
-                SetXInRelation(x);
+                x = SetX(x);
 
                 ComputeY();
 
                 SavePoint(x, y);
             }
-
         }
 
         //Nastevní aktuální hodnoty x v předpisu.
-        private void SetXInRelation(double x)
+        private double SetX(double x)
         {
             x = Math.Round(x, 2);
 
             SubstituteX(x);
+
+            return x;
         }
 
         //Vypočet y.
@@ -106,15 +107,15 @@ namespace Grafer
         {
             for (int i = 0; i < Curves.Count; i++)
             {
-                Canvas.Children.Add(Curves[i]);
+                CoordinateSystem.Children.Add(Curves[i]);
             }
         }
 
         //Nastavení výpočetního rozsahu. Pokud by byl rozsah větší než plátno, omezí to jen na viditelnou plochu interně.
         private void SetCalculationXRange()
         {
-            calculationMinimumX = (Math.Abs(MinimumX) > Canvas.Width / 200) ? -(Canvas.Width / 200) : MinimumX;
-            calculationMaximumX = (MaximumX > Canvas.Width / 200) ? Canvas.Width / 200 : MaximumX;
+            calculationMinimumX = (Math.Abs(MinimumX) > CoordinateSystem.NumberRange) ? -CoordinateSystem.NumberRange : MinimumX;
+            calculationMaximumX = (MaximumX > CoordinateSystem.NumberRange) ? CoordinateSystem.NumberRange : MaximumX;
         }
 
         //Dosazení za x.
@@ -203,8 +204,8 @@ namespace Grafer
         {
             point = new Point()
             {
-                X = Math.Round(Canvas.Width / 2 + point.X * 100, 2),
-                Y = (-y * 100) + Canvas.Height / 2
+                X = CoordinateSystem.Width / 2 + (point.X * CoordinateSystem.Zoom * 100),
+                Y = (-y * CoordinateSystem.Zoom * 100 ) + CoordinateSystem.Height / 2
             };
             return point;
         }

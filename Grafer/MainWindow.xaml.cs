@@ -14,6 +14,15 @@ namespace Grafer
         public MainWindow()
         {
             InitializeComponent();
+            this.coordinateSystem.MouseWheel += CoordinateSystemMouseWheel;
+        }
+
+        private void CoordinateSystemMouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            changedByScrool = true;
+            sliderZoomLevel.Value = coordinateSystem.ZoomLevel;
+            changedByScrool = false;
+            Start();
         }
 
         private new enum Language
@@ -27,7 +36,7 @@ namespace Grafer
         private double gMinimumX;
         private double gMaximumX;
         private bool isXRangeValid;
-        private bool onlyFunctionPlot;
+        private bool changedByScrool;
 
         private string[] messages = Array.Empty<string>(); // Pole pro chybové hlášky.
 
@@ -62,7 +71,6 @@ namespace Grafer
         //Kliknutí na tlačítko vykreslit.
         private void ButtonDrawClick(object sender, RoutedEventArgs e)
         {
-            onlyFunctionPlot = true;
             Start();
         }
 
@@ -77,8 +85,6 @@ namespace Grafer
             }
 
             Draw(); // 4. Vykreslení funkce.
-
-            onlyFunctionPlot = false;
         }
 
         private void DoProcess()
@@ -122,15 +128,15 @@ namespace Grafer
             }
             else
             {
-                GetXRangeFromCanvasWidth();
+                GetXRangeFromCoordinateSystem();
             }
         }
 
         //Pokud není zaškrtnuto omezit, tak se rozsah získá ze šířky plátna.
-        private void GetXRangeFromCanvasWidth()
+        private void GetXRangeFromCoordinateSystem()
         {
-            gMinimumX = -coordinateSystem.Width / 200;
-            gMaximumX = coordinateSystem.Width / 200;
+            gMinimumX = -coordinateSystem.NumberRange;
+            gMaximumX = coordinateSystem.NumberRange;
         }
 
         //Získání rozsahu x z inputů od uživatele.
@@ -215,25 +221,11 @@ namespace Grafer
         //Kreslení
         private void Draw()
         {
-            RefreshCoordinateSystem();
+            coordinateSystem.RemoveFunctions();
 
             if (gFunction != null)
             {
                 gFunction.Plot();
-            }
-        }
-
-        //Překreslení plátna
-        private void RefreshCoordinateSystem()
-        {
-            //Pokud by se změnila čístě funkce, tak se promažou.
-            if (!onlyFunctionPlot)
-            {
-                coordinateSystem.Create();
-            }
-            else
-            {
-                coordinateSystem.RemoveFunctions();
             }
         }
 
@@ -288,7 +280,6 @@ namespace Grafer
         {
             if (e.Key == Key.Enter)
             {
-                onlyFunctionPlot = true;
                 Start();
             }
 
@@ -298,18 +289,6 @@ namespace Grafer
                 equationInput.Focus();
                 Reset();
             }
-        }
-
-        //Posunutí tlačítka vykreslit.
-        private void SetButtonDrawMargin(object sender, KeyEventArgs e)
-        {
-
-        }
-
-        //První vykreslení plátna po načtení aplikace.
-        private void CoordinateSystemLoaded(object sender, RoutedEventArgs e)
-        {
-            coordinateSystem.Create();
         }
 
         //Tlačítka pro speciální znaky.
@@ -372,6 +351,7 @@ namespace Grafer
         private void ApplicationResize(object sender, SizeChangedEventArgs e)
         {
             AdjustComponentsToApplicationSize();
+            coordinateSystem.Refresh();
             Start();
         }
 
@@ -392,6 +372,20 @@ namespace Grafer
             double marginTopMultiply = equationInput.LineCount - 1;
 
             buttonDraw.Margin = new Thickness(64, 206 + (26 * marginTopMultiply), 0, 0);
+        }
+
+        private void SliderZoomLevelValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            if(!changedByScrool)
+            {
+                coordinateSystem.ZoomLevel = Convert.ToInt16(sliderZoomLevel.Value);
+                coordinateSystem.Refresh();
+            }
+        }
+
+        private void SliderZoomLevelToolTipOpening(object sender, ToolTipEventArgs e)
+        {
+            sliderZoomLevel.ToolTip = sliderZoomLevel.Value;
         }
     }
 }
