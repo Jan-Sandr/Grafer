@@ -1,0 +1,16 @@
+Minimum can't be higher than maximum.;Minimum nemůže být větší jak maximum.;
+Minimum and maximum x can't be same.;Minimum nemůže býýt stejné jako maximum.;
+Function won't be plotted because x's range is outside of drawing canvas.;Funkce nebude vykreslena, protože rozsah x je mimo vyditelnou plochu.;
+cannot be empty.;nemůže být prázdné.;
+begins with invalid character.;začíná nevalidním znakem.;
+ends with invalid character.;končí nevalidním znakem.;
+cannot contain more than one minus or comma.;nemůže obsahovat více než jednom mínus nebo čárku.;
+cannot contain comma and minus side by side.;nemůže obsahovat čárku a mínus vedle sebe.;
+cannot contains two operations in row.;nemůže obsahovat 2 operace za sebou.;
+requires brackets after power or nth root.;požaduje závorku po znaku mocniny nebo odmocniny.;
+cannot contain closing bracket before opening bracket.;nemůže obsahovat koncovou závorku bez otevírací.;
+cannot contain opening bracket without closing one.;nemůže obsahovat otevírací závorku bez koncové.;
+cannot contain empty brackets.;nemůže obsahovat prázdné závorky.;
+cannot contain operation after opening bracket execpt minus and nth root.;nemůže obsahovat operaci po otevírací závorce kromě mínusu nebo odmocniny.;
+cannot contain closing bracket after operation.;nemůže obsahovat operaci a za ní uzavírající závorku.;
+cannot contain nth root with index zero.;nemůže obsahovat odmocninu s indexem nula.;

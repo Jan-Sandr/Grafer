@@ -205,7 +205,7 @@ namespace Grafer
             point = new Point()
             {
                 X = CoordinateSystem.Width / 2 + (point.X * CoordinateSystem.Zoom * 100),
-                Y = (-y * CoordinateSystem.Zoom * 100 ) + CoordinateSystem.Height / 2
+                Y = (-y * CoordinateSystem.Zoom * 100) + CoordinateSystem.Height / 2
             };
             return point;
         }
