@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -46,9 +47,10 @@ namespace Grafer
         private readonly Color defaultStatusColor = Color.FromRgb(125, 255, 99); // výchozí barva statusu.
 
         //Spuštení aplikce - jako load ve formsech.
-        protected override void OnActivated(EventArgs e)
+        private void ApplicationLoaded(object sender, RoutedEventArgs e)
         {
-            LoadDataFromFiles();
+            string directory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName + "\\Data";
+            LoadDataFromFiles(directory);
             LoadData();
             LocalizeUserInterface();
         }
@@ -62,10 +64,22 @@ namespace Grafer
         }
 
         //Načte data ze souborů.
-        private void LoadDataFromFiles()
+        private void LoadDataFromFiles(string directory)
         {
-            messages = ReadFile("Messages.csv", false);
-            localizationData = ReadFile("UILocalization.csv", true);
+            messages = ReadFile(directory + "\\Messages.csv", false);
+            localizationData = ReadFile(directory + "\\UILocalization.csv", true);
+            LoadShortcuts(directory);
+        }
+
+        private void LoadShortcuts(string directory)
+        {
+            string[] fileData = ReadFile(directory + "\\Shortcuts.csv", false);
+
+            for (int i = 0; i < fileData.Length; i++)
+            {
+                string[] data = fileData[i].Split(';');
+                equationInput.Shortcuts.Add(data[0], data[1]);
+            }
         }
 
         //Kliknutí na tlačítko vykreslit.
@@ -294,22 +308,24 @@ namespace Grafer
         //Tlačítka pro speciální znaky.
         private void InsertionButtonClick(object sender, RoutedEventArgs e)
         {
-            int inputCursorIndex = equationInput.SelectionStart;
-
             Button button = (Button)sender;
 
-            equationInput.Text = equationInput.Text.Insert(inputCursorIndex, button.Uid + "()");
-
             equationInput.Focus();
-            equationInput.SelectionStart = inputCursorIndex + button.Uid.Length + 1;
+
+            equationInput.InsertShortcut(button.Uid);
         }
 
         //Čtení souboru.
         private static string[] ReadFile(string filePath, bool haveHead)
         {
-            FileCompiler fileCompiler = new FileCompiler(filePath, haveHead);
+             FileCompiler fileCompiler = new FileCompiler(filePath, haveHead);
 
             fileCompiler.Read();
+
+            if (!fileCompiler.IsOK || !fileCompiler.IsDataOK)
+            {
+                MessageBox.Show(fileCompiler.ErrorMessage);
+            }
 
             return fileCompiler.Data.ToArray();
         }
@@ -376,7 +392,7 @@ namespace Grafer
 
         private void SliderZoomLevelValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            if(!changedByScrool)
+            if (!changedByScrool)
             {
                 coordinateSystem.ZoomLevel = Convert.ToInt16(sliderZoomLevel.Value);
                 coordinateSystem.Refresh();

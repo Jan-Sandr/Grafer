@@ -61,7 +61,7 @@ namespace Grafer.CustomControls
         {
             Children.RemoveRange(defaultElementsCount, Children.Count - defaultElementsCount);
         }
-        
+
         //Metoda pro zachycení skrolování.
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
