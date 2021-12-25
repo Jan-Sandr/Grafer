@@ -7,7 +7,7 @@ namespace Grafer
     {
         public static (int SelectionStart, int SelectionLength, int MessageID) InvalidSection { get; private set; } = (0, 0, -1);
 
-        private static int[] elementsIndex = System.Array.Empty<int>();
+        private static int[] elementsIndex = System.Array.Empty<int>(); // Pole s indexy, kde nejsou prázdná místa v rovnici.
 
         private readonly static char[] allowedBeginningChars = new char[4] { 'x', '-', '(', '√' }; // Povolené znaky na začátku předpisu.
 
@@ -25,12 +25,14 @@ namespace Grafer
                                     !AreTwoOperationsInRow(equation) &&
                                              CheckBrackets(equation) &&
                                              !CheckMissing(equation) &&
-                                          IsRootIndexValid(equation)
+                                          IsRootIndexValid(equation) &&
+                                            AreCommasValid(equation)
                                     );
 
             return isEquationValid;
         }
 
+        //Náplnění indexů, které nejsou mezery.
         private static int[] FillElementsIndex(string equation)
         {
             int[] charactersIndex = new int[equation.Replace(" ", "").Length];
@@ -205,6 +207,7 @@ namespace Grafer
             return containsEmptyBrackets;
         }
 
+        //Jestli není index odmocniny 0.
         private static bool IsRootIndexValid(string equation)
         {
             bool isRootIndexValid = true;
@@ -220,6 +223,94 @@ namespace Grafer
             }
 
             return isRootIndexValid;
+        }
+
+        //Jestli čárky v pořádku.
+        private static bool AreCommasValid(string equation)
+        {
+            bool areCommasValid = AreNumbersAroundCommas(equation);
+            string number = "";
+            int startIndex = 0;
+            int endIndex = 0;
+
+            for (int i = 0; i < elementsIndex.Length && areCommasValid; i++)
+            {
+                bool stillNumber = false;
+
+                if (char.IsDigit(equation[elementsIndex[i]]) || equation[elementsIndex[i]] == ',')
+                {
+                    if (number.Length == 0)
+                    {
+                        startIndex = elementsIndex[i];
+                    }
+
+                    number += equation[elementsIndex[i]];
+                    endIndex = elementsIndex[i];
+                    stillNumber = true;
+                }
+
+                if (number.Length > 0 && (!stillNumber || i + 1 == elementsIndex.Length))
+                {
+                    areCommasValid = AreMultipleCommasInNumber(number, startIndex, endIndex);
+                    number = "";
+                    startIndex = i + 1;
+                }
+            }
+
+            return areCommasValid;
+        }
+
+        //Jestli je více čárek v jednom čísle.
+        private static bool AreMultipleCommasInNumber(string number, int startIndex, int endIndex)
+        {
+            bool isMultipleCommasValid = false;
+
+            if (number.Count(x => x == ',') > 1)
+            {
+                isMultipleCommasValid = true;
+                InvalidSection = (startIndex, endIndex - startIndex + 1, 18);
+            }
+
+            return !isMultipleCommasValid;
+        }
+
+        //Jestli je čírka obalená číslama.
+        private static bool AreNumbersAroundCommas(string equation)
+        {
+            bool areNumbersAroundCommas = true;
+
+            for (int i = 1; i < elementsIndex.Length - 1; i++)
+            {
+                if (equation[elementsIndex[i]] == ',')
+                {
+                    if (!AreNeighboardsNumbers(i, equation[elementsIndex[i - 1]], equation[elementsIndex[i + 1]]))
+                    {
+                        areNumbersAroundCommas = false;
+                        break;
+                    }
+                }
+            }
+
+            return areNumbersAroundCommas;
+        }
+
+        //Kontrola zda jsou sousedé čísla.
+        private static bool AreNeighboardsNumbers(int index, char left, char right)
+        {
+            bool areNeighboardsNumbers = true;
+
+            if (!char.IsDigit(left))
+            {
+                areNeighboardsNumbers = false;
+                InvalidSection = (elementsIndex[index - 1], elementsIndex[index] - elementsIndex[index - 1] + 1, 16);
+            }
+            else if (!char.IsDigit(right))
+            {
+                areNeighboardsNumbers = false;
+                InvalidSection = (elementsIndex[index], elementsIndex[index + 1] - elementsIndex[index] + 1, 17);
+            }
+
+            return areNeighboardsNumbers;
         }
     }
 }

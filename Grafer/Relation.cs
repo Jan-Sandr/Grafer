@@ -113,7 +113,7 @@ namespace Grafer
         {
             for (int i = 1; i < Count; i++)
             {
-                if (double.TryParse(this[i], out _) && double.TryParse(this[i - 1], out _))
+                if ((double.TryParse(this[i], out _) || this[i] == ",") && double.TryParse(this[i - 1], out _))
                 {
                     this[i - 1] += this[i];
                     RemoveAt(i);

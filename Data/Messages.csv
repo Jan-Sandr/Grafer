@@ -14,3 +14,6 @@ cannot contain empty brackets.;nemůže obsahovat prázdné závorky.;
 cannot contain operation after opening bracket execpt minus and nth root.;nemůže obsahovat operaci po otevírací závorce kromě mínusu nebo odmocniny.;
 cannot contain closing bracket after operation.;nemůže obsahovat operaci a za ní uzavírající závorku.;
 cannot contain nth root with index zero.;nemůže obsahovat odmocninu s indexem nula.;
+cannot contain anything other than a number before the comma.;nemůže obsahovat před čárkou něco jiného než číslo.;
+cannot contain anything other than a number after the comma.;nemůže obsahovat po čárce něco jiného než číslo.;
+cannot contain number with two or more commas.;nemůže obsahovat číslo se dvěma nebo více čárkami.;
