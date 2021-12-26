@@ -9,7 +9,7 @@ namespace Grafer
 
         private static int[] elementsIndex = System.Array.Empty<int>(); // Pole s indexy, kde nejsou prázdná místa v rovnici.
 
-        private readonly static char[] allowedBeginningChars = new char[4] { 'x', '-', '(', '√' }; // Povolené znaky na začátku předpisu.
+        private readonly static char[] allowedBeginningChars = new char[7] { 'x', '-', '(', '√', 's', 'c', 't' }; // Povolené znaky na začátku předpisu.
 
         private readonly static char[] allowedEndeningChars = new char[2] { 'x', ')' }; // Povolené znaky na konci předpisu.
 
@@ -26,8 +26,9 @@ namespace Grafer
                                              CheckBrackets(equation) &&
                                              !CheckMissing(equation) &&
                                           IsRootIndexValid(equation) &&
-                                            AreCommasValid(equation)
-                                    );
+                                            AreCommasValid(equation) &&
+                                     AreFunctionNamesValid(equation)
+                                   );
 
             return isEquationValid;
         }
@@ -235,6 +236,9 @@ namespace Grafer
 
             for (int i = 0; i < elementsIndex.Length && areCommasValid; i++)
             {
+                //startIndex = elementsIndex[i];
+                //number = Build(equation, i, "number");
+                //endIndex = elementsIndex[i + number.Length - 1];
                 bool stillNumber = false;
 
                 if (char.IsDigit(equation[elementsIndex[i]]) || equation[elementsIndex[i]] == ',')
@@ -253,7 +257,6 @@ namespace Grafer
                 {
                     areCommasValid = AreMultipleCommasInNumber(number, startIndex, endIndex);
                     number = "";
-                    startIndex = i + 1;
                 }
             }
 
@@ -312,6 +315,135 @@ namespace Grafer
 
             return areNeighboardsNumbers;
         }
+
+        //Jestli jsou názvy trigonometrických funkcí napsány správně.
+        private static bool AreFunctionNamesValid(string equation)
+        {
+            bool areFunctionNamesValid = true;
+
+            string functionName = "";
+
+            int startIndex = 0;
+            int endIndex = 0;
+
+            for (int i = 0; i < elementsIndex.Length; i++)
+            {
+                bool stillBuilding = false;
+
+                if (char.IsLetter(equation[elementsIndex[i]]) && equation[elementsIndex[i]] != 'x')
+                {
+                    if (functionName.Length == 0)
+                    {
+                        startIndex = elementsIndex[i];
+                    }
+
+                    functionName += equation[elementsIndex[i]];
+                    endIndex = elementsIndex[i];
+                    stillBuilding = true;
+                }
+
+                if (functionName.Length > 0 && (!stillBuilding || i + 1 == elementsIndex.Length))
+                {
+                    if (!functionName.IsTrigonometricFunction())
+                    {
+                        areFunctionNamesValid = false;
+                        InvalidSection = (startIndex, endIndex - startIndex + 1, 19);
+                        break;
+                    }
+
+                    areFunctionNamesValid = IsTrigonometricFunctionsSyntaxValid(equation, i - 1);
+
+                    functionName = "";
+                }
+            }
+
+            return areFunctionNamesValid;
+        }
+
+        //Jestli je syntax po trigonometrických funkcích správná
+        private static bool IsTrigonometricFunctionsSyntaxValid(string equation, int index)
+        {
+            bool isTrigonometricFunctionsSyntaxValid = true;
+
+            if (equation[elementsIndex[index + 1]] != '(')
+            {
+                isTrigonometricFunctionsSyntaxValid = false;
+
+                //Sin x oznáčí od mezery po x.
+                InvalidSection = (elementsIndex[index] + 1, elementsIndex[index + 1] - elementsIndex[index] + 1, 20);
+            }
+
+            //Kontrola syntaxe arcusů.
+            if (!isTrigonometricFunctionsSyntaxValid)
+            {
+                int addtionSelection = 0;
+
+                if (equation[elementsIndex[index + 1]] == '⁻')
+                {
+                    if (equation[elementsIndex[index + 2]] == '¹')
+                    {
+                        if (equation[elementsIndex[index + 3]] == '(')
+                        {
+                            isTrigonometricFunctionsSyntaxValid = true;
+                        }
+                        else
+                        {
+                            //Sin ⁻¹ x označí od mezery po sinu do x.
+                            isTrigonometricFunctionsSyntaxValid = false;
+                            addtionSelection = 2;
+                        }
+                    }
+                    else
+                    {
+                        //Sin ⁻ x označí od mezery po sinu do x.
+                        isTrigonometricFunctionsSyntaxValid = false;
+                        addtionSelection = 1;
+                    }
+                }
+
+                if (equation[elementsIndex[index + 1]] == '¹')
+                {
+                    //Sin ¹ x označí od mezery po sinu do x.
+                    isTrigonometricFunctionsSyntaxValid = false;
+                    addtionSelection = 1;
+                }
+
+                if (!isTrigonometricFunctionsSyntaxValid)
+                {
+                    //Označení na základě počtu chybějících prvků.
+                    InvalidSection = (elementsIndex[index] + 1, elementsIndex[index + 1 + addtionSelection] - elementsIndex[index] + 1, 21);
+                }
+            }
+
+            return isTrigonometricFunctionsSyntaxValid;
+        }
+
+        //private static string Build(string equation, int index, string target)
+        //{
+        //    string item = "";
+
+        //    for (int i = index; i < elementsIndex.Length; i++)
+        //    {
+        //        bool stillBuilding = false;
+
+        //        if(target == "number")
+        //        {
+        //            if (char.IsDigit(equation[elementsIndex[i]]) || equation[elementsIndex[i]] == ',')
+        //            {
+        //                item += equation[elementsIndex[i]];
+        //                stillBuilding = true;
+        //            }
+        //        }
+
+        //        if(!stillBuilding)
+        //        {
+        //            break;
+        //        }
+
+        //    }
+
+        //    return item;
+        //}
     }
 }
 

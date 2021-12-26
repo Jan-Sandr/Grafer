@@ -17,3 +17,6 @@ cannot contain nth root with index zero.;nemůže obsahovat odmocninu s indexem 
 cannot contain anything other than a number before the comma.;nemůže obsahovat před čárkou něco jiného než číslo.;
 cannot contain anything other than a number after the comma.;nemůže obsahovat po čárce něco jiného než číslo.;
 cannot contain number with two or more commas.;nemůže obsahovat číslo se dvěma nebo více čárkami.;
+contains unknown expression.;obsahuje neznámý výraz.;
+requires brackets after trigonometric expression.;požaduje závroku za trigonemtrickým výrazem.;
+contains badly written arcus. Please use button or shortcut for correct format.;obsahuje špatně napsaný arcus. Prosím použijte tlačítko nebo zkratku pro zprávný zápis.;

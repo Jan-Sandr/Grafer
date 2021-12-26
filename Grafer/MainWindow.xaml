@@ -29,5 +29,13 @@
         <Slider x:Name="sliderZoomLevel" HorizontalAlignment="Left" Margin="91,49,0,0" VerticalAlignment="Top" Width="120" Maximum="4" Minimum="-4" SmallChange="1" IsSnapToTickEnabled="True" AutoToolTipPlacement="None" ToolTip="" ValueChanged="SliderZoomLevelValueChanged" TickPlacement="BottomRight" ToolTipOpening="SliderZoomLevelToolTipOpening"/>
         <Label x:Name="labelZoomMinimum" Content="-4" HorizontalAlignment="Left" Margin="66,45,0,0" VerticalAlignment="Top"/>
         <Label x:Name="labelZoomMinimum_Copy" Content="4" HorizontalAlignment="Left" Margin="215,45,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="buttonSine" Content="sin" HorizontalAlignment="Left" Margin="250,183,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="sin"/>
+        <Button x:Name="buttonCosine" Content="cos" HorizontalAlignment="Left" Margin="250,219,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="cos"/>
+        <Button x:Name="buttonTangent" Content="tan" HorizontalAlignment="Left" Margin="318,183,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="tan"/>
+        <Button x:Name="buttonCotangent" Content="cotg" HorizontalAlignment="Left" Margin="318,219,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="cotg"/>
+        <Button x:Name="buttonArcSine" Content="sin⁻¹" HorizontalAlignment="Left" Margin="250,265,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="sin⁻¹"/>
+        <Button x:Name="buttonArcCosine" Content="cos⁻¹" HorizontalAlignment="Left" Margin="250,301,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="cos⁻¹"/>
+        <Button x:Name="buttonArcTangent" Content="tan⁻¹" HorizontalAlignment="Left" Margin="318,265,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="tan⁻¹"/>
+        <Button x:Name="buttonArcCotangent" Content="cotg⁻¹" HorizontalAlignment="Left" Margin="318,301,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="cotg⁻¹"/>
     </Grid>
 </Window>
