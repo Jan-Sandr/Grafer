@@ -1,4 +1,5 @@
 ﻿using Grafer.CustomControls;
+using Grafer.ExtensionMethods;
 using System;
 using System.Collections.Generic;
 using System.Windows;
@@ -149,7 +150,11 @@ namespace Grafer
         {
             int index = CalculationOrder.Indexes[orderProgression];
 
-            Relation[index] = Operation(index).ToString();
+            y = Operation(index);
+
+            index = Relation[index].IsTrigonometricFunction() ? index + 1 : index;
+
+            Relation[index] = y.ToString();
 
             Relation.RemoveNeighbors(index);
 
@@ -163,10 +168,11 @@ namespace Grafer
         //Uložení bodu.
         private void SavePoint(double x, double y)
         {
-            if (!double.IsNaN(y) && !double.IsInfinity(y)) // Pokud bod není definovaný, vzniká mezera.
+            Point point = new Point(x, y);
+            point = ConvertToCoordinatePoint(point);
+
+            if (!double.IsNaN(y) && !double.IsInfinity(y) && Math.Abs(point.Y) < 5000) // Pokud bod není definovaný, vzniká mezera.
             {
-                Point point = new Point(x, y);
-                point = ConvertToCoordinatePoint(point);
                 points.Add(point);
             }
             else if (points.Count > 0)
@@ -245,6 +251,26 @@ namespace Grafer
                         y = Root(double.Parse(Relation[index + 1]), 1 / double.Parse(Relation[index - 1]));
                         break;
                     }
+                case "sin":
+                    {
+                        y = TrigFunc(double.Parse(Relation[index + 2]), Relation[index + 1], Math.Sin, Math.Asin);
+                        break;
+                    }
+                case "cos":
+                    {
+                        y = TrigFunc(double.Parse(Relation[index + 2]), Relation[index + 1], Math.Cos, Math.Acos);
+                        break;
+                    }
+                case "tan":
+                    {
+                        y = TrigFunc(double.Parse(Relation[index + 2]), Relation[index + 1], Math.Tan, Math.Atan);
+                        break;
+                    }
+                case "cotg":
+                    {
+                        y = TrigFunc(double.Parse(Relation[index + 2]), Relation[index + 1], Cotangens, ArcusCotangens);
+                        break;
+                    }
             }
 
             return y;
@@ -254,6 +280,21 @@ namespace Grafer
         private double Root(double number, double index)
         {
             return (index > 0 && !double.IsInfinity(index)) ? Math.Pow(number, index) : double.NaN;
+        }
+
+        private double TrigFunc(double number, string argument, Func<double, double> func, Func<double, double> arcusFunc)
+        {
+            return argument == "⁻¹" ? arcusFunc(number) : func(number);
+        }
+
+        private double Cotangens(double number)
+        {
+            return Math.Cos(number) / Math.Sin(number);
+        }
+
+        private double ArcusCotangens(double number)
+        {
+            return Math.Atan(number) * -1;
         }
 
         //Vytvoření zálohy pro výpočet.

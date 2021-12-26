@@ -4,7 +4,7 @@ namespace Grafer
 {
     public class CalculationOrder
     {
-        private readonly string[] mathCharacters = new string[] { "+-", "*/", "^√", "", "()" };
+        private readonly string[] mathCharacters = new string[] { "+-", "*/", "^√", "sin cos tan cotg", "()" };
 
         public int[] Indexes { get; private set; } = Array.Empty<int>();
         public int[] Priorities { get; private set; } = Array.Empty<int>();
@@ -57,7 +57,7 @@ namespace Grafer
 
             for (int i = 0; i < relation.Count; i++)
             {
-                int index = Array.FindIndex(mathCharacters, 0, 3, s => s.Contains(relation[i]));
+                int index = Array.FindIndex(mathCharacters, 0, 4, s => s.Contains(relation[i]));
 
                 if (index != -1)
                 {

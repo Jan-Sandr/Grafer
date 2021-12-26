@@ -28,11 +28,49 @@ namespace Grafer
 
             if (Count > 1)
             {
+                Union();
+
                 Insertions();
 
                 ConnectNumbers();
 
                 RemoveUnnecessaryBrackets();
+
+                InsertIntermediary();
+            }
+        }
+
+        private void Union()
+        {
+            UniteLetters();
+
+            UniteUpperIndex();
+        }
+
+        //Spojí písmena do jednoho políčka krom x: s i n -> sin.
+        private void UniteLetters()
+        {
+            for (int i = 0; i < Count - 1; i++)
+            {
+                if (this[i].Any(char.IsLetter) && this[i] != "x" && char.IsLetter(char.Parse(this[i + 1])) && this[i + 1] != "x")
+                {
+                    this[i] += this[i + 1];
+                    RemoveAt(i + 1);
+                    i--;
+                }
+            }
+        }
+
+        private void UniteUpperIndex()
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                if (this[i] == "⁻" && this[i + 1] == "¹")
+                {
+                    this[i] += this[i + 1];
+                    RemoveAt(i + 1);
+                    i--;
+                }
             }
         }
 
@@ -57,6 +95,7 @@ namespace Grafer
             }
         }
 
+        //Případy pro pomocné vložení na začátek předpisu.
         private void InsertAtBeginning()
         {
             if (this[0] == "-")
@@ -88,7 +127,7 @@ namespace Grafer
         {
             for (int i = 1; i < Count; i++)
             {
-                if (CanInsertMultiplication(this[i - 1], this[i]))
+                if (!this[i - 1].IsTrigonometricFunction() && CanInsertMultiplication(this[i - 1], this[i]))
                 {
                     Insert(i, "*");
                 }
@@ -99,12 +138,12 @@ namespace Grafer
         private static bool CanInsertMultiplication(string left, string right)
         {
             return (
-                        (char.IsLetter(char.Parse(left)) && char.IsLetter(char.Parse(right))) ||
-                        (char.IsDigit(char.Parse(left)) && char.IsLetter(char.Parse(right))) ||
-                        (char.IsLetter(char.Parse(left)) && char.IsDigit(char.Parse(right))) ||
-                        (char.IsLetterOrDigit(char.Parse(left)) && right == "(") ||
-                        (left == ")" && char.IsLetterOrDigit(char.Parse(right))) ||
-                        (left == ")" && right == "(")
+                        (left.IsOnly(char.IsLetter) && right.IsOnly(char.IsLetter)) || // x     x
+                        (left.IsOnly(char.IsDigit) && right.IsOnly(char.IsLetter)) || // 2     x
+                        (left.IsOnly(char.IsLetter) && right.IsOnly(char.IsDigit)) || // x     2
+                        (left.IsOnly(char.IsLetterOrDigit) && right == "(") || // [x,2] (
+                        (left == ")" && right.IsOnly(char.IsLetterOrDigit)) || // )     [x,2]      
+                        (left == ")" && right == "(")                                  // )     (
                    );
         }
 
@@ -131,6 +170,18 @@ namespace Grafer
                 {
                     Insert(i, "2");
                     i++;
+                }
+            }
+        }
+
+        //Vloží mezi sin,4 -> sin,p,4. Aby se jednolo o 3 členy a šlo tak odebírat sousedy. Jako tomu je u opreací 1 + 2, také jsou tři.
+        private void InsertIntermediary()
+        {
+            for (int i = 0; i < Count - 1; i++)
+            {
+                if (this[i].IsTrigonometricFunction() && this[i + 1] != "⁻¹")
+                {
+                    Insert(i + 1, "p");
                 }
             }
         }

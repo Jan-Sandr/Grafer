@@ -1,2 +1,10 @@
 ShiftN;^;
 ShiftD;√;
+ShiftS;sin;
+ShiftC;cos;
+ShiftT;tan;
+ShiftG;cotg;
+ControlS;sin⁻¹;
+ControlC;cos⁻¹;
+ControlT;tan⁻¹;
+ControlG;cotg⁻¹;
