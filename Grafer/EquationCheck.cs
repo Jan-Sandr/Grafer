@@ -365,7 +365,8 @@ namespace Grafer
         {
             bool isTrigonometricFunctionsSyntaxValid = true;
 
-            if (equation[elementsIndex[index + 1]] != '(')
+            //Jestli je  po trigonometrické funkci závorka. Pokud je tam ale horní index, tak to se řeší níže.
+            if (equation[elementsIndex[index + 1]] != '(' && equation[elementsIndex[index + 1]] != '⁻' && equation[elementsIndex[index + 1]] != '¹')
             {
                 isTrigonometricFunctionsSyntaxValid = false;
 
@@ -374,7 +375,7 @@ namespace Grafer
             }
 
             //Kontrola syntaxe arcusů.
-            if (!isTrigonometricFunctionsSyntaxValid)
+            if (isTrigonometricFunctionsSyntaxValid)
             {
                 int addtionSelection = 0;
 
@@ -411,7 +412,7 @@ namespace Grafer
                 if (!isTrigonometricFunctionsSyntaxValid)
                 {
                     //Označení na základě počtu chybějících prvků.
-                    InvalidSection = (elementsIndex[index] + 1, elementsIndex[index + 1 + addtionSelection] - elementsIndex[index] + 1, 21);
+                    InvalidSection = (elementsIndex[index] + 1, elementsIndex[index + 1 + addtionSelection] - elementsIndex[index], 21);
                 }
             }
 
