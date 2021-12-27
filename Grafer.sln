@@ -7,7 +7,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Grafer", "Grafer\Grafer.csp
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "External classes", "External classes", "{F28EB56C-2D0F-492B-B1F5-B54CE6D0277D}"
 	ProjectSection(SolutionItems) = preProject
-		Grafer 2.0\FileCompiler.cs = Grafer 2.0\FileCompiler.cs
+		Grafer\FileCompiler.cs = Grafer\FileCompiler.cs
 	EndProjectSection
 EndProject
 Global

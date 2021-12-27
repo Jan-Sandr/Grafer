@@ -1,5 +1,8 @@
-﻿using System;
+﻿using Grafer.ExtensionMethods;
+using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -15,7 +18,7 @@ namespace Grafer
         public MainWindow()
         {
             InitializeComponent();
-            this.coordinateSystem.MouseWheel += CoordinateSystemMouseWheel;
+            coordinateSystem.MouseWheel += CoordinateSystemMouseWheel;
         }
 
         private void CoordinateSystemMouseWheel(object sender, MouseWheelEventArgs e)
@@ -41,7 +44,7 @@ namespace Grafer
 
         private string[] messages = Array.Empty<string>(); // Pole pro chybové hlášky.
 
-        private string[] localizationData = Array.Empty<string>(); // Pole pro lokalizaci prostředí.
+        private Dictionary<string, string> localizationData = new Dictionary<string, string>(); // Pole pro lokalizaci prostředí.
 
         private readonly Brush defaultSelectionBrush = new SolidColorBrush(Color.FromRgb(0, 120, 215)); // Výchozí označovací barva.
         private readonly Color defaultStatusColor = Color.FromRgb(125, 255, 99); // výchozí barva statusu.
@@ -66,20 +69,9 @@ namespace Grafer
         //Načte data ze souborů.
         private void LoadDataFromFiles(string directory)
         {
-            messages = ReadFile(directory + "\\Messages.csv", false);
-            localizationData = ReadFile(directory + "\\UILocalization.csv", true);
-            LoadShortcuts(directory);
-        }
-
-        private void LoadShortcuts(string directory)
-        {
-            string[] fileData = ReadFile(directory + "\\Shortcuts.csv", false);
-
-            for (int i = 0; i < fileData.Length; i++)
-            {
-                string[] data = fileData[i].Split(';');
-                equationInput.Shortcuts.Add(data[0], data[1]);
-            }
+            messages = ReadFile(directory + "\\Messages.csv", true);
+            localizationData = ReadFile(directory + "\\UILocalization.csv", true).ToDictionary();
+            equationInput.Shortcuts = ReadFile(directory + "\\Shortcuts.csv", true).ToDictionary();
         }
 
         //Kliknutí na tlačítko vykreslit.
@@ -333,12 +325,16 @@ namespace Grafer
         //Localizace prostředí.
         private void LocalizeUserInterface()
         {
-            int index = Convert.ToInt16(language);
+            List<ContentControl> controls = gridMain.Children.OfType<ContentControl>().ToList();
 
-            labelLanguage.Content = localizationData[0].Split(';')[index];
-            limitX.Content = localizationData[1].Split(';')[index];
-            equationInput.Uid = localizationData[2].Split(';')[index];
-            buttonDraw.Content = localizationData[3].Split(';')[index];
+            for (int i = 0; i < controls.Count; i++)
+            {
+                if (localizationData.ContainsKey(controls[i].Name))
+                {
+                    string[] localizationTexts = localizationData[controls[i].Name].Split(';');
+                    controls[i].Content = (language == Language.English) ? localizationTexts[0] : localizationTexts[1];
+                }
+            }
         }
 
         //Změna jazyka.
