@@ -37,5 +37,7 @@
         <Button x:Name="buttonArcCosine" Content="cos⁻¹" HorizontalAlignment="Left" Margin="250,301,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="cos⁻¹"/>
         <Button x:Name="buttonArcTangent" Content="tan⁻¹" HorizontalAlignment="Left" Margin="318,265,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="tan⁻¹"/>
         <Button x:Name="buttonArcCotangent" Content="cotg⁻¹" HorizontalAlignment="Left" Margin="318,301,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="cotg⁻¹"/>
+        <Button x:Name="buttonDegree" Content="°" HorizontalAlignment="Left" Margin="53,258,0,0" VerticalAlignment="Top" Width="28" FontSize="20" Click="InsertionButtonClick" Uid="°"/>
+        <Button x:Name="buttonPi" Content="π" HorizontalAlignment="Left" Margin="53,294,0,0" VerticalAlignment="Top" Width="28" FontSize="20" Click="InsertionButtonClick" Uid="π"/>
     </Grid>
 </Window>

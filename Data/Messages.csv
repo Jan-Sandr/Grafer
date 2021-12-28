@@ -1,4 +1,4 @@
-English;Czech;
+﻿English;Czech;
 Minimum can't be higher than maximum.;Minimum nemůže být větší jak maximum.;
 Minimum and maximum x can't be same.;Minimum nemůže býýt stejné jako maximum.;
 Function won't be plotted because x's range is outside of drawing canvas.;Funkce nebude vykreslena, protože rozsah x je mimo vyditelnou plochu.;
@@ -21,3 +21,4 @@ cannot contain number with two or more commas.;nemůže obsahovat číslo se dv�
 contains unknown expression.;obsahuje neznámý výraz.;
 requires brackets after trigonometric expression.;požaduje závroku za trigonemtrickým výrazem.;
 contains badly written arcus. Please use button or shortcut for correct format.;obsahuje špatně napsaný arcus. Prosím použijte tlačítko nebo zkratku pro zprávný zápis.;
+requires number before degree character.;požaduje číslo před znakem stupňů.;
