@@ -9,9 +9,9 @@ namespace Grafer
 
         private static int[] elementsIndex = System.Array.Empty<int>(); // Pole s indexy, kde nejsou prázdná místa v rovnici.
 
-        private readonly static char[] allowedBeginningChars = new char[7] { 'x', '-', '(', '√', 's', 'c', 't' }; // Povolené znaky na začátku předpisu.
+        private readonly static char[] allowedBeginningChars = new char[8] { 'x', '-', '(', '√', 's', 'c', 't', 'π' }; // Povolené znaky na začátku předpisu.
 
-        private readonly static char[] allowedEndeningChars = new char[2] { 'x', ')' }; // Povolené znaky na konci předpisu.
+        private readonly static char[] allowedEndeningChars = new char[4] { 'x', ')', '°', 'π' }; // Povolené znaky na konci předpisu.
 
         //Kontrola rovnice
         public static bool IsEquationValid(string equation)
@@ -27,7 +27,8 @@ namespace Grafer
                                              !CheckMissing(equation) &&
                                           IsRootIndexValid(equation) &&
                                             AreCommasValid(equation) &&
-                                     AreFunctionNamesValid(equation)
+                                     AreFunctionNamesValid(equation) &&
+                                           AreDegreesValid(equation)
                                    );
 
             return isEquationValid;
@@ -330,7 +331,7 @@ namespace Grafer
             {
                 bool stillBuilding = false;
 
-                if (char.IsLetter(equation[elementsIndex[i]]) && equation[elementsIndex[i]] != 'x')
+                if (char.IsLetter(equation[elementsIndex[i]]) && equation[elementsIndex[i]] != 'x' && equation[elementsIndex[i]] != 'π')
                 {
                     if (functionName.Length == 0)
                     {
@@ -417,6 +418,23 @@ namespace Grafer
             }
 
             return isTrigonometricFunctionsSyntaxValid;
+        }
+
+        private static bool AreDegreesValid(string equation)
+        {
+            bool areDegreesValid = true;
+
+            for (int i = 1; i < elementsIndex.Length; i++)
+            {
+                if (equation[elementsIndex[i]] == '°' && !char.IsDigit(equation[elementsIndex[i - 1]]))
+                {
+                    areDegreesValid = false;
+                    InvalidSection = (elementsIndex[i - 1], elementsIndex[i] - elementsIndex[i - 1] + 1, 22);
+                    break;
+                }
+            }
+
+            return areDegreesValid;
         }
 
         //private static string Build(string equation, int index, string target)

@@ -1,4 +1,5 @@
 ﻿using Grafer.ExtensionMethods;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -34,6 +35,10 @@ namespace Grafer
 
                 ConnectNumbers();
 
+                ConvertDegrees();
+
+                SubstitutePi();
+
                 RemoveUnnecessaryBrackets();
 
                 InsertIntermediary();
@@ -52,7 +57,7 @@ namespace Grafer
         {
             for (int i = 0; i < Count - 1; i++)
             {
-                if (this[i].Any(char.IsLetter) && this[i] != "x" && char.IsLetter(char.Parse(this[i + 1])) && this[i + 1] != "x")
+                if (this[i].Any(char.IsLetter) && this[i] != "x" && this[i] != "π" && char.IsLetter(char.Parse(this[i + 1])) && this[i + 1] != "x" && this[i + 1] != "π")
                 {
                     this[i] += this[i + 1];
                     RemoveAt(i + 1);
@@ -71,6 +76,14 @@ namespace Grafer
                     RemoveAt(i + 1);
                     i--;
                 }
+            }
+        }
+
+        private void SubstitutePi()
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                this[i] = (this[i] == "π") ? Math.PI.ToString() : this[i];
             }
         }
 
@@ -155,6 +168,19 @@ namespace Grafer
                 if ((double.TryParse(this[i], out _) || this[i] == ",") && double.TryParse(this[i - 1], out _))
                 {
                     this[i - 1] += this[i];
+                    RemoveAt(i);
+                    i--;
+                }
+            }
+        }
+
+        private void ConvertDegrees()
+        {
+            for (int i = 1; i < Count; i++)
+            {
+                if (this[i] == "°")
+                {
+                    this[i - 1] = (Math.PI * double.Parse(this[i - 1]) / 180).ToString();
                     RemoveAt(i);
                     i--;
                 }
