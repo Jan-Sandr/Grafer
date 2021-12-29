@@ -3,12 +3,12 @@ ShiftN;^;
 ShiftD;√;
 ShiftS;sin;
 ShiftC;cos;
-ShiftT;tan;
+ShiftT;tg;
 ShiftG;cotg;
 ShiftO;°;
 ShiftP;π;
 ControlS;sin⁻¹;
 ControlC;cos⁻¹;
-ControlT;tan⁻¹;
+ControlT;tg⁻¹;
 ControlG;cotg⁻¹;
 

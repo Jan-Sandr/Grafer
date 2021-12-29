@@ -135,7 +135,7 @@ namespace Grafer
             }
         }
 
-        //Vložení znaku  pro násobení .
+        //Vložení znaku  pro násobení.
         private void InsertMultiplication()
         {
             for (int i = 1; i < Count; i++)

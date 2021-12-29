@@ -6,7 +6,7 @@ namespace Grafer.ExtensionMethods
 {
     public static class StringExtensionMethods
     {
-        private static readonly string[] trigonometricFunctions = new string[4] { "sin", "cos", "tan", "cotg" };
+        private static readonly string[] trigonometricFunctions = new string[4] { "sin", "cos", "tg", "cotg" };
 
         //Jestli se jedná o math operaci.
         public static bool IsMathOperation(this string input)
@@ -26,7 +26,7 @@ namespace Grafer.ExtensionMethods
         {
             bool isTrigonometricFunction = false;
 
-            if (input.Length > 2)
+            if (input.Length > 1)
             {
                 isTrigonometricFunction = trigonometricFunctions.Contains(input);
             }
