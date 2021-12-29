@@ -261,7 +261,7 @@ namespace Grafer
                         y = TrigFunc(double.Parse(Relation[index + 2]), Relation[index + 1], Math.Cos, Math.Acos);
                         break;
                     }
-                case "tan":
+                case "tg":
                     {
                         y = TrigFunc(double.Parse(Relation[index + 2]), Relation[index + 1], Math.Tan, Math.Atan);
                         break;
