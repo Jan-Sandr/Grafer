@@ -148,10 +148,13 @@ namespace Grafer
         //Získání rozsahu x z inputů od uživatele.
         private void GetXRangeFromInputs()
         {
+            minimumXInput.SetValueType(CustomControls.RangeInput.DisplayValueType.Degree);
+            maximumXInput.SetValueType(CustomControls.RangeInput.DisplayValueType.Degree);
+
             if (IsXRangeInputValid()) //Pouze pokud je validní.
             {
-                gMinimumX = minimumXInput.Value;
-                gMaximumX = maximumXInput.Value;
+                gMinimumX = minimumXInput.NumericalValue;
+                gMaximumX = maximumXInput.NumericalValue;
                 isXRangeValid = IsXRangeValid();
             }
         }
