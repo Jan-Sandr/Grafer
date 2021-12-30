@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using Grafer.ExtensionMethods;
+using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -15,6 +16,38 @@ namespace Grafer.CustomControls
             get
             {
                 return double.Parse(Text);
+            }
+        }
+
+        public double NumericalValue
+        {
+
+            get
+            {
+                return ValueType == DisplayValueType.Degree ? Value.ToNumerical() : Value;
+            }
+        }
+
+        public enum DisplayValueType
+        {
+            Numerical,
+            Degree
+        }
+
+        public DisplayValueType ValueType { get; set; } = DisplayValueType.Numerical;
+
+        public void SetValueType(DisplayValueType valueType)
+        {
+            if (ValueType == DisplayValueType.Numerical && valueType == DisplayValueType.Degree)
+            {
+                Text = Value.ToDegrees().ToString();
+                ValueType = DisplayValueType.Degree;
+            }
+
+            if (ValueType == DisplayValueType.Degree && valueType == DisplayValueType.Numerical)
+            {
+                Text = Value.ToNumerical().ToString();
+                ValueType = DisplayValueType.Numerical;
             }
         }
 

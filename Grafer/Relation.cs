@@ -180,7 +180,7 @@ namespace Grafer
             {
                 if (this[i] == "°")
                 {
-                    this[i - 1] = (Math.PI * double.Parse(this[i - 1]) / 180).ToString();
+                    this[i - 1] = double.Parse(this[i - 1]).ToDegrees().ToString();
                     RemoveAt(i);
                     i--;
                 }
