@@ -39,7 +39,7 @@
         <Button x:Name="buttonArcCotangent" Content="cotg⁻¹" HorizontalAlignment="Left" Margin="318,301,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="cotg⁻¹"/>
         <Button x:Name="buttonDegree" Content="°" HorizontalAlignment="Left" Margin="53,258,0,0" VerticalAlignment="Top" Width="28" FontSize="20" Click="InsertionButtonClick" Uid="°"/>
         <Button x:Name="buttonPi" Content="π" HorizontalAlignment="Left" Margin="53,294,0,0" VerticalAlignment="Top" Width="28" FontSize="20" Click="InsertionButtonClick" Uid="π"/>
-        <Label x:Name="labelDegreeMinimum" Content="°" HorizontalAlignment="Left" Margin="120,106,0,0" VerticalAlignment="Top" FontSize="20"/>
-        <Label x:Name="labelDegreeMaximum" Content="°" HorizontalAlignment="Left" Margin="233,106,0,0" VerticalAlignment="Top" FontSize="20"/>
+        <Label x:Name="labelDegreeMinimum" Content="°" HorizontalAlignment="Left" Margin="120,106,0,0" VerticalAlignment="Top" FontSize="20" Visibility="Hidden"/>
+        <Label x:Name="labelDegreeMaximum" Content="°" HorizontalAlignment="Left" Margin="233,106,0,0" VerticalAlignment="Top" FontSize="20" Visibility="Hidden"/>
     </Grid>
 </Window>

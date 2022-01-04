@@ -1,4 +1,5 @@
 ﻿using Grafer.ExtensionMethods;
+using System;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -10,7 +11,7 @@ namespace Grafer.CustomControls
     /// </summary>
     public partial class RangeInput : TextBox
     {
-        //Získání čísla rovnou.
+        //Získání číslo rovnou.
         public double Value
         {
             get
@@ -19,6 +20,7 @@ namespace Grafer.CustomControls
             }
         }
 
+        //Pokud je hodnota ve stupních, tak aby stále byla dostupná číselná - pro výpočty atd.
         public double NumericalValue
         {
 
@@ -36,17 +38,18 @@ namespace Grafer.CustomControls
 
         public DisplayValueType ValueType { get; set; } = DisplayValueType.Numerical;
 
+        //Nastavý zobrazovací mírou a při změne přepočítá.
         public void SetValueType(DisplayValueType valueType)
         {
             if (ValueType == DisplayValueType.Numerical && valueType == DisplayValueType.Degree)
             {
-                Text = Value.ToDegrees().ToString();
+                Text = Text != "" ? Math.Round(Value.ToDegrees(), 0).ToString() : "";
                 ValueType = DisplayValueType.Degree;
             }
 
             if (ValueType == DisplayValueType.Degree && valueType == DisplayValueType.Numerical)
             {
-                Text = Value.ToNumerical().ToString();
+                Text = Text != "" ? Math.Round(Value.ToNumerical(), 2).ToString() : "";
                 ValueType = DisplayValueType.Numerical;
             }
         }

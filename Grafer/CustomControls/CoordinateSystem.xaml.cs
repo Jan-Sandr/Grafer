@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -27,13 +28,28 @@ namespace Grafer.CustomControls
 
         public double NumberRange { get; private set; } = 3.5;
 
-        private double space = 100; // Mezera mezi mřížními přímkami.
+        private Space spaceBetween = new Space(100, 100); // Mezera mezi mřížními přímkami.
 
         private enum Direction // Směr pro vykreslování.
         {
             X,
             Y
         }
+
+        public new enum Measure
+        {
+            Numerical,
+            Degree
+        }
+
+        private readonly Dictionary<Measure, double> defaultMeasureSpace = new Dictionary<Measure, double>()
+        {
+            {  Measure.Numerical, 100 },
+            {  Measure.Degree, (Math.PI / 3) * 100 }
+        };
+
+        private Measure xMeasure = Measure.Numerical;
+        private Measure yMeasure = Measure.Numerical;
 
         private int defaultElementsCount; // Počet vnitřně přidáných dětí - mřížka a popisky.
 
@@ -49,9 +65,19 @@ namespace Grafer.CustomControls
             defaultElementsCount = Children.Count;
         }
 
-        // Překreslení soustavy.
+        //Překreslení soustavy.
         public void Refresh()
         {
+            SetValues();
+            Create();
+        }
+
+        //Překreslení soustavy se změnami v míře.
+        public void Refresh(Measure horizontalMeasure, Measure verticalMeasure)
+        {
+            xMeasure = horizontalMeasure;
+            yMeasure = verticalMeasure;
+
             SetValues();
             Create();
         }
@@ -82,8 +108,19 @@ namespace Grafer.CustomControls
         private void SetValues()
         {
             Zoom = Math.Pow(1.25, ZoomLevel);
-            space = 100 * Zoom;
+
+            spaceBetween = GetSpaceBetween();
+
             NumberRange = (Width / 200) / Zoom;
+        }
+
+        //Získá mezery mezi hodnotami na základě míry.
+        private Space GetSpaceBetween()
+        {
+            double xSpace = defaultMeasureSpace[xMeasure] * Zoom;
+            double ySpace = defaultMeasureSpace[yMeasure] * Zoom;
+
+            return new Space(xSpace, ySpace);
         }
 
         //Vykreslení mřížky.
@@ -96,51 +133,63 @@ namespace Grafer.CustomControls
         //Vykreslení čísel.
         private void DrawNumbers()
         {
-            DrawGridNumbers(Direction.X, Width);
-            DrawGridNumbers(Direction.Y, Height);
+            DrawGridNumbers(Direction.X, Width, xMeasure);
+            DrawGridNumbers(Direction.Y, Height, yMeasure);
         }
 
         //Vykreslení čísel pro určitý směr.
-        private void DrawGridNumbers(Direction direction, double size)
+        private void DrawGridNumbers(Direction direction, double size, Measure measure)
         {
             int startNumber = 0;
-            int increment = 1;
 
-            Point startPoint = GetStartPoint(direction);
+            double increment = GetGridNumberIncrement(measure, 0); // Popiskové rozdíly.
+
+            Point startPoint = GetStartPoint(direction); // Nulový bod
+
+            double space = direction == Direction.X ? spaceBetween.OnX : spaceBetween.OnY;
 
             for (double i = space; i < size / 2; i += space)
             {
+                double xNumberShift = (measure == Measure.Degree ? -5 : 0) - (startNumber + increment).ToString().Length;
+
                 switch (direction)
                 {
                     case Direction.X:
                         {
-                            Children.Add(NewNumber(startNumber - increment, startPoint.X - i - 4, startPoint.Y));
-                            Children.Add(NewNumber(startNumber + increment, startPoint.X + i, startPoint.Y));
+                            Children.Add(NewNumber(startNumber - increment, startPoint.X - i - 4 + xNumberShift, startPoint.Y, measure));
+                            Children.Add(NewNumber(startNumber + increment, startPoint.X + i + xNumberShift, startPoint.Y, measure));
                             break;
                         }
 
                     case Direction.Y:
                         {
-                            Children.Add(NewNumber(startNumber + increment, startPoint.X + 4, startPoint.Y - i));
-                            Children.Add(NewNumber(startNumber - increment, startPoint.X, startPoint.Y + i - ((ZoomLevel == -4) ? 1 : 0)));
+                            Children.Add(NewNumber(startNumber + increment, startPoint.X + 4, startPoint.Y - i, measure));
+                            Children.Add(NewNumber(startNumber - increment, startPoint.X, startPoint.Y + i - ((ZoomLevel == -4) ? 1 : 0), measure));
                             break;
                         }
                 }
 
-                increment++;
+                increment = GetGridNumberIncrement(measure, increment);
             }
 
             if (direction == Direction.X)
             {
-                Children.Add(NewNumber(0, Width / 2 + 15, Height / 2 + 10));
+                Children.Add(NewNumber(0, Width / 2 + 15, Height / 2 + 10, measure));
             }
         }
 
+        //Přičítá popisnou hodnotu na základě míry.
+        private double GetGridNumberIncrement(Measure currentMeasure, double currentValue)
+        {
+            return currentValue + (currentMeasure == Measure.Degree ? 60 : 1);
+        }
+
+        //Získání vychozí pozice - střed vykreslování.
         private Point GetStartPoint(Direction direction)
         {
             Point startPoint = GetDefaultStartPoint(direction);
 
-            if (ZoomLevel == -4)
+            if (ZoomLevel == -4) // Drobné posunutí, když je přiblížení na maximu.
             {
                 startPoint = new Point()
                 {
@@ -152,6 +201,7 @@ namespace Grafer.CustomControls
             return startPoint;
         }
 
+        //Výchozí popisková pozice.
         private Point GetDefaultStartPoint(Direction direction)
         {
             return new Point()
@@ -162,9 +212,11 @@ namespace Grafer.CustomControls
         }
 
         //Vytvoření čísla.
-        private static TextBlock NewNumber(double value, double x, double y)
+        private static TextBlock NewNumber(double value, double x, double y, Measure measure)
         {
-            TextBlock number = DefaultTextBlock(value.ToString());
+            string addition = measure == Measure.Degree ? "°" : "";
+
+            TextBlock number = DefaultTextBlock(value.ToString() + addition);
 
             number.RenderTransform = new TranslateTransform()
             {
@@ -190,6 +242,9 @@ namespace Grafer.CustomControls
         private void DrawGridLines(Direction direction, double size)
         {
             SolidColorBrush brush = new SolidColorBrush(Color.FromArgb(75, 0, 0, 0));
+
+            double space = direction == Direction.X ? spaceBetween.OnX : spaceBetween.OnY;
+
             for (double i = space; i < size / 2; i += space)
             {
                 switch (direction)
@@ -238,6 +293,19 @@ namespace Grafer.CustomControls
             line.SnapsToDevicePixels = true;
 
             return line;
+        }
+    }
+
+    //Struktura mezera - stejné jako Point akorát to je logické, protože bod není mezera.
+    public struct Space
+    {
+        public readonly double OnX;
+        public readonly double OnY;
+
+        public Space(double onX, double onY)
+        {
+            OnX = onX;
+            OnY = onY;
         }
     }
 }
