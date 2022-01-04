@@ -1,4 +1,5 @@
-﻿using Grafer.ExtensionMethods;
+﻿using Grafer.CustomControls;
+using Grafer.ExtensionMethods;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using static Grafer.CustomControls.CoordinateSystem;
 
 namespace Grafer
 {
@@ -21,6 +23,7 @@ namespace Grafer
             coordinateSystem.MouseWheel += CoordinateSystemMouseWheel;
         }
 
+        //Událost pohybu kolečka myši
         private void CoordinateSystemMouseWheel(object sender, MouseWheelEventArgs e)
         {
             changedByScrool = true;
@@ -41,6 +44,7 @@ namespace Grafer
         private double gMaximumX;
         private bool isXRangeValid;
         private bool changedByScrool;
+        private Function.FunctionType previousFunctionType = Function.FunctionType.Basic; // Předešlí typ funkce
 
         private string[] messages = Array.Empty<string>(); // Pole pro chybové hlášky.
 
@@ -148,9 +152,6 @@ namespace Grafer
         //Získání rozsahu x z inputů od uživatele.
         private void GetXRangeFromInputs()
         {
-            minimumXInput.SetValueType(CustomControls.RangeInput.DisplayValueType.Degree);
-            maximumXInput.SetValueType(CustomControls.RangeInput.DisplayValueType.Degree);
-
             if (IsXRangeInputValid()) //Pouze pokud je validní.
             {
                 gMinimumX = minimumXInput.NumericalValue;
@@ -234,7 +235,62 @@ namespace Grafer
 
             if (gFunction != null)
             {
+                UpdateToMeasure();
+
                 gFunction.Plot();
+            }
+        }
+
+        //Aktualizace komponentů na aktuální míru (pokud se změnila).
+        private void UpdateToMeasure()
+        {
+            if (previousFunctionType != gFunction!.Type)
+            {
+                UpdateCoordinateSystem();
+
+                UpdateRangeMeasure();
+
+                SetDegreeLabelsVisibility();
+            }
+        }
+
+        //Pošle informace souřadnicové systém o tom jakou mírou má použit.
+        private void UpdateCoordinateSystem()
+        {
+            Measure horizontalMeasure = gFunction!.Type == Function.FunctionType.TrigonometricFunction ? CoordinateSystem.Measure.Degree : CoordinateSystem.Measure.Numerical;
+            Measure verticalMeasure = gFunction.Type == Function.FunctionType.InverseTrigonometricFunction ? CoordinateSystem.Measure.Degree : CoordinateSystem.Measure.Numerical;
+
+            coordinateSystem.Refresh(horizontalMeasure, verticalMeasure);
+            previousFunctionType = gFunction!.Type;
+        }
+
+        //Aktualizuje míru v políčkách pro rozsah.
+        private void UpdateRangeMeasure()
+        {
+            if (gFunction!.Type == Function.FunctionType.TrigonometricFunction)
+            {
+                minimumXInput.SetValueType(RangeInput.DisplayValueType.Degree);
+                maximumXInput.SetValueType(RangeInput.DisplayValueType.Degree);
+            }
+            else
+            {
+                minimumXInput.SetValueType(RangeInput.DisplayValueType.Numerical);
+                maximumXInput.SetValueType(RangeInput.DisplayValueType.Numerical);
+            }
+        }
+
+        //Aktualizuje zda se zobrazí stupně za políčky pro rozsah.
+        private void SetDegreeLabelsVisibility()
+        {
+            if (gFunction!.Type == Function.FunctionType.TrigonometricFunction)
+            {
+                labelDegreeMinimum.Visibility = Visibility.Visible;
+                labelDegreeMaximum.Visibility = Visibility.Visible;
+            }
+            else
+            {
+                labelDegreeMinimum.Visibility = Visibility.Hidden;
+                labelDegreeMaximum.Visibility = Visibility.Hidden;
             }
         }
 
@@ -345,7 +401,13 @@ namespace Grafer
         {
             language = (Language)languageSelect.SelectedItem;
             LocalizeUserInterface();
-            Start();
+
+            SetStatus("OK", defaultStatusColor);
+
+            if (equationInput.Text.Trim() != "" && !equationInput.IsEquationValid)
+            {
+                NotifyInvalidInput(equationInput, equationInput.InvalidSection.SelectionStart, equationInput.InvalidSection.SelectionLength, equationInput.InvalidSection.MessageID);
+            }
         }
 
         //Přizpůsobení prostředí velikosti aplikace.
@@ -369,7 +431,6 @@ namespace Grafer
             coordinateSystem.Refresh();
             Start();
         }
-
         //Povolení tlačítka vykreslit.
         private void EquationInputTextChanged(object sender, TextChangedEventArgs e)
         {
@@ -389,6 +450,7 @@ namespace Grafer
             buttonDraw.Margin = new Thickness(64, 206 + (26 * marginTopMultiply), 0, 0);
         }
 
+        //Událost při pohybu jezdítka pro nastavení přiblížení soustavy.
         private void SliderZoomLevelValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             if (!changedByScrool)
@@ -398,6 +460,7 @@ namespace Grafer
             }
         }
 
+        //Detail aby se v tooltipu zobrazil level - důvod aby nebyl prádzný - nešel odstranit!
         private void SliderZoomLevelToolTipOpening(object sender, ToolTipEventArgs e)
         {
             sliderZoomLevel.ToolTip = sliderZoomLevel.Value;

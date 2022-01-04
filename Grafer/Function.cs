@@ -16,6 +16,14 @@ namespace Grafer
         public CalculationOrder CalculationOrder { get; set; }
         public List<Polyline> Curves { get; set; }
         public CoordinateSystem CoordinateSystem { get; }
+        public FunctionType Type { get; private set; }
+
+        public enum FunctionType // Typy funkce na základě vhodné míry pro konkrétní osu.
+        {
+            Basic,
+            TrigonometricFunction,
+            InverseTrigonometricFunction
+        }
 
         private List<Point> points;
         private double y;
@@ -32,6 +40,27 @@ namespace Grafer
             Curves = new List<Polyline>();
             points = new List<Point>();
             CoordinateSystem = coordinateSystem;
+            Type = GetFunctionType();
+        }
+
+        //Zjištení typu funkce.
+        private FunctionType GetFunctionType()
+        {
+            FunctionType type = Relation.Contains("⁻¹") ? FunctionType.InverseTrigonometricFunction : FunctionType.Basic;
+
+            if (type != FunctionType.InverseTrigonometricFunction)
+            {
+                for (int i = 0; i < Relation.Count; i++)
+                {
+                    if (Relation[i].IsTrigonometricFunction())
+                    {
+                        type = FunctionType.TrigonometricFunction;
+                        break;
+                    }
+                }
+            }
+
+            return type;
         }
 
         //Výpočítání křivky.
