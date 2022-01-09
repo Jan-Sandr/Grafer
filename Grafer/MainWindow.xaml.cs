@@ -12,15 +12,19 @@ using static Grafer.CustomControls.CoordinateSystem;
 
 namespace Grafer
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         public MainWindow()
         {
             InitializeComponent();
             coordinateSystem.MouseWheel += CoordinateSystemMouseWheel;
+            coordinateSystem.AbsoluteShiftChanged += CoordinateSystemAbsoluteShiftChanged;
+        }
+
+        //Vyvolání překreslení funkce při změny posunutí soustavy.
+        private void CoordinateSystemAbsoluteShiftChanged(object? sender, EventArgs e)
+        {
+            Start();
         }
 
         //Událost pohybu kolečka myši
@@ -145,8 +149,8 @@ namespace Grafer
         //Pokud není zaškrtnuto omezit, tak se rozsah získá ze šířky plátna.
         private void GetXRangeFromCoordinateSystem()
         {
-            gMinimumX = -coordinateSystem.NumberRange;
-            gMaximumX = coordinateSystem.NumberRange;
+            gMinimumX = (-coordinateSystem.Width / 200 - coordinateSystem.AbsoluteShift.OnX / 100) / coordinateSystem.Zoom;
+            gMaximumX = (coordinateSystem.Width / 200 - coordinateSystem.AbsoluteShift.OnX / 100) / coordinateSystem.Zoom;
         }
 
         //Získání rozsahu x z inputů od uživatele.

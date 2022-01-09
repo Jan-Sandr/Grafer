@@ -144,8 +144,8 @@ namespace Grafer
         //Nastavení výpočetního rozsahu. Pokud by byl rozsah větší než plátno, omezí to jen na viditelnou plochu interně.
         private void SetCalculationXRange()
         {
-            calculationMinimumX = (Math.Abs(MinimumX) > CoordinateSystem.NumberRange) ? -CoordinateSystem.NumberRange : MinimumX;
-            calculationMaximumX = (MaximumX > CoordinateSystem.NumberRange) ? CoordinateSystem.NumberRange : MaximumX;
+            calculationMinimumX = ((Math.Abs(MinimumX) > CoordinateSystem.NumberRange + (CoordinateSystem.AbsoluteShift.OnX / 100 / CoordinateSystem.Zoom)) ? -CoordinateSystem.NumberRange - CoordinateSystem.AbsoluteShift.OnX / 100 / CoordinateSystem.Zoom : MinimumX);
+            calculationMaximumX = ((MaximumX > CoordinateSystem.NumberRange - (CoordinateSystem.AbsoluteShift.OnX / 100 / CoordinateSystem.Zoom)) ? CoordinateSystem.NumberRange - CoordinateSystem.AbsoluteShift.OnX / 100 / CoordinateSystem.Zoom : MaximumX);
         }
 
         //Dosazení za x.
@@ -239,8 +239,8 @@ namespace Grafer
         {
             point = new Point()
             {
-                X = CoordinateSystem.Width / 2 + (point.X * CoordinateSystem.Zoom * 100),
-                Y = (-y * CoordinateSystem.Zoom * 100) + CoordinateSystem.Height / 2
+                X = CoordinateSystem.Width / 2 + (point.X * CoordinateSystem.Zoom * 100) + CoordinateSystem.AbsoluteShift.OnX,
+                Y = (-y * CoordinateSystem.Zoom * 100) + CoordinateSystem.Height / 2 + CoordinateSystem.AbsoluteShift.OnY
             };
             return point;
         }
