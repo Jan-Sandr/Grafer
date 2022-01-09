@@ -8,9 +8,6 @@ using System.Windows.Shapes;
 
 namespace Grafer.CustomControls
 {
-    /// <summary>
-    /// Interaction logic for CoordinateSystem.xaml
-    /// </summary>
     public partial class CoordinateSystem : Canvas
     {
         //Výška a šířka nejsou ještě v  této metodě čísla, proto jim zde přiřazuji výchozí hodnotu.
@@ -22,13 +19,37 @@ namespace Grafer.CustomControls
             Create();
         }
 
+        public event EventHandler? AbsoluteShiftChanged; // Event který nastane při změne posunu.
+
         public int ZoomLevel { get; set; } = 0; // Slouží pro výpočet zoomu a zároveň celočíselný vyjádření zoomu.
 
         public double Zoom { get; private set; } = 1; // Zoom pro násobek mezer na základě přiblížení.
 
         public double NumberRange { get; private set; } = 3.5;
 
+        private Space absoluteShift = new Space(0, 0);
+
+        public Space AbsoluteShift
+        {
+            get
+            {
+                return absoluteShift;
+            }
+            private set
+            {
+                absoluteShift = value;
+                Refresh();
+                AbsoluteShiftChanged?.Invoke(this, EventArgs.Empty); // Aby bylo vyvolání eventu dostupné i mimo třídu.
+            }
+        }
+
+        private Space previousAbsoluteShift = new Space(0, 0); // Absolutní posunít před započetím pohybu v soustavě.
+
         private Space spaceBetween = new Space(100, 100); // Mezera mezi mřížními přímkami.
+
+        private Point mouseDownPosition = new Point(0, 0); // Pozice kliknutí myši.
+
+        bool isMouseDown = false; // Jestli je myší tlačíko dole.
 
         private enum Direction // Směr pro vykreslování.
         {
@@ -91,9 +112,50 @@ namespace Grafer.CustomControls
         //Metoda pro zachycení skrolování.
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
+            absoluteShift = AdjustAbsoluteShiftToZoom(e.Delta);
             ZoomLevel = GetZoomLevel(e.Delta);
             SetValues();
             Create();
+        }
+
+        //Zmáčknutí levého tlačíka na myši.
+        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
+        {
+            isMouseDown = true;
+            mouseDownPosition = e.GetPosition(this);
+            previousAbsoluteShift = AbsoluteShift;
+        }
+
+        //Resetování posunutí.
+        protected override void OnMouseDown(MouseButtonEventArgs e)
+        {
+            if (e.MiddleButton == MouseButtonState.Pressed)
+            {
+                AbsoluteShift = new Space(0, 0);
+            }
+        }
+
+        //Pohyb myši.
+        protected override void OnMouseMove(MouseEventArgs e)
+        {
+            if (isMouseDown)
+            {
+                Point mousePosition = e.GetPosition(this);
+
+                AbsoluteShift = new Space(previousAbsoluteShift.OnX - (mouseDownPosition.X - mousePosition.X), (previousAbsoluteShift.OnY - (mouseDownPosition.Y - mousePosition.Y)));
+            }
+        }
+
+        //Úvolnění levého tlačítka myši.
+        protected override void OnMouseLeftButtonUp(MouseButtonEventArgs e)
+        {
+            isMouseDown = false;
+        }
+
+        //Když myš opustí soustavu.
+        protected override void OnMouseLeave(MouseEventArgs e)
+        {
+            isMouseDown = false;
         }
 
         //Nastavení zoomLevel maximální je absolutní 4.
@@ -123,6 +185,26 @@ namespace Grafer.CustomControls
             return new Space(xSpace, ySpace);
         }
 
+        //Úprava hodnoty pusuní při změne zoomu.
+        private Space AdjustAbsoluteShiftToZoom(int delta)
+        {
+            double absoluteShiftX = absoluteShift.OnX;
+            double absoluteShiftY = absoluteShift.OnY;
+
+            if (delta == 120 && ZoomLevel < 4)
+            {
+                absoluteShiftX *= 1.25;
+                absoluteShiftY *= 1.25;
+            }
+
+            if (delta == -120 && ZoomLevel > -4)
+            {
+                absoluteShiftX /= 1.25;
+                absoluteShiftY /= 1.25;
+            }
+            return new Space(absoluteShiftX, absoluteShiftY);
+        }
+
         //Vykreslení mřížky.
         private void DrawGrid()
         {
@@ -140,31 +222,47 @@ namespace Grafer.CustomControls
         //Vykreslení čísel pro určitý směr.
         private void DrawGridNumbers(Direction direction, double size, Measure measure)
         {
-            int startNumber = 0;
-
             double increment = GetGridNumberIncrement(measure, 0); // Popiskové rozdíly.
 
             Point startPoint = GetStartPoint(direction); // Nulový bod
 
             double space = direction == Direction.X ? spaceBetween.OnX : spaceBetween.OnY;
 
-            for (double i = space; i < size / 2; i += space)
+            double sideWidth = size / 2 + Math.Abs(direction == Direction.X ? AbsoluteShift.OnX : AbsoluteShift.OnY);
+
+            for (double i = space; i < sideWidth; i += space)
             {
-                double xNumberShift = (measure == Measure.Degree ? -5 : 0) - (startNumber + increment).ToString().Length;
+                double xNumberShift = (measure == Measure.Degree ? -5 : 0) - increment.ToString().Length;
 
                 switch (direction)
                 {
                     case Direction.X:
                         {
-                            Children.Add(NewNumber(startNumber - increment, startPoint.X - i - 4 + xNumberShift, startPoint.Y, measure));
-                            Children.Add(NewNumber(startNumber + increment, startPoint.X + i + xNumberShift, startPoint.Y, measure));
+                            if (Width / 2 + AbsoluteShift.OnX - i > 0 && startPoint.X - i - 4 + xNumberShift + AbsoluteShift.OnX < Width)
+                            {
+                                Children.Add(NewNumber(-increment, startPoint.X - i - 4 + xNumberShift + AbsoluteShift.OnX, startPoint.Y + AbsoluteShift.OnY, measure));
+                            }
+
+                            if (Width / 2 + AbsoluteShift.OnX + i < Width && startPoint.X + i + xNumberShift + AbsoluteShift.OnX > 0)
+                            {
+                                Children.Add(NewNumber(increment, startPoint.X + i + xNumberShift + AbsoluteShift.OnX, startPoint.Y + AbsoluteShift.OnY, measure));
+                            }
+
                             break;
                         }
 
                     case Direction.Y:
                         {
-                            Children.Add(NewNumber(startNumber + increment, startPoint.X + 4, startPoint.Y - i, measure));
-                            Children.Add(NewNumber(startNumber - increment, startPoint.X, startPoint.Y + i - ((ZoomLevel == -4) ? 1 : 0), measure));
+                            if (Height / 2 + AbsoluteShift.OnY - i > 0)
+                            {
+                                Children.Add(NewNumber(increment, startPoint.X + 4 + AbsoluteShift.OnX, startPoint.Y - i + AbsoluteShift.OnY, measure));
+                            }
+
+                            if (Height / 2 + AbsoluteShift.OnY + i < Height)
+                            {
+                                Children.Add(NewNumber(-increment, startPoint.X + AbsoluteShift.OnX, startPoint.Y + i - ((ZoomLevel == -4) ? 1 : 0) + AbsoluteShift.OnY, measure));
+                            }
+
                             break;
                         }
                 }
@@ -174,7 +272,7 @@ namespace Grafer.CustomControls
 
             if (direction == Direction.X)
             {
-                Children.Add(NewNumber(0, Width / 2 + 15, Height / 2 + 10, measure));
+                Children.Add(NewNumber(0, Width / 2 + 15 + AbsoluteShift.OnX, Height / 2 + 10 + AbsoluteShift.OnY, measure));
             }
         }
 
@@ -245,21 +343,26 @@ namespace Grafer.CustomControls
 
             double space = direction == Direction.X ? spaceBetween.OnX : spaceBetween.OnY;
 
-            for (double i = space; i < size / 2; i += space)
+            Children.Add(NewLine(direction, lineX: (size / 2) + AbsoluteShift.OnX % space, brushes: brush));
+            Children.Add(NewLine(direction, lineY: (size / 2) + AbsoluteShift.OnY % space, brushes: brush));
+
+            double sideWidth = size / 2 + Math.Abs((direction == Direction.X ? AbsoluteShift.OnX % space : AbsoluteShift.OnY % space));
+
+            for (double i = space; i < sideWidth; i += space)
             {
                 switch (direction)
                 {
                     case Direction.X:
                         {
-                            Children.Add(NewLine(direction, lineX: (size / 2) - i, brushes: brush));
-                            Children.Add(NewLine(direction, lineX: (size / 2) + i, brushes: brush));
+                            Children.Add(NewLine(direction, lineX: (size / 2) - i + AbsoluteShift.OnX % space, brushes: brush));
+                            Children.Add(NewLine(direction, lineX: (size / 2) + i + AbsoluteShift.OnX % space, brushes: brush));
                             break;
                         }
 
                     case Direction.Y:
                         {
-                            Children.Add(NewLine(direction, lineY: (size / 2) - i, brushes: brush));
-                            Children.Add(NewLine(direction, lineY: (size / 2) + i, brushes: brush));
+                            Children.Add(NewLine(direction, lineY: (size / 2) - i + AbsoluteShift.OnY % space, brushes: brush));
+                            Children.Add(NewLine(direction, lineY: (size / 2) + i + AbsoluteShift.OnY % space, brushes: brush));
                             break;
                         }
                 }
@@ -269,9 +372,9 @@ namespace Grafer.CustomControls
         //Vykreslení os.
         private void DrawAxes()
         {
-            Line axisX = NewLine(Direction.X, lineX: Width / 2, strokeThickness: 1.5);
+            Line axisX = NewLine(Direction.X, lineX: Width / 2 + AbsoluteShift.OnX, strokeThickness: 1.5);
 
-            Line axisY = NewLine(Direction.Y, lineY: Height / 2, strokeThickness: 1.5);
+            Line axisY = NewLine(Direction.Y, lineY: Height / 2 + AbsoluteShift.OnY, strokeThickness: 1.5);
 
             Children.Add(axisX);
             Children.Add(axisY);
