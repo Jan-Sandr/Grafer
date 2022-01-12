@@ -418,6 +418,7 @@ namespace Grafer
         private void AdjustComponentsToApplicationSize()
         {
             AdjustCoordinateSystemSize();
+            AdjustButtonSectionLayout();
         }
 
         //Přizpůsobení plátna velikosti aplikace.
@@ -426,6 +427,29 @@ namespace Grafer
             coordinateSystem.Width = ActualWidth - 400;
             coordinateSystem.Height = ActualHeight - 39;
             coordinateSystem.Margin = new Thickness(384, 0, 0, 700 - coordinateSystem.Height);
+        }
+
+        //Přizpůsobení sekce s tlačítky velikosti aplikace
+        private void AdjustButtonSectionLayout()
+        {
+            scrollButtonSection.Width = coordinateSystem.Width;
+
+            scrollButtonSection.Margin = new Thickness(384, ActualHeight - scrollButtonSection.Height- 39, 0, 0);
+
+            AdjustButtonSectionInnerMargin();
+        }
+
+        //Upravuje pozici tlačítek na základě toho, zda je viditelný horizontální posuvník.
+        private void AdjustButtonSectionInnerMargin()
+        {
+            double buttonsBottomMargin = 20;
+
+            if (coordinateSystem.Width < 700) // Scrollbar posunu nahoru - pro vyrovnání.
+            {
+                buttonsBottomMargin = 3;
+            }
+
+            buttonSection.Margin = new Thickness(0, 0, 0, buttonsBottomMargin);
         }
 
         //Změna velikosti aplikace.
@@ -468,6 +492,12 @@ namespace Grafer
         private void SliderZoomLevelToolTipOpening(object sender, ToolTipEventArgs e)
         {
             sliderZoomLevel.ToolTip = sliderZoomLevel.Value;
+        }
+
+        //Ovládání zobrazení sekce s tlačítky.
+        private void ButtonShowHideButtonsClick(object sender, RoutedEventArgs e)
+        {
+            scrollButtonSection.Visibility = scrollButtonSection.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;  
         }
     }
 }
