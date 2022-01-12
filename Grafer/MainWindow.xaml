@@ -6,22 +6,20 @@
         xmlns:local="clr-namespace:Grafer"
         xmlns:control="clr-namespace:Grafer.CustomControls"
         mc:Ignorable="d"
-        Title="Grafer" Height="739" Width="1100" PreviewKeyDown="ShortcutsPress" ResizeMode="CanResize" SizeChanged="ApplicationResize" MinWidth="600" MinHeight="400" Loaded="ApplicationLoaded">
-    <Grid x:Name="gridMain" Height="700" VerticalAlignment="Top">
+        Title="Grafer" Height="700" Width="1100" PreviewKeyDown="ShortcutsPress" ResizeMode="CanResize" SizeChanged="ApplicationResize" MinWidth="600" MinHeight="400" Loaded="ApplicationLoaded">
+    <Grid x:Name="gridMain" VerticalAlignment="Top" HorizontalAlignment="Stretch">
         <control:EquationInput x:Name="equationInput" Margin="66,156,0,0" VerticalAlignment="Top" Width="140" Height="auto" HorizontalAlignment="Left" SelectionChanged="OnSelectionChanged" TextWrapping="Wrap" TextChanged="EquationInputTextChanged" SizeChanged="EquationInputSizeChanged"/>
         <Label x:Name="labelY" Content="y =" HorizontalAlignment="Left" Margin="21,153,0,0" VerticalAlignment="Top" RenderTransformOrigin="-6.559,3.773" FontSize="20"/>
         <Label Content="min:" HorizontalAlignment="Left" Margin="24,111,0,0" VerticalAlignment="Top"/>
         <Label Content="max:" HorizontalAlignment="Left" Margin="134,111,0,0" VerticalAlignment="Top"/>
         <Button x:Name="buttonDraw" Content="Draw" HorizontalAlignment="Left" Margin="64,206,0,0" VerticalAlignment="Top" Height="37" Width="140" Click="ButtonDrawClick" IsEnabled="False"/>
         <CheckBox x:Name="limitX" Content="limit x" HorizontalAlignment="Left" Margin="28,91,0,0" VerticalAlignment="Top" Width="94"/>
-        <control:CoordinateSystem x:Name="coordinateSystem" Margin="384,0,0,0" Background="#FFF1EDED" Height="700" Width="700" ClipToBounds="True"/>
+        <control:CoordinateSystem x:Name="coordinateSystem" Margin="384,0,0,0" Background="#FFF1EDED" Height="700" Width="700" ClipToBounds="True" VerticalAlignment="Top"/>
         <control:RangeInput x:Name="minimumXInput" HorizontalAlignment="Left" Margin="62,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="19" Uid="Minimum" SelectionChanged="OnSelectionChanged"/>
         <control:RangeInput x:Name="maximumXInput" HorizontalAlignment="Left" Margin="174,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="19" Uid="Maximum" SelectionChanged="OnSelectionChanged"/>
-        <Button x:Name="buttonExponent" Content="^" HorizontalAlignment="Left" Margin="17,258,0,0" VerticalAlignment="Top" Width="28" FontSize="20" Click="InsertionButtonClick" Uid="^"/>
-        <Button x:Name="buttonRoot" Content="√" HorizontalAlignment="Left" Margin="17,294,0,0" VerticalAlignment="Top" Width="28" FontSize="20" Click="InsertionButtonClick" Uid="√"/>
         <ComboBox x:Name="languageSelect" HorizontalAlignment="Left" Margin="91,7,0,0" VerticalAlignment="Top" Width="120" IsReadOnly="True" SelectedIndex="0" SelectionChanged="LanguageSelectionChange"/>
         <Label x:Name="labelLanguage" Content="Language:" HorizontalAlignment="Left" Margin="17,5,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="labelStatus" HorizontalAlignment="Left" Margin="17,346,0,0" VerticalAlignment="Top" RenderTransformOrigin="-6.559,3.773" FontSize="25" FontWeight="Bold" FontFamily="Segoe UI" Foreground="#FF7DFF63" Width="364" Height="Auto">
+        <Label x:Name="labelStatus" HorizontalAlignment="Left" Margin="17,290,0,0" VerticalAlignment="Top" RenderTransformOrigin="-6.559,3.773" FontSize="25" FontWeight="Bold" FontFamily="Segoe UI" Foreground="#FF7DFF63" Width="364" Height="Auto">
             <TextBlock x:Name="textBlockStatus" TextWrapping="Wrap">
                  Status: OK
             </TextBlock>
@@ -29,17 +27,24 @@
         <Slider x:Name="sliderZoomLevel" HorizontalAlignment="Left" Margin="91,49,0,0" VerticalAlignment="Top" Width="120" Maximum="4" Minimum="-4" SmallChange="1" IsSnapToTickEnabled="True" AutoToolTipPlacement="None" ToolTip="" ValueChanged="SliderZoomLevelValueChanged" TickPlacement="BottomRight" ToolTipOpening="SliderZoomLevelToolTipOpening"/>
         <Label x:Name="labelZoomMinimum" Content="-" HorizontalAlignment="Left" Margin="66,38,0,0" VerticalAlignment="Top" FontSize="20"/>
         <Label x:Name="labelZoomMaximum" Content="+" HorizontalAlignment="Left" Margin="215,45,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="buttonSine" Content="sin" HorizontalAlignment="Left" Margin="250,183,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="sin"/>
-        <Button x:Name="buttonCosine" Content="cos" HorizontalAlignment="Left" Margin="250,219,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="cos"/>
-        <Button x:Name="buttonTangent" Content="tg" HorizontalAlignment="Left" Margin="318,183,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="tg"/>
-        <Button x:Name="buttonCotangent" Content="cotg" HorizontalAlignment="Left" Margin="318,219,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="cotg"/>
-        <Button x:Name="buttonArcSine" Content="sin⁻¹" HorizontalAlignment="Left" Margin="250,265,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="sin⁻¹"/>
-        <Button x:Name="buttonArcCosine" Content="cos⁻¹" HorizontalAlignment="Left" Margin="250,301,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="cos⁻¹"/>
-        <Button x:Name="buttonArcTangent" Content="tg⁻¹" HorizontalAlignment="Left" Margin="318,265,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="tg⁻¹"/>
-        <Button x:Name="buttonArcCotangent" Content="cotg⁻¹" HorizontalAlignment="Left" Margin="318,301,0,0" VerticalAlignment="Top" Width="63" FontSize="20" Click="InsertionButtonClick" Uid="cotg⁻¹"/>
-        <Button x:Name="buttonDegree" Content="°" HorizontalAlignment="Left" Margin="53,258,0,0" VerticalAlignment="Top" Width="28" FontSize="20" Click="InsertionButtonClick" Uid="°"/>
-        <Button x:Name="buttonPi" Content="π" HorizontalAlignment="Left" Margin="53,294,0,0" VerticalAlignment="Top" Width="28" FontSize="20" Click="InsertionButtonClick" Uid="π"/>
         <Label x:Name="labelDegreeMinimum" Content="°" HorizontalAlignment="Left" Margin="120,106,0,0" VerticalAlignment="Top" FontSize="20" Visibility="Hidden"/>
         <Label x:Name="labelDegreeMaximum" Content="°" HorizontalAlignment="Left" Margin="233,106,0,0" VerticalAlignment="Top" FontSize="20" Visibility="Hidden"/>
+        <ScrollViewer x:Name="scrollButtonSection"  Margin="384,0,0,0" Height="110" Width="700" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Background="White" VerticalAlignment="Top" Visibility="Collapsed">
+            <Canvas x:Name="buttonSection" Margin="0,0,0,20" Width="700" Background="White" Height="90" VerticalAlignment="Bottom">
+                <Button x:Name="buttonExponent" Content="^" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="^" Canvas.Left="20" Canvas.Top="13"/>
+                <Button x:Name="buttonRoot" Content="√" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="√" Canvas.Left="20" Canvas.Top="49"/>
+                <Button x:Name="buttonDegree" Content="°" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="°" Canvas.Left="94" Canvas.Top="13"/>
+                <Button x:Name="buttonPi" Content="π" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="π" Canvas.Left="94" Canvas.Top="49"/>
+                <Button x:Name="buttonSine" Content="sin" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="sin" Canvas.Left="384" Canvas.Top="13"/>
+                <Button x:Name="buttonCosine" Content="cos" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="cos" Canvas.Left="384" Canvas.Top="49"/>
+                <Button x:Name="buttonTangent" Content="tg" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="tg" Canvas.Left="458" Canvas.Top="13"/>
+                <Button x:Name="buttonCotangent" Content="cotg" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="cotg" Canvas.Left="458" Canvas.Top="49"/>
+                <Button x:Name="buttonArcSine" Content="sin⁻¹" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="sin⁻¹" Canvas.Left="542" Canvas.Top="13"/>
+                <Button x:Name="buttonArcCosine" Content="cos⁻¹" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="cos⁻¹" Canvas.Left="542" Canvas.Top="49"/>
+                <Button x:Name="buttonArcTangent" Content="tg⁻¹" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="tg⁻¹" Canvas.Left="616" Canvas.Top="13"/>
+                <Button x:Name="buttonArcCotangent" Content="cotg⁻¹" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="cotg⁻¹" Canvas.Left="616" Canvas.Top="49"/>
+            </Canvas>
+        </ScrollViewer>
+        <Button x:Name="buttonShowHideButtons" Content="Buttons" HorizontalAlignment="Left" Margin="242,206,0,0" VerticalAlignment="Top" Height="37" Width="80" Click="ButtonShowHideButtonsClick"/>
     </Grid>
 </Window>
