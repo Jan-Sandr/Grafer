@@ -16,6 +16,7 @@ namespace Grafer
         public CalculationOrder CalculationOrder { get; set; }
         public List<Polyline> Curves { get; set; }
         public CoordinateSystem CoordinateSystem { get; }
+        public Brush Brush { get; }
         public FunctionType Type { get; private set; }
 
         public enum FunctionType // Typy funkce na základě vhodné míry pro konkrétní osu.
@@ -31,7 +32,7 @@ namespace Grafer
         private int[] calculationOrderIndexesBackup = Array.Empty<int>(); // záloha výpočetního postupu.
         private double calculationMinimumX, calculationMaximumX; // Výpočetní minimum a maximum.
 
-        public Function(string relation, double minimumX, double maximumX, CoordinateSystem coordinateSystem)
+        public Function(string relation, double minimumX, double maximumX, CoordinateSystem coordinateSystem, Brush color)
         {
             Relation = new Relation(relation);
             MinimumX = minimumX;
@@ -40,6 +41,7 @@ namespace Grafer
             Curves = new List<Polyline>();
             points = new List<Point>();
             CoordinateSystem = coordinateSystem;
+            Brush = color;
             Type = GetFunctionType();
         }
 
@@ -220,7 +222,7 @@ namespace Grafer
         {
             Polyline polyline = new Polyline()
             {
-                Stroke = Brushes.Black,
+                Stroke = Brush,
                 StrokeThickness = 2
             };
 

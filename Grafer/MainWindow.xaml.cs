@@ -121,7 +121,7 @@ namespace Grafer
         //Vytvoření instance funkce.
         private void CreateFunction()
         {
-            gFunction = new Function(equationInput.Text, gMinimumX, gMaximumX, coordinateSystem);
+            gFunction = new Function(equationInput.Text, gMinimumX, gMaximumX, coordinateSystem, rectangleColor.Fill);
             gFunction.CalculatePoints();
         }
 
@@ -498,6 +498,17 @@ namespace Grafer
         private void ButtonShowHideButtonsClick(object sender, RoutedEventArgs e)
         {
             scrollButtonSection.Visibility = scrollButtonSection.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;  
+        }
+
+        private void RectangleColorMouseUp(object sender, MouseButtonEventArgs e)
+        {
+            System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
+
+            if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                Color selectedColor = Color.FromArgb(255, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B);
+                rectangleColor.Fill = new SolidColorBrush(selectedColor);
+            }
         }
     }
 }
