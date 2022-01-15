@@ -9,9 +9,9 @@ namespace Grafer
 
         private static int[] elementsIndex = System.Array.Empty<int>(); // Pole s indexy, kde nejsou prázdná místa v rovnici.
 
-        private readonly static char[] allowedBeginningChars = new char[8] { 'x', '-', '(', '√', 's', 'c', 't', 'π' }; // Povolené znaky na začátku předpisu.
+        private readonly static char[] allowedBeginningChars = new char[9] { 'x', '-', '(', '√', 's', 'c', 't', 'π', '|' }; // Povolené znaky na začátku předpisu.
 
-        private readonly static char[] allowedEndeningChars = new char[4] { 'x', ')', '°', 'π' }; // Povolené znaky na konci předpisu.
+        private readonly static char[] allowedEndeningChars = new char[5] { 'x', ')', '°', 'π', '|' }; // Povolené znaky na konci předpisu.
 
         //Kontrola rovnice
         public static bool IsEquationValid(string equation)
@@ -28,7 +28,8 @@ namespace Grafer
                                           IsRootIndexValid(equation) &&
                                             AreCommasValid(equation) &&
                                      AreFunctionNamesValid(equation) &&
-                                           AreDegreesValid(equation)
+                                           AreDegreesValid(equation) &&
+                                      IsAbsoluteValueValid(equation)
                                    );
 
             return isEquationValid;
@@ -188,6 +189,14 @@ namespace Grafer
                 InvalidSection = (openingBracketIndex, 1, 11);
             }
 
+            //Jestli má předpis sudý počet znaků absolutní hodnoty.
+            countOfBrackets = (equation.Count(s => s == '|') % 2 == 1) ? 1 : 0;
+
+            if (countOfBrackets > 0)
+            {
+                InvalidSection = (equation.Length, 0, 23);
+            }
+
             return countOfBrackets == 0;
         }
 
@@ -198,12 +207,22 @@ namespace Grafer
 
             for (int i = 0; i < elementsIndex.Length - 1; i++)
             {
-                if (equation[elementsIndex[i]] == '(' && equation[elementsIndex[i + 1]] == ')')
+                //()  
+                if ((equation[elementsIndex[i]] == '(' && equation[elementsIndex[i + 1]] == ')'))
                 {
                     containsEmptyBrackets = true;
                     InvalidSection = (elementsIndex[i], elementsIndex[i + 1] - elementsIndex[i] + 1, 12);
                     break;
                 }
+
+                //||
+                if (equation[elementsIndex[i]] == '|' && equation[elementsIndex[i + 1]] == '|')
+                {
+                    containsEmptyBrackets = true;
+                    InvalidSection = (elementsIndex[i], elementsIndex[i + 1] - elementsIndex[i] + 1, 25);
+                    break;
+                }
+
             }
 
             return containsEmptyBrackets;
@@ -420,6 +439,7 @@ namespace Grafer
             return isTrigonometricFunctionsSyntaxValid;
         }
 
+        //Kontroluje zda před známínkem stupňu je číslo.
         private static bool AreDegreesValid(string equation)
         {
             bool areDegreesValid = true;
@@ -435,6 +455,29 @@ namespace Grafer
             }
 
             return areDegreesValid;
+        }
+
+        //Kontroluje jestli se nenachází čistě pouze operace v absolutní hodnotě.
+        private static bool IsAbsoluteValueValid(string equation)
+        {
+            bool isAbsoluteValueValid = true;
+
+            bool inAbsoluteValue = false;
+
+            for (int i = 1; i < elementsIndex.Length - 1; i++)
+            {
+                inAbsoluteValue = equation[elementsIndex[i]] == '|' ? !inAbsoluteValue : inAbsoluteValue; // Jestli jsme uvnitř abs. hodnoty.
+
+                // Pokud je absolutní hodnota vnoření už musí být obalená, tudíž toto | (|x|) + (|2|) | není problém, i když jsme v absolutní hodnotě.
+                if (!inAbsoluteValue && equation[elementsIndex[i - 1]] == '|' && equation[elementsIndex[i + 1]] == '|' && equation[elementsIndex[i]].IsMathOperation())
+                {
+                    isAbsoluteValueValid = false;
+                    InvalidSection = (elementsIndex[i - 1], elementsIndex[i + 1] - elementsIndex[i - 1] + 1, 24);
+                    break;
+                }
+            }
+
+            return isAbsoluteValueValid;
         }
 
         //private static string Build(string equation, int index, string target)

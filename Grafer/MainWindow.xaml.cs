@@ -434,7 +434,7 @@ namespace Grafer
         {
             scrollButtonSection.Width = coordinateSystem.Width;
 
-            scrollButtonSection.Margin = new Thickness(384, ActualHeight - scrollButtonSection.Height- 39, 0, 0);
+            scrollButtonSection.Margin = new Thickness(384, ActualHeight - scrollButtonSection.Height - 39, 0, 0);
 
             AdjustButtonSectionInnerMargin();
         }
@@ -497,7 +497,7 @@ namespace Grafer
         //Ovládání zobrazení sekce s tlačítky.
         private void ButtonShowHideButtonsClick(object sender, RoutedEventArgs e)
         {
-            scrollButtonSection.Visibility = scrollButtonSection.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;  
+            scrollButtonSection.Visibility = scrollButtonSection.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
         }
 
         private void RectangleColorMouseUp(object sender, MouseButtonEventArgs e)

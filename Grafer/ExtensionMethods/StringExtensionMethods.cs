@@ -37,6 +37,12 @@ namespace Grafer.ExtensionMethods
         //Jestli je string pouze něco.
         public static bool IsOnly(this string input, Func<char, bool> func)
         {
+            //Pokud se ptám jestli to je jenom číslo nesmí tam být čárka.
+            if (func == char.IsDigit || func == char.IsLetterOrDigit)
+            {
+                input = input.Replace(",", "");
+            }
+
             return input.All(func);
         }
 

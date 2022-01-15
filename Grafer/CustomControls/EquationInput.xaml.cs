@@ -46,7 +46,7 @@ namespace Grafer.CustomControls
         //Omezení možných znaků.
         private static void RelationInputCheck(TextCompositionEventArgs e)
         {
-            if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( ) ^ √ , s i n c o s t a g ° π]") && e.Text != "-")
+            if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( ) ^ √ , s i n c o s t a g ° π |]") && e.Text != "-")
             {
                 e.Handled = true;
             }
@@ -55,10 +55,19 @@ namespace Grafer.CustomControls
         //Dokončení závorky.
         private void CloseBracket(string input)
         {
-            if (input == "(" && SelectionStart == Text.Length)
+            if (SelectionStart == Text.Length)
             {
-                Text += ')';
-                SelectionStart = Text.Length - 1;
+                if (input == "(")
+                {
+                    Text += ')';
+                    SelectionStart = Text.Length - 1;
+                }
+
+                if (input == "|")
+                {
+                    Text += "|";
+                    SelectionStart = Text.Length - 1;
+                }
             }
         }
 
@@ -77,13 +86,13 @@ namespace Grafer.CustomControls
         //Vložení zkratky do textového pole.
         public void InsertShortcut(string shortcut)
         {
-            string addition = (shortcut != "π" && shortcut != "°") ? "()" : "";
+            string addition = (shortcut != "π" && shortcut != "°" && shortcut != "|") ? "()" : "";
 
             int selectionStart = SelectionStart;
 
             Text = Text.Insert(SelectionStart, shortcut + addition);
 
-            SelectionStart = selectionStart + shortcut.Length + addition.Length + ((shortcut != "π" && shortcut != "°") ? -1 : 0);
+            SelectionStart = selectionStart + shortcut.Length + addition.Length + ((shortcut != "π" && shortcut != "°" && shortcut != "|") ? -1 : 0);
         }
     }
 }
