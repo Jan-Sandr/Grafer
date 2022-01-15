@@ -189,6 +189,8 @@ namespace Grafer
 
             Relation.RemoveNeighbors(index);
 
+            y = double.Parse(Relation[index - Relation.RemovedElementsCount / 2]);
+
             CalculationOrder.ShiftPosition(Relation.RemovedElementsCount, orderProgression);
 
             Relation.RemovedElementsCount = 0;

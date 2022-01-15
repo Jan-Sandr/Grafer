@@ -35,6 +35,7 @@
                 <Button x:Name="buttonRoot" Content="√" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="√" Canvas.Left="20" Canvas.Top="49"/>
                 <Button x:Name="buttonDegree" Content="°" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="°" Canvas.Left="94" Canvas.Top="13"/>
                 <Button x:Name="buttonPi" Content="π" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="π" Canvas.Left="94" Canvas.Top="49"/>
+                <Button x:Name="buttonAbsoluteValue" Content="|" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="|" Canvas.Left="168" Canvas.Top="13"/>
                 <Button x:Name="buttonSine" Content="sin" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="sin" Canvas.Left="384" Canvas.Top="13"/>
                 <Button x:Name="buttonCosine" Content="cos" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="cos" Canvas.Left="384" Canvas.Top="49"/>
                 <Button x:Name="buttonTangent" Content="tg" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="tg" Canvas.Left="458" Canvas.Top="13"/>

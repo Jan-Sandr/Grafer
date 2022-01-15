@@ -31,9 +31,9 @@ namespace Grafer
             {
                 Union();
 
-                Insertions();
+                AdjustAbsoluteValue();
 
-                ConnectNumbers();
+                Insertions();
 
                 ConvertDegrees();
 
@@ -45,11 +45,14 @@ namespace Grafer
             }
         }
 
+        //Spojování do schlívečků.
         private void Union()
         {
             UniteLetters();
 
             UniteUpperIndex();
+
+            UniteNumbers();
         }
 
         //Spojí písmena do jednoho políčka krom x: s i n -> sin.
@@ -66,6 +69,7 @@ namespace Grafer
             }
         }
 
+        //Spojí ⁻ a ¹ do jednoho chlívečku.
         private void UniteUpperIndex()
         {
             for (int i = 0; i < Count; i++)
@@ -79,6 +83,7 @@ namespace Grafer
             }
         }
 
+        //Dosazení za Pi
         private void SubstitutePi()
         {
             for (int i = 0; i < Count; i++)
@@ -125,12 +130,29 @@ namespace Grafer
         //Vložení nulu. Když předpis začíná minusem a nebo (-.
         private void InsertZero()
         {
-            for (int i = 1; i < Count; i++)
+            for (int i = 1; i < Count - 1; i++)
             {
                 if (this[i] == "-" && this[i - 1] == "(")
                 {
                     Insert(i, "0");
                     i++;
+                }
+
+                if (this[i - 1] == "|" && this[i] != ")")
+                {
+                    // |x| -> |0+x|
+                    if (!this[i].IsMathOperation())
+                    {
+                        Insert(i, "0");
+                        Insert(i + 1, "+");
+                        i += 2;
+                    }
+
+                    // |-2+x| -> |0-2+x|, ale zároveň, aby se nestalo |x+2|-2 -> |x+2|0-2
+                    if (this[i] == "-")
+                    {
+                        Insert(i, "0");
+                    }
                 }
             }
         }
@@ -161,7 +183,7 @@ namespace Grafer
         }
 
         //Spojení čísel do políčka třeba 10 je v základu jako 1 a 0. 
-        private void ConnectNumbers()
+        private void UniteNumbers()
         {
             for (int i = 1; i < Count; i++)
             {
@@ -174,13 +196,14 @@ namespace Grafer
             }
         }
 
+        //Převede stupně na číselnou hodnotu.
         private void ConvertDegrees()
         {
             for (int i = 1; i < Count; i++)
             {
                 if (this[i] == "°")
                 {
-                    this[i - 1] = double.Parse(this[i - 1]).ToDegrees().ToString();
+                    this[i - 1] = double.Parse(this[i - 1]).ToNumerical().ToString();
                     RemoveAt(i);
                     i--;
                 }
@@ -192,13 +215,64 @@ namespace Grafer
         {
             for (int i = 1; i < Count; i++)
             {
-                if (this[i] == "√" && (this[i - 1].IsMathOperation() || this[i - 1] == "("))
+                if (this[i] == "√" && (this[i - 1].IsMathOperation() || this[i - 1] == "(" || this[i - 1] == "|"))
                 {
                     Insert(i, "2");
                     i++;
                 }
             }
         }
+
+        //Obalí absolutní hodnot závorkami, aby bylo možné rozlišít počáteční a koncovou.
+        private void AdjustAbsoluteValue()
+        {
+            int openingsCount = 0;
+
+            for (int i = 0; i < Count; i++)
+            {
+                //obaluje absolutní hodnotu závorkami
+                if (this[i] == "|")
+                {
+                    WrapAbsoluteValue(i, ref openingsCount);
+                    i++;
+                }
+            }
+        }
+
+        //Přidá závorku pokud je nutná.
+        private void WrapAbsoluteValue(int index, ref int openingsCount)
+        {
+            bool isWrapped = false;
+
+            // (|
+            if (index > 0 && this[index - 1] == "(")
+            {
+                openingsCount++;
+                isWrapped = true;
+            }
+
+            // |)
+            if (index < Count - 1 && this[index + 1] == ")")
+            {
+                openingsCount--;
+                isWrapped = true;
+            }
+
+            if (!isWrapped)
+            {
+                if (openingsCount == 0)
+                {
+                    Insert(index, "(");
+                    openingsCount++;
+                }
+                else
+                {
+                    Insert(index + 1, ")");
+                    openingsCount--;
+                }
+            }
+        }
+
 
         //Vloží mezi sin,4 -> sin,p,4. Aby se jednolo o 3 členy a šlo tak odebírat sousedy. Jako tomu je u opreací 1 + 2, také jsou tři.
         private void InsertIntermediary()
@@ -225,11 +299,27 @@ namespace Grafer
             CheckNeighbors(index);
         }
 
+        //Převede obsolutní hodnota na závorky a číslo uvnitř převede na kladné.
+        private void AbsoluteValueToBrackets(int index)
+        {
+            if (this[index - 1] == "|" && this[index + 1] == "|")
+            {
+                if (double.TryParse(this[index], out _))
+                {
+                    this[index] = Math.Abs(double.Parse(this[index])).ToString();
+                    this[index - 1] = "(";
+                    this[index + 1] = ")";
+                }
+            }
+        }
+
         //Zda jsou sousedé závorky.
         private void CheckNeighbors(int index)
         {
             if (index != 0 && index < Count - 1)
             {
+                AbsoluteValueToBrackets(index);
+
                 if (this[index - 1] == "(" && this[index + 1] == ")")
                 {
                     RemoveNeighbors(index);
