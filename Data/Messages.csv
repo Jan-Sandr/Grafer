@@ -25,3 +25,5 @@ requires number before degree character.;požaduje číslo před znakem stupňů
 contains odd count of absolute value characters.;obsahuje lichý počet znaků absolutní hodnoty.;
 cannot contain only operation in absalute value.;nemůže obsahovat v absolutní hodnotě pouze operaci.;
 cannot contain empty absolute value.;nemůže obsahovat prázdnou absolutní hodnotu.;
+After the inversion, it was no longer a function. Try to limit x range;Po inverzi se už nejdná of funkci. Zkuset rozsah x omezit;
+Function's graph doesn't have valid points.;Graf funkce nemá validní body.;

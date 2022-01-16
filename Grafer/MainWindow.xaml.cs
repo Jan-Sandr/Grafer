@@ -121,7 +121,7 @@ namespace Grafer
         //Vytvoření instance funkce.
         private void CreateFunction()
         {
-            gFunction = new Function(equationInput.Text, gMinimumX, gMaximumX, coordinateSystem, rectangleColor.Fill);
+            gFunction = new Function(equationInput.Text, gMinimumX, gMaximumX, coordinateSystem, rectangleColor.Fill, checkBoxInverse.IsChecked == true);
             gFunction.CalculatePoints();
         }
 
@@ -222,7 +222,7 @@ namespace Grafer
         {
             bool isXRangeOut = false;
 
-            if (gMaximumX < -coordinateSystem.Width / 200 || gMinimumX > coordinateSystem.Width / 200)
+            if (gMaximumX < -(coordinateSystem.Width / 200 + coordinateSystem.AbsoluteShift.OnX / 100) / coordinateSystem.Zoom || gMinimumX > (coordinateSystem.Width / 200 - coordinateSystem.AbsoluteShift.OnX / 100) / coordinateSystem.Zoom)
             {
                 string message = (language == Language.English) ? messages[2].Split(';')[0] : messages[2].Split(';')[1];
                 NotifyError(message);
@@ -241,7 +241,14 @@ namespace Grafer
             {
                 UpdateToMeasure();
 
-                gFunction.Plot();
+                if (gFunction.IsDrawable())
+                {
+                    gFunction.Plot();
+                }
+                else
+                {
+                    NotifyError(GetMessageFromID(gFunction.ErrorMessageID));
+                }
             }
         }
 

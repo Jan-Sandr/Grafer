@@ -1,5 +1,5 @@
-﻿Component name;English;Czech;
-labelLanguage;Language:;Jazyk:;
-limitX;Limit x;Omezit x;
-equationInput;Relation;Předpis;
-buttonDraw;Draw;Vykreslit;
+﻿Component name;English;Czech;labelLanguage;Language:;Jazyk:;
+limitX;Limit x;Omezit x;
+equationInput;Relation;Předpis;buttonDraw;Draw;Vykreslit;
+labelColor;Color:;Barva:;
+checkBoxInverse;Inverse;Inverzní;buttonShowHideButtons;Buttons;Tlačítka;
