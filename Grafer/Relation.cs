@@ -27,6 +27,8 @@ namespace Grafer
         {
             RemoveAll(s => s == " ");
 
+            SubstitutePi();
+
             if (Count > 1)
             {
                 Union();
@@ -36,8 +38,6 @@ namespace Grafer
                 Insertions();
 
                 ConvertDegrees();
-
-                SubstitutePi();
 
                 RemoveUnnecessaryBrackets();
 

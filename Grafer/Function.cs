@@ -17,7 +17,10 @@ namespace Grafer
         public List<Polyline> Curves { get; set; }
         public CoordinateSystem CoordinateSystem { get; }
         public Brush Brush { get; }
+        public bool Inverse { get; private set; }
         public FunctionType Type { get; private set; }
+
+        public int ErrorMessageID { get; private set; } = -1;
 
         public enum FunctionType // Typy funkce na základě vhodné míry pro konkrétní osu.
         {
@@ -32,7 +35,7 @@ namespace Grafer
         private int[] calculationOrderIndexesBackup = Array.Empty<int>(); // záloha výpočetního postupu.
         private double calculationMinimumX, calculationMaximumX; // Výpočetní minimum a maximum.
 
-        public Function(string relation, double minimumX, double maximumX, CoordinateSystem coordinateSystem, Brush color)
+        public Function(string relation, double minimumX, double maximumX, CoordinateSystem coordinateSystem, Brush color, bool inverse)
         {
             Relation = new Relation(relation);
             MinimumX = minimumX;
@@ -42,6 +45,7 @@ namespace Grafer
             points = new List<Point>();
             CoordinateSystem = coordinateSystem;
             Brush = color;
+            Inverse = inverse;
             Type = GetFunctionType();
         }
 
@@ -56,13 +60,52 @@ namespace Grafer
                 {
                     if (Relation[i].IsTrigonometricFunction())
                     {
-                        type = FunctionType.TrigonometricFunction;
+                        type = Inverse ? FunctionType.InverseTrigonometricFunction : FunctionType.TrigonometricFunction;
                         break;
                     }
                 }
             }
+            else
+            {
+                type = Inverse ? FunctionType.TrigonometricFunction : FunctionType.InverseTrigonometricFunction;
+            }
 
             return type;
+        }
+
+        //Jestli je možné křivku udělat inverzní.
+        private bool IsInvertible()
+        {
+            bool isInvertible = true;
+
+            bool? isGrowing = Curves[0].Points[0].Y > Curves[0].Points[1].Y ? true : Curves[0].Points[0].Y < Curves[0].Points[1].Y ? false : (bool?)null;
+
+            if (isGrowing != null)
+            {
+                for (int i = 0; i < Curves.Count && isInvertible; i++)
+                {
+                    for (int j = 1; j < Curves[i].Points.Count && isInvertible; j++)
+                    {
+                        if (isGrowing == true)
+                        {
+                            isInvertible = Curves[i].Points[j - 1].Y > Curves[i].Points[j].Y;
+                            
+                        }
+
+                        if (isGrowing == false)
+                        {
+                            isInvertible = Curves[i].Points[j - 1].Y < Curves[i].Points[j].Y;
+                        }
+                    }
+
+                }
+            }
+            else
+            {
+                isInvertible = false;
+            }
+
+            return isInvertible;
         }
 
         //Výpočítání křivky.
@@ -134,19 +177,73 @@ namespace Grafer
             return y;
         }
 
+        //Jestli lze funkce vykreslit.
+        public bool IsDrawable()
+        {
+            if (!IsEmpty())
+            {
+                if (Inverse && !IsInvertible())
+                {
+                    ErrorMessageID = 26;
+                }
+            }
+
+            return ErrorMessageID == -1;
+        }
+
+        //Jestli není funkce prádzná.
+        private bool IsEmpty()
+        {
+            if (Curves[0].Points.Count == 0)
+            {
+                ErrorMessageID = 27;
+            }
+
+            return ErrorMessageID != -1;
+        }
+
         //Vykreslení funkce do plátna.
         public void Plot()
         {
             for (int i = 0; i < Curves.Count; i++)
             {
-                CoordinateSystem.Children.Add(Curves[i]);
+                if (Inverse)
+                {
+                    CoordinateSystem.Children.Add(InvertCurve(Curves[i]));
+                }
+                else
+                {
+                    CoordinateSystem.Children.Add(Curves[i]);
+                }
+
             }
+        }
+
+        //Invertuje body křivky.
+        private Polyline InvertCurve(Polyline polyline)
+        {
+            for (int i = 0; i < polyline.Points.Count; i++)
+            {
+                polyline.Points[i] = InvertPoint(polyline.Points[i]);
+            }
+
+            return polyline;
+        }
+
+        //Invertuje bod.
+        private Point InvertPoint(Point point)
+        {
+            return new Point()
+            {
+                X = CoordinateSystem.Width / 2 + CoordinateSystem.Height / 2 - point.Y + CoordinateSystem.AbsoluteShift.OnY + CoordinateSystem.AbsoluteShift.OnX,
+                Y = CoordinateSystem.Height / 2 + CoordinateSystem.Width / 2 - point.X + CoordinateSystem.AbsoluteShift.OnY + CoordinateSystem.AbsoluteShift.OnX
+            };
         }
 
         //Nastavení výpočetního rozsahu. Pokud by byl rozsah větší než plátno, omezí to jen na viditelnou plochu interně.
         private void SetCalculationXRange()
         {
-            calculationMinimumX = ((Math.Abs(MinimumX) > CoordinateSystem.NumberRange + (CoordinateSystem.AbsoluteShift.OnX / 100 / CoordinateSystem.Zoom)) ? -CoordinateSystem.NumberRange - CoordinateSystem.AbsoluteShift.OnX / 100 / CoordinateSystem.Zoom : MinimumX);
+            calculationMinimumX = ((-Math.Abs(MinimumX) > CoordinateSystem.NumberRange + (CoordinateSystem.AbsoluteShift.OnX / 100 / CoordinateSystem.Zoom)) ? -CoordinateSystem.NumberRange - CoordinateSystem.AbsoluteShift.OnX / 100 / CoordinateSystem.Zoom : MinimumX);
             calculationMaximumX = ((MaximumX > CoordinateSystem.NumberRange - (CoordinateSystem.AbsoluteShift.OnX / 100 / CoordinateSystem.Zoom)) ? CoordinateSystem.NumberRange - CoordinateSystem.AbsoluteShift.OnX / 100 / CoordinateSystem.Zoom : MaximumX);
         }
 

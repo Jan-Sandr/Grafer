@@ -49,5 +49,6 @@
         <Button x:Name="buttonShowHideButtons" Content="Buttons" HorizontalAlignment="Left" Margin="242,206,0,0" VerticalAlignment="Top" Height="37" Width="80" Click="ButtonShowHideButtonsClick"/>
         <Rectangle x:Name="rectangleColor" HorizontalAlignment="Left" Height="19" Margin="174,87,0,0" VerticalAlignment="Top" Width="59" Fill="Black" MouseUp="RectangleColorMouseUp" Stroke="#FFCEC1C1"/>
         <Label x:Name="labelColor" Content="color:" HorizontalAlignment="Left" Margin="129,82,0,0" VerticalAlignment="Top"/>
+        <CheckBox x:Name="checkBoxInverse" Content="Inverse" HorizontalAlignment="Left" Margin="256,91,0,0" VerticalAlignment="Top" Width="94"/>
     </Grid>
 </Window>
