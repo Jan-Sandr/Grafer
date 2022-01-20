@@ -10,6 +10,7 @@ namespace Grafer
 {
     public class Function
     {
+        public string Name { get; } = string.Empty;
         public Relation Relation { get; set; }
         public double MinimumX { get; set; }
         public double MaximumX { get; set; }
@@ -35,8 +36,9 @@ namespace Grafer
         private int[] calculationOrderIndexesBackup = Array.Empty<int>(); // záloha výpočetního postupu.
         private double calculationMinimumX, calculationMaximumX; // Výpočetní minimum a maximum.
 
-        public Function(string relation, double minimumX, double maximumX, CoordinateSystem coordinateSystem, Brush color, bool inverse)
+        public Function(string name, string relation, double minimumX, double maximumX, CoordinateSystem coordinateSystem, Brush color, bool inverse)
         {
+            Name = name;
             Relation = new Relation(relation);
             MinimumX = minimumX;
             MaximumX = maximumX;
@@ -89,7 +91,6 @@ namespace Grafer
                         if (isGrowing == true)
                         {
                             isInvertible = Curves[i].Points[j - 1].Y > Curves[i].Points[j].Y;
-                            
                         }
 
                         if (isGrowing == false)

@@ -42,6 +42,8 @@ namespace Grafer
             Czech = 2
         }
 
+        List<Function> functions = new List<Function>();
+
         private Language language;
         private Function? gFunction;
         private double gMinimumX;
@@ -110,6 +112,7 @@ namespace Grafer
                 if (isXRangeValid)
                 {
                     CreateFunction(); // 5. vytvoření funkce.
+                    functions.Add(gFunction!);
                 }
             }
             else
@@ -121,7 +124,8 @@ namespace Grafer
         //Vytvoření instance funkce.
         private void CreateFunction()
         {
-            gFunction = new Function(equationInput.Text, gMinimumX, gMaximumX, coordinateSystem, rectangleColor.Fill, checkBoxInverse.IsChecked == true);
+            string name = GenerateUniqueName();
+            gFunction = new Function(name, equationInput.Text, gMinimumX, gMaximumX, coordinateSystem, rectangleColor.Fill, checkBoxInverse.IsChecked == true);
             gFunction.CalculatePoints();
         }
 
@@ -517,5 +521,48 @@ namespace Grafer
                 rectangleColor.Fill = new SolidColorBrush(selectedColor);
             }
         }
+
+        //Vytvoří unikátní jméno pro funkci.
+        private string GenerateUniqueName()
+        {
+            int number = functions.Count > 0 ? GetNextFunctionNumber() : 1;
+
+            return $"F{number}: {equationInput.Text}";
+        }
+
+        //Získá nejmenší volné číslé pro jméno funkce.
+        private int GetNextFunctionNumber()
+        {
+            int[] numbers = GetFunctionNumbers();
+
+            int lowestNumber = numbers[^1] + 1;
+
+            for (int i = 0; i < numbers.Length; i++)
+            {
+                if (numbers[i] - i > 1)
+                {
+                    lowestNumber = i + 1;
+                    break;
+                }
+            }
+
+            return lowestNumber;
+        }
+
+        //Získá pole z čísel jmén funkcí v listu
+        private int[] GetFunctionNumbers()
+        {
+            int[] numbers = new int[functions.Count];
+
+            for (int i = 0; i < functions.Count; i++)
+            {
+                numbers[i] = int.Parse(functions[i].Name.Split(new char[] { 'F', ':' })[1]);
+            }
+
+            Array.Sort(numbers);
+
+            return numbers;
+        }
+
     }
 }
