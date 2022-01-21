@@ -480,32 +480,6 @@ namespace Grafer
             return isAbsoluteValueValid;
         }
 
-        //private static string Build(string equation, int index, string target)
-        //{
-        //    string item = "";
-
-        //    for (int i = index; i < elementsIndex.Length; i++)
-        //    {
-        //        bool stillBuilding = false;
-
-        //        if(target == "number")
-        //        {
-        //            if (char.IsDigit(equation[elementsIndex[i]]) || equation[elementsIndex[i]] == ',')
-        //            {
-        //                item += equation[elementsIndex[i]];
-        //                stillBuilding = true;
-        //            }
-        //        }
-
-        //        if(!stillBuilding)
-        //        {
-        //            break;
-        //        }
-
-        //    }
-
-        //    return item;
-        //}
     }
 }
 
