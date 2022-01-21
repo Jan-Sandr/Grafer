@@ -372,9 +372,10 @@ namespace Grafer.CustomControls
         //Vykreslení os.
         private void DrawAxes()
         {
-            Line axisX = NewLine(Direction.X, lineX: Width / 2 + AbsoluteShift.OnX, strokeThickness: 1.5);
+            SolidColorBrush brush = new SolidColorBrush(Color.FromArgb(175, 0, 0, 0));
 
-            Line axisY = NewLine(Direction.Y, lineY: Height / 2 + AbsoluteShift.OnY, strokeThickness: 1.5);
+            Line axisX = NewLine(Direction.X, lineX: Width / 2 + AbsoluteShift.OnX, brushes: brush, strokeThickness: 2);
+            Line axisY = NewLine(Direction.Y, lineY: Height / 2 + AbsoluteShift.OnY, brushes: brush, strokeThickness: 2);
 
             Children.Add(axisX);
             Children.Add(axisY);

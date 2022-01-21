@@ -38,8 +38,8 @@ namespace Grafer
 
         private new enum Language
         {
-            English = 1,
-            Czech = 2
+            English = 0,
+            Czech = 1
         }
 
         List<Function> functions = new List<Function>();
@@ -81,7 +81,6 @@ namespace Grafer
         {
             messages = ReadFile(directory + "\\Messages.csv", true);
             localizationData = ReadFile(directory + "\\UILocalization.csv", true).ToDictionary();
-            equationInput.Shortcuts = ReadFile(directory + "\\Shortcuts.csv", true).ToDictionary();
         }
 
         //Kliknutí na tlačítko vykreslit.
@@ -198,7 +197,7 @@ namespace Grafer
 
             if (gMinimumX > gMaximumX)
             {
-                string message = (language == Language.English) ? messages[0].Split(';')[0] : messages[0].Split(';')[1];
+                string message = messages[0].Split(';')[(int)language];
                 NotifyError(message);
                 isMinimumHigher = true;
             }
@@ -213,7 +212,7 @@ namespace Grafer
 
             if (gMinimumX == gMaximumX)
             {
-                string message = (language == Language.English) ? messages[1].Split(';')[0] : messages[1].Split(';')[1];
+                string message = messages[1].Split(';')[(int)language];
                 NotifyError(message);
                 isRangeWidthZero = true;
             }
@@ -228,7 +227,7 @@ namespace Grafer
 
             if (gMaximumX < -(coordinateSystem.Width / 200 + coordinateSystem.AbsoluteShift.OnX / 100) / coordinateSystem.Zoom || gMinimumX > (coordinateSystem.Width / 200 - coordinateSystem.AbsoluteShift.OnX / 100) / coordinateSystem.Zoom)
             {
-                string message = (language == Language.English) ? messages[2].Split(';')[0] : messages[2].Split(';')[1];
+                string message = messages[2].Split(';')[(int)language];
                 NotifyError(message);
                 isXRangeOut = true;
             }
@@ -319,7 +318,7 @@ namespace Grafer
         //Získání zprávy z jejího indexu v poli.
         private string GetMessageFromID(int ID)
         {
-            string message = (language == Language.English) ? messages[ID].Split(';')[0] : messages[ID].Split(';')[1];
+            string message = messages[ID].Split(';')[(int)language];
             return message;
         }
 
@@ -406,15 +405,18 @@ namespace Grafer
                 if (localizationData.ContainsKey(controls[i].Name))
                 {
                     string[] localizationTexts = localizationData[controls[i].Name].Split(';');
-                    controls[i].Content = (language == Language.English) ? localizationTexts[0] : localizationTexts[1];
+                    controls[i].Content = localizationTexts[(int)language];
                 }
             }
+
+            equationInput.Uid = (language == Language.English) ? "Relation" : "Předpis";
         }
 
         //Změna jazyka.
         private void LanguageSelectionChange(object sender, SelectionChangedEventArgs e)
         {
             language = (Language)languageSelect.SelectedItem;
+
             LocalizeUserInterface();
 
             SetStatus("OK", defaultStatusColor);

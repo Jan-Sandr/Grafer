@@ -183,7 +183,7 @@ namespace Grafer
         {
             if (!IsEmpty())
             {
-                if (Inverse && !IsInvertible())
+                if (Inverse && (Curves[0].Points.Count > 2 && !IsInvertible()))
                 {
                     ErrorMessageID = 26;
                 }
