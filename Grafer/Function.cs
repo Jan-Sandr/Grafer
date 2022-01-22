@@ -204,20 +204,45 @@ namespace Grafer
         }
 
         //Vykreslení funkce do plátna.
-        public void Plot()
+        public void Plot(bool inverse, double opacity)
         {
             for (int i = 0; i < Curves.Count; i++)
             {
-                if (Inverse)
+                Polyline curve = GetDeepCurveCopy(Curves[i]);
+                curve.Opacity = opacity;
+
+                if (inverse)
                 {
-                    CoordinateSystem.Children.Add(InvertCurve(Curves[i]));
+                    CoordinateSystem.Children.Add(InvertCurve(curve));
                 }
                 else
                 {
-                    CoordinateSystem.Children.Add(Curves[i]);
+                    CoordinateSystem.Children.Add(curve);
                 }
-
             }
+        }
+
+        //Vytvoří novou křivku v paměti nikoliv referenci.
+        private Polyline GetDeepCurveCopy(Polyline inputCurve)
+        {
+            Polyline curve = NewCurve();
+
+            for (int i = 0; i < inputCurve.Points.Count; i++)
+            {
+                curve.Points.Add(inputCurve.Points[i]);
+            }
+
+            return curve;
+        }
+
+        //Vytvoří základní křivku.
+        private Polyline NewCurve()
+        {
+            return new Polyline()
+            {
+                Stroke = Brush,
+                StrokeThickness = 2
+            };
         }
 
         //Invertuje body křivky.
@@ -320,11 +345,7 @@ namespace Grafer
         //Uložení křivky.
         private void SaveCurve(List<Point> points)
         {
-            Polyline polyline = new Polyline()
-            {
-                Stroke = Brush,
-                StrokeThickness = 2
-            };
+            Polyline polyline = NewCurve();
 
             polyline.SnapsToDevicePixels = true;
 
