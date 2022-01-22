@@ -573,7 +573,7 @@ namespace Grafer
 
         private void checkBoxInverse_Unchecked(object sender, RoutedEventArgs e)
         {
-            checkBoxKeepOrigin.IsEnabled = true;
+            checkBoxKeepOrigin.IsEnabled = false;
             checkBoxKeepOrigin.IsChecked = false;
         }
     }
