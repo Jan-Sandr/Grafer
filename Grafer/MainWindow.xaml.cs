@@ -246,12 +246,23 @@ namespace Grafer
 
                 if (gFunction.IsDrawable())
                 {
-                    gFunction.Plot();
+                    DrawFunction(); 
                 }
                 else
                 {
                     NotifyError(GetMessageFromID(gFunction.ErrorMessageID));
                 }
+            }
+        }
+
+        //Vykreslení funkce.
+        private void DrawFunction()
+        {
+            gFunction!.Plot(gFunction.Inverse, 1);
+
+            if(checkBoxKeepOrigin.IsChecked == true) // Při inverzní, jestli má vykreslit původní křivku s nižší viditelností.
+            {
+                gFunction.Plot(false, 0.3);
             }
         }
 
@@ -566,5 +577,18 @@ namespace Grafer
             return numbers;
         }
 
+        //Událost, která nastavá při změne jestli je inverzní čekbox zaškrtnut.
+        private void InverseCheckedChanged(object sender, RoutedEventArgs e)
+        {
+            if(checkBoxInverse.IsChecked == true)
+            {
+                checkBoxKeepOrigin.IsEnabled = true;
+            }
+            else
+            {
+                checkBoxKeepOrigin.IsEnabled = false;
+                checkBoxKeepOrigin.IsChecked = false;
+            }
+        }
     }
 }
