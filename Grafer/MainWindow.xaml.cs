@@ -566,5 +566,15 @@ namespace Grafer
             return numbers;
         }
 
+        private void checkBoxInverse_Checked(object sender, RoutedEventArgs e)
+        {
+            checkBoxKeepOrigin.IsEnabled = true;
+        }
+
+        private void checkBoxInverse_Unchecked(object sender, RoutedEventArgs e)
+        {
+            checkBoxKeepOrigin.IsEnabled = true;
+            checkBoxKeepOrigin.IsChecked = false;
+        }
     }
 }
