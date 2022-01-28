@@ -4,7 +4,7 @@ namespace Grafer
 {
     public class CalculationOrder
     {
-        private readonly string[] mathCharacters = new string[] { "+-", "*/", "^√", "sin cos tg cotg", "()" };
+        private readonly string[] mathCharacters = new string[] { "+-", "*/", "^√", "sin cos tg cotg log", "()" };
 
         public int[] Indexes { get; private set; } = Array.Empty<int>();
         public int[] Priorities { get; private set; } = Array.Empty<int>();

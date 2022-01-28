@@ -51,7 +51,9 @@ namespace Grafer.CustomControls
         //Omezení možných znaků.
         private static void RelationInputCheck(TextCompositionEventArgs e)
         {
-            if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( ) ^ √ , s i n c o s t a g ° π |]") && e.Text != "-")
+            string[] special = new string[3] { "-", "[", "]" }; // tyto znaky nejdou zadávat do regexu.
+
+            if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( ) ^ √ , s i n c o s t a g ° π | l ]") && !special.Contains(e.Text))
             {
                 e.Handled = true;
             }

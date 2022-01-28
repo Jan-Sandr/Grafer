@@ -34,6 +34,16 @@ namespace Grafer.ExtensionMethods
             return isTrigonometricFunction;
         }
 
+        public static bool IsTrigonometricFunctionOrLogarithm(this string input)
+        {
+            return IsTrigonometricFunction(input) || IsLogarithm(input);
+        }
+
+        public static bool IsLogarithm(this string input)
+        {
+            return input == "log" || input == "ln";
+        }
+
         //Jestli je string pouze něco.
         public static bool IsOnly(this string input, Func<char, bool> func)
         {

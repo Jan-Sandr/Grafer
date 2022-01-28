@@ -9,7 +9,7 @@ namespace Grafer
 
         private static int[] elementsIndex = System.Array.Empty<int>(); // Pole s indexy, kde nejsou prázdná místa v rovnici.
 
-        private readonly static char[] allowedBeginningChars = new char[9] { 'x', '-', '(', '√', 's', 'c', 't', 'π', '|' }; // Povolené znaky na začátku předpisu.
+        private readonly static char[] allowedBeginningChars = new char[10] { 'x', '-', '(', '√', 's', 'c', 't', 'π', '|', 'l' }; // Povolené znaky na začátku předpisu.
 
         private readonly static char[] allowedEndeningChars = new char[5] { 'x', ')', '°', 'π', '|' }; // Povolené znaky na konci předpisu.
 
@@ -29,7 +29,8 @@ namespace Grafer
                                             AreCommasValid(equation) &&
                                      AreFunctionNamesValid(equation) &&
                                            AreDegreesValid(equation) &&
-                                      IsAbsoluteValueValid(equation)
+                                      IsAbsoluteValueValid(equation) &&
+                                    IsLogarithmBaseCorrect(equation)
                                    );
 
             return isEquationValid;
@@ -162,20 +163,20 @@ namespace Grafer
         //Kontrola závorek.
         private static bool CheckBrackets(string equation)
         {
-            return AreBracketsCorrect(equation) && !AreBracketsEmpty(equation);
+            return AreBracketsCorrect(equation, '(', ')') && AreBracketsCorrect(equation, '[', ']') && !AreBracketsEmpty(equation);
         }
 
         //Jestli nejsou případy třeba nejdříve koncová závorka, nebo jejich počet si není roven.
-        private static bool AreBracketsCorrect(string equation)
+        private static bool AreBracketsCorrect(string equation, char openning, char closing)
         {
             int countOfBrackets = 0;
             int openingBracketIndex = 0;
 
             for (int i = 0; i < equation.Length; i++)
             {
-                countOfBrackets = equation[i] == '(' ? countOfBrackets + 1 : equation[i] == ')' ? countOfBrackets - 1 : countOfBrackets;
+                countOfBrackets = equation[i] == openning ? countOfBrackets + 1 : equation[i] == closing ? countOfBrackets - 1 : countOfBrackets;
 
-                openingBracketIndex = equation[i] == '(' ? i : openingBracketIndex;
+                openingBracketIndex = equation[i] == openning ? i : openingBracketIndex;
 
                 if (countOfBrackets == -1)
                 {
@@ -203,26 +204,24 @@ namespace Grafer
         //Jestli se v předpisu náchází prázdné závorky.
         private static bool AreBracketsEmpty(string equation)
         {
+            char[] brackets = new char[6] { '(', ')', '|', '|', '[', ']' };
+
+            int[] errorMessagesID = new int[3] { 12, 25, 28 };
+
             bool containsEmptyBrackets = false;
 
-            for (int i = 0; i < elementsIndex.Length - 1; i++)
+            for (int i = 0; i < brackets.Length / 2 && !containsEmptyBrackets; i++)
             {
-                //()  
-                if ((equation[elementsIndex[i]] == '(' && equation[elementsIndex[i + 1]] == ')'))
+                for (int j = 0; j < elementsIndex.Length - 1; j++)
                 {
-                    containsEmptyBrackets = true;
-                    InvalidSection = (elementsIndex[i], elementsIndex[i + 1] - elementsIndex[i] + 1, 12);
-                    break;
+                    // 12:() 25:|| 28:[] 
+                    if (equation[elementsIndex[j]] == brackets[2 * i] && equation[elementsIndex[j + 1]] == brackets[2 * i + 1])
+                    {
+                        containsEmptyBrackets = true;
+                        InvalidSection = (elementsIndex[j], elementsIndex[j + 1] - elementsIndex[j] + 1, errorMessagesID[i]);
+                        break;
+                    }
                 }
-
-                //||
-                if (equation[elementsIndex[i]] == '|' && equation[elementsIndex[i + 1]] == '|')
-                {
-                    containsEmptyBrackets = true;
-                    InvalidSection = (elementsIndex[i], elementsIndex[i + 1] - elementsIndex[i] + 1, 25);
-                    break;
-                }
-
             }
 
             return containsEmptyBrackets;
@@ -364,14 +363,22 @@ namespace Grafer
 
                 if (functionName.Length > 0 && (!stillBuilding || i + 1 == elementsIndex.Length))
                 {
-                    if (!functionName.IsTrigonometricFunction())
+                    if (!functionName.IsTrigonometricFunctionOrLogarithm())
                     {
                         areFunctionNamesValid = false;
                         InvalidSection = (startIndex, endIndex - startIndex + 1, 19);
                         break;
                     }
 
-                    areFunctionNamesValid = IsTrigonometricFunctionsSyntaxValid(equation, i - 1);
+                    if (functionName.IsTrigonometricFunction())
+                    {
+                        areFunctionNamesValid = IsTrigonometricFunctionsSyntaxValid(equation, i - 1);
+                    }
+
+                    if (functionName.IsLogarithm())
+                    {
+                        areFunctionNamesValid = IsLogarithmSyntaxValid(equation, i - 1);
+                    }
 
                     functionName = "";
                 }
@@ -439,6 +446,19 @@ namespace Grafer
             return isTrigonometricFunctionsSyntaxValid;
         }
 
+        private static bool IsLogarithmSyntaxValid(string equation, int index)
+        {
+            bool isLogarithmSyntaxValid = true;
+
+            if (equation[elementsIndex[index + 1]] != '[' && equation[elementsIndex[index + 1]] != '(')
+            {
+                isLogarithmSyntaxValid = false;
+                InvalidSection = (elementsIndex[index], elementsIndex[index + 1] - elementsIndex[index] + 1, 30);
+            }
+
+            return isLogarithmSyntaxValid;
+        }
+
         //Kontroluje zda před známínkem stupňu je číslo.
         private static bool AreDegreesValid(string equation)
         {
@@ -480,6 +500,30 @@ namespace Grafer
             return isAbsoluteValueValid;
         }
 
+        private static bool IsLogarithmBaseCorrect(string equation)
+        {
+            bool isLogarithmBaseCorrect = true;
+
+            for (int i = 1; i < elementsIndex.Length - 1; i++)
+            {
+                //string expression = (equation[elementsIndex[i - 1]] + equation[elementsIndex[i - 2]] + equation[elementsIndex[i - 3]]).ToString();
+                if ((equation[elementsIndex[i]] == '[' && elementsIndex[i] < 3) || (equation[elementsIndex[i]] == '[' && (equation[elementsIndex[i - 1]] != 'g' || equation[elementsIndex[i - 2]] != 'o' || equation[elementsIndex[i - 3]] != 'l')))
+                {
+                    isLogarithmBaseCorrect = false;
+                    InvalidSection = (elementsIndex[i - 1], elementsIndex[i] - elementsIndex[i - 1] + 1, 29);
+                    break;
+                }
+
+                if (equation[elementsIndex[i]] == ']' && equation[elementsIndex[i + 1]] != '(')
+                {
+                    isLogarithmBaseCorrect = false;
+                    InvalidSection = (elementsIndex[i], elementsIndex[i + 1] - elementsIndex[i] + 1, 31);
+                    break;
+                }
+            }
+
+            return isLogarithmBaseCorrect;
+        }
     }
 }
 

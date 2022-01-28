@@ -35,6 +35,10 @@ namespace Grafer
 
                 AdjustAbsoluteValue();
 
+                ReplaceNaturalLogarithm();
+
+                EncapsulateLogarithmBase();
+
                 Insertions();
 
                 ConvertDegrees();
@@ -102,6 +106,21 @@ namespace Grafer
             InsertRootIndex();
 
             InsertZero();
+
+            InsertLogarithmBase();
+        }
+
+        //Vloží dekadický základ logaritmu log(x) -> log[10](x)
+        private void InsertLogarithmBase()
+        {
+            for (int i = 0; i < Count - 1; i++)
+            {
+                if (this[i] == "log" && this[i + 1] == "(")
+                {
+                    Insert(i + 1, "10");
+                    i++;
+                }
+            }
         }
 
         //Odebrání zbytečných závorek x + (2).
@@ -110,6 +129,15 @@ namespace Grafer
             for (int i = 1; i < Count - 1; i++)
             {
                 CheckNeighbors(i);
+            }
+
+            for (int i = 0; i < Count; i++)
+            {
+                if (this[i] == "[" || this[i] == "]")
+                {
+                    RemoveAt(i);
+                    i--;
+                }
             }
         }
 
@@ -162,7 +190,7 @@ namespace Grafer
         {
             for (int i = 1; i < Count; i++)
             {
-                if (!this[i - 1].IsTrigonometricFunction() && CanInsertMultiplication(this[i - 1], this[i]))
+                if (!this[i - 1].IsTrigonometricFunctionOrLogarithm() && CanInsertMultiplication(this[i - 1], this[i]))
                 {
                     Insert(i, "*");
                 }
@@ -323,6 +351,41 @@ namespace Grafer
                 if (this[index - 1] == "(" && this[index + 1] == ")")
                 {
                     RemoveNeighbors(index);
+                }
+            }
+        }
+
+        //Převede ln(x) -> log[ℇ](x)
+        private void ReplaceNaturalLogarithm()
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                if (this[i] == "ln")
+                {
+                    this[i] = "log";
+                    Insert(i + 1, "]");
+                    Insert(i + 1, Math.E.ToString());
+                    Insert(i + 1, "[");
+                    i += 3;
+                }
+            }
+        }
+
+        //Obaluje obsah logaritmu log[x+2-1/x](x) -> log[(x+2-1/x)](x)
+        private void EncapsulateLogarithmBase()
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                if (this[i] == "[")
+                {
+                    Insert(i + 1, "(");
+                    i++;
+                }
+
+                if (this[i] == "]")
+                {
+                    Insert(i, ")");
+                    i++;
                 }
             }
         }
