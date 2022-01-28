@@ -23,7 +23,6 @@ namespace Grafer.CustomControls
         //Pokud je hodnota ve stupních, tak aby stále byla dostupná číselná - pro výpočty atd.
         public double NumericalValue
         {
-
             get
             {
                 return ValueType == DisplayValueType.Degree ? Value.ToNumerical() : Value;

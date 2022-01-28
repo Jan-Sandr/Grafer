@@ -29,13 +29,15 @@
         <Label x:Name="labelZoomMaximum" Content="+" HorizontalAlignment="Left" Margin="215,45,0,0" VerticalAlignment="Top"/>
         <Label x:Name="labelDegreeMinimum" Content="°" HorizontalAlignment="Left" Margin="120,106,0,0" VerticalAlignment="Top" FontSize="20" Visibility="Hidden"/>
         <Label x:Name="labelDegreeMaximum" Content="°" HorizontalAlignment="Left" Margin="233,106,0,0" VerticalAlignment="Top" FontSize="20" Visibility="Hidden"/>
-        <ScrollViewer x:Name="scrollButtonSection"  Margin="384,0,0,0" Height="110" Width="700" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Background="White" VerticalAlignment="Top" Visibility="Collapsed">
+        <ScrollViewer x:Name="scrollButtonSection"  Margin="384,0,0,0" Height="110" Width="700" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Background="White" VerticalAlignment="Top" Visibility="Visible">
             <Canvas x:Name="buttonSection" Margin="0,0,0,20" Width="700" Background="White" Height="90" VerticalAlignment="Bottom">
                 <Button x:Name="buttonExponent" Content="^" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="^" Canvas.Left="20" Canvas.Top="13"/>
                 <Button x:Name="buttonRoot" Content="√" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="√" Canvas.Left="20" Canvas.Top="49"/>
                 <Button x:Name="buttonDegree" Content="°" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="°" Canvas.Left="94" Canvas.Top="13"/>
                 <Button x:Name="buttonPi" Content="π" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="π" Canvas.Left="94" Canvas.Top="49"/>
                 <Button x:Name="buttonAbsoluteValue" Content="|" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="|" Canvas.Left="168" Canvas.Top="13"/>
+                <Button x:Name="buttonLogarithm" Content="log[10]" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="log[10]" Canvas.Left="242" Canvas.Top="13"/>
+                <Button x:Name="buttonNaturalLogarithm" Content="ln" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="ln" Canvas.Left="242" Canvas.Top="49"/>
                 <Button x:Name="buttonSine" Content="sin" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="sin" Canvas.Left="384" Canvas.Top="13"/>
                 <Button x:Name="buttonCosine" Content="cos" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="cos" Canvas.Left="384" Canvas.Top="49"/>
                 <Button x:Name="buttonTangent" Content="tg" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="tg" Canvas.Left="458" Canvas.Top="13"/>

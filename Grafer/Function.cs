@@ -306,7 +306,7 @@ namespace Grafer
 
             y = Operation(index);
 
-            index = Relation[index].IsTrigonometricFunction() ? index + 1 : index;
+            index = Relation[index].IsTrigonometricFunctionOrLogarithm() ? index + 1 : index;
 
             Relation[index] = y.ToString();
 
@@ -421,6 +421,11 @@ namespace Grafer
                 case "cotg":
                     {
                         y = TrigFunc(double.Parse(Relation[index + 2]), Relation[index + 1], Cotangens, ArcusCotangens);
+                        break;
+                    }
+                case "log":
+                    {
+                        y = Math.Log(double.Parse(Relation[index + 2]), double.Parse(Relation[index + 1]));
                         break;
                     }
             }

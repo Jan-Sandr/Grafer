@@ -246,7 +246,7 @@ namespace Grafer
 
                 if (gFunction.IsDrawable())
                 {
-                    DrawFunction(); 
+                    DrawFunction();
                 }
                 else
                 {
@@ -260,7 +260,7 @@ namespace Grafer
         {
             gFunction!.Plot(gFunction.Inverse, 1);
 
-            if(checkBoxKeepOrigin.IsChecked == true) // Při inverzní, jestli má vykreslit původní křivku s nižší viditelností.
+            if (checkBoxKeepOrigin.IsChecked == true) // Při inverzní, jestli má vykreslit původní křivku s nižší viditelností.
             {
                 gFunction.Plot(false, 0.3);
             }
@@ -540,7 +540,7 @@ namespace Grafer
         {
             int number = functions.Count > 0 ? GetNextFunctionNumber() : 1;
 
-            return $"F{number}: {equationInput.Text}";
+            return $"f{number}: {equationInput.Text}";
         }
 
         //Získá nejmenší volné číslé pro jméno funkce.
@@ -569,7 +569,7 @@ namespace Grafer
 
             for (int i = 0; i < functions.Count; i++)
             {
-                numbers[i] = int.Parse(functions[i].Name.Split(new char[] { 'F', ':' })[1]);
+                numbers[i] = int.Parse(functions[i].Name.Split(new char[] { 'f', ':' })[1]);
             }
 
             Array.Sort(numbers);
@@ -580,7 +580,7 @@ namespace Grafer
         //Událost, která nastavá při změne jestli je inverzní čekbox zaškrtnut.
         private void InverseCheckedChanged(object sender, RoutedEventArgs e)
         {
-            if(checkBoxInverse.IsChecked == true)
+            if (checkBoxInverse.IsChecked == true)
             {
                 checkBoxKeepOrigin.IsEnabled = true;
             }

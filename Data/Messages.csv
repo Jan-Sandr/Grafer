@@ -27,3 +27,7 @@ cannot contain only operation in absalute value.;nemůže obsahovat v absolutní
 cannot contain empty absolute value.;nemůže obsahovat prázdnou absolutní hodnotu.;
 After the inversion, it was no longer a function. Try to limit x range;Po inverzi se už nejdná of funkci. Zkuset rozsah x omezit;
 Function's graph doesn't have valid points.;Graf funkce nemá validní body.;
+cannot contain an empty logarithm base.;nemůže obsahovat prázdný základ logaritmu.;
+requires a logarithm before the square brackets.;požaduje logaritmus před hranatými závorkami.;
+requires after the logarithm square brackets as the base or content in round brackets.;požaduje za logaritmem hranaté závorky jako základ nebo obsah v kulatých závorkách.;
+requires the content of logarithm in parentheses.;požaduje základ logaritmu v závorkách.;
