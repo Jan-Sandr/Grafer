@@ -14,21 +14,22 @@ namespace Grafer
         public Relation Relation { get; set; }
         public double MinimumX { get; set; }
         public double MaximumX { get; set; }
+        public bool IsLimited { get; }
         public CalculationOrder CalculationOrder { get; set; }
         public List<Polyline> Curves { get; set; }
         public CoordinateSystem CoordinateSystem { get; }
         public Brush Brush { get; }
         public bool Inverse { get; private set; }
         public FunctionType Type { get; private set; }
-
         public int ErrorMessageID { get; private set; } = -1;
-
+        public int Number { get; } = 1;
         public enum FunctionType // Typy funkce na základě vhodné míry pro konkrétní osu.
         {
             Basic,
             TrigonometricFunction,
             InverseTrigonometricFunction
         }
+        public string InputRelation { get; }
 
         private List<Point> points;
         private double y;
@@ -36,12 +37,13 @@ namespace Grafer
         private int[] calculationOrderIndexesBackup = Array.Empty<int>(); // záloha výpočetního postupu.
         private double calculationMinimumX, calculationMaximumX; // Výpočetní minimum a maximum.
 
-        public Function(string name, string relation, double minimumX, double maximumX, CoordinateSystem coordinateSystem, Brush color, bool inverse)
+        public Function(string name, string relation, double minimumX, double maximumX, bool isLimited, CoordinateSystem coordinateSystem, Brush color, bool inverse)
         {
             Name = name;
             Relation = new Relation(relation);
             MinimumX = minimumX;
             MaximumX = maximumX;
+            IsLimited = isLimited;
             CalculationOrder = new CalculationOrder();
             Curves = new List<Polyline>();
             points = new List<Point>();
@@ -49,6 +51,8 @@ namespace Grafer
             Brush = color;
             Inverse = inverse;
             Type = GetFunctionType();
+            Number = int.Parse(Name.Split(new char[] { 'f', ':' })[1]);
+            InputRelation = relation;
         }
 
         //Zjištení typu funkce.
