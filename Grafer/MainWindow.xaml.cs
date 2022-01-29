@@ -59,6 +59,10 @@ namespace Grafer
         private readonly Brush defaultSelectionBrush = new SolidColorBrush(Color.FromRgb(0, 120, 215)); // Výchozí označovací barva.
         private readonly Color defaultStatusColor = Color.FromRgb(125, 255, 99); // výchozí barva statusu.
 
+        private bool addingNewFunction;
+
+        #region Načítání dat
+
         //Spuštení aplikce - jako load ve formsech.
         private void ApplicationLoaded(object sender, RoutedEventArgs e)
         {
@@ -83,6 +87,8 @@ namespace Grafer
             localizationData = ReadFile(directory + "\\UILocalization.csv", true).ToDictionary();
         }
 
+        #endregion
+
         //Kliknutí na tlačítko vykreslit.
         private void ButtonDrawClick(object sender, RoutedEventArgs e)
         {
@@ -102,6 +108,7 @@ namespace Grafer
             Draw(); // 4. Vykreslení funkce.
         }
 
+        //Hlavní proces
         private void DoProcess()
         {
             if (equationInput.IsEquationValid)
@@ -111,7 +118,11 @@ namespace Grafer
                 if (isXRangeValid)
                 {
                     CreateFunction(); // 5. vytvoření funkce.
-                    functions.Add(gFunction!);
+
+                    if(!addingNewFunction && listBoxFunctions.SelectedIndex != -1)
+                    {
+                        UpdateFunctionInList(gFunction!);
+                    }
                 }
             }
             else
@@ -124,7 +135,7 @@ namespace Grafer
         private void CreateFunction()
         {
             string name = GenerateUniqueName();
-            gFunction = new Function(name, equationInput.Text, gMinimumX, gMaximumX, coordinateSystem, rectangleColor.Fill, checkBoxInverse.IsChecked == true);
+            gFunction = new Function(name, equationInput.Text, gMinimumX, gMaximumX, limitX.IsChecked == true, coordinateSystem, rectangleColor.Fill, checkBoxInverse.IsChecked == true);
             gFunction.CalculatePoints();
         }
 
@@ -135,6 +146,8 @@ namespace Grafer
             isXRangeValid = true;
             SetStatus("OK", defaultStatusColor);
         }
+
+        #region Získání rozsahu x
 
         //Získání rozsahu x.
         private void GetXRange()
@@ -183,6 +196,10 @@ namespace Grafer
 
             return isXRangeValid;
         }
+
+        #endregion
+
+        #region Kontrola rozsahu x
 
         //Porovnání rozsahů.
         private bool IsXRangeValid()
@@ -234,6 +251,8 @@ namespace Grafer
 
             return isXRangeOut;
         }
+
+        #endregion
 
         //Kreslení
         private void Draw()
@@ -319,6 +338,8 @@ namespace Grafer
             }
         }
 
+        #region Oznámení chyb
+
         //Oznámení chybného vstupu s označením.
         private void NotifyInvalidInput(TextBox textBox, int selectionStart, int selectionLength, int messageID)
         {
@@ -365,6 +386,8 @@ namespace Grafer
             textBlockStatus.Foreground = new SolidColorBrush(color);
         }
 
+        #endregion
+
         //Ovládácí zkratky.
         private void ShortcutsPress(object sender, KeyEventArgs e)
         {
@@ -406,6 +429,8 @@ namespace Grafer
             return fileCompiler.Data.ToArray();
         }
 
+        #region Lokalizace
+
         //Localizace prostředí.
         private void LocalizeUserInterface()
         {
@@ -424,7 +449,7 @@ namespace Grafer
         }
 
         //Změna jazyka.
-        private void LanguageSelectionChange(object sender, SelectionChangedEventArgs e)
+        private void LanguageSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             language = (Language)languageSelect.SelectedItem;
 
@@ -437,6 +462,10 @@ namespace Grafer
                 NotifyInvalidInput(equationInput, equationInput.InvalidSection.SelectionStart, equationInput.InvalidSection.SelectionLength, equationInput.InvalidSection.MessageID);
             }
         }
+
+        #endregion
+
+        #region Responzivita
 
         //Přizpůsobení prostředí velikosti aplikace.
         private void AdjustComponentsToApplicationSize()
@@ -483,6 +512,9 @@ namespace Grafer
             coordinateSystem.Refresh();
             Start();
         }
+
+        #endregion
+
         //Povolení tlačítka vykreslit.
         private void EquationInputTextChanged(object sender, TextChangedEventArgs e)
         {
@@ -524,6 +556,7 @@ namespace Grafer
             scrollButtonSection.Visibility = scrollButtonSection.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
         }
 
+        //Kliknutí na obdelník s barvou.
         private void RectangleColorMouseUp(object sender, MouseButtonEventArgs e)
         {
             System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
@@ -535,11 +568,25 @@ namespace Grafer
             }
         }
 
+        #region Generování jména
+
         //Vytvoří unikátní jméno pro funkci.
         private string GenerateUniqueName()
         {
-            int number = functions.Count > 0 ? GetNextFunctionNumber() : 1;
+            int number = 1;
 
+            if (functions.Count > 0)
+            {
+                if (addingNewFunction)
+                {
+                    number = GetNextFunctionNumber();
+                }
+                else
+                {
+                    number = listBoxFunctions.SelectedIndex == -1 ? GetNextFunctionNumber() : functions[listBoxFunctions.SelectedIndex].Number;
+                }
+            }
+           
             return $"f{number}: {equationInput.Text}";
         }
 
@@ -569,13 +616,15 @@ namespace Grafer
 
             for (int i = 0; i < functions.Count; i++)
             {
-                numbers[i] = int.Parse(functions[i].Name.Split(new char[] { 'f', ':' })[1]);
+                numbers[i] = functions[i].Number;
             }
 
             Array.Sort(numbers);
 
             return numbers;
         }
+
+        #endregion
 
         //Událost, která nastavá při změne jestli je inverzní čekbox zaškrtnut.
         private void InverseCheckedChanged(object sender, RoutedEventArgs e)
@@ -590,5 +639,95 @@ namespace Grafer
                 checkBoxKeepOrigin.IsChecked = false;
             }
         }
+
+        #region Ovládání listboxu
+
+        //Kliknutí na tlačítko přidat funkci.
+        private void ButtonAddFunctionClick(object sender, RoutedEventArgs e)
+        {
+            addingNewFunction = true;
+            Start();
+
+            if (gFunction != null)
+            {
+                AddFunctionToList(gFunction);
+            }
+           
+            addingNewFunction = false;
+        }
+
+        //Kliknutí na tlačítko odebrat funkci.
+        private void ButtonRemoveFunctionClick(object sender, RoutedEventArgs e)
+        {
+            if (listBoxFunctions.SelectedIndex != -1)
+            {
+                functions.RemoveAt(listBoxFunctions.SelectedIndex);
+                listBoxFunctions.Items.RemoveAt(listBoxFunctions.SelectedIndex);
+            }
+        }
+
+        //Přidání funkce do listu.
+        private void AddFunctionToList(Function function)
+        {
+                functions.Add(function);
+                AddFunctionToListBox();
+        }
+
+        //Přidání checkboxu, který reprezentuje funkci v listboxu.
+        private void AddFunctionToListBox()
+        {
+            CheckBox checkBox = new CheckBox
+            {
+                Name = "checkBox" + gFunction!.Name.Split(':')[0],
+                Content = gFunction.Name,
+                IsEnabled = false
+
+            };
+
+            listBoxFunctions.Items.Add(checkBox);
+        }
+
+        //Přepsání vybrané funkce v listboxu.
+        private void UpdateFunctionInList(Function function)
+        {
+                functions[listBoxFunctions.SelectedIndex] = function;
+                (listBoxFunctions.Items[listBoxFunctions.SelectedIndex] as CheckBox)!.Content = function.Name;
+        }
+
+        //Změna vybrané funkce v listboxu.
+        private void ListBoxFunctionsSelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (listBoxFunctions.SelectedIndex != -1)
+            {
+                gFunction = functions[listBoxFunctions.SelectedIndex];
+                LoadUserInterfaceValuesFromFunction(gFunction);
+                Start();    
+            }
+        }
+
+        //Načtení vlastností funkce do uživatelských prvků.
+        private void LoadUserInterfaceValuesFromFunction(Function function)
+        {
+            limitX.IsChecked = function.IsLimited;
+
+            if(function.IsLimited)
+            {
+                minimumXInput.Text = function.MinimumX.ToString();
+                maximumXInput.Text = function.MaximumX.ToString();
+            }
+
+            rectangleColor.Fill = function.Brush;
+            checkBoxInverse.IsChecked = function.Inverse;
+
+            equationInput.Text = function.InputRelation;
+        }
+
+        //Zrušení výběru v listboxu
+        private void ButtonDeselectFunctionClick(object sender, RoutedEventArgs e)
+        {
+            listBoxFunctions.SelectedIndex = -1;
+        }
+
+        #endregion
     }
 }
