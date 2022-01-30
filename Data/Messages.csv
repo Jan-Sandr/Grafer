@@ -31,3 +31,4 @@ cannot contain an empty logarithm base.;nemůže obsahovat prázdný základ log
 requires a logarithm before the square brackets.;požaduje logaritmus před hranatými závorkami.;
 requires after the logarithm square brackets as the base or content in round brackets.;požaduje za logaritmem hranaté závorky jako základ nebo obsah v kulatých závorkách.;
 requires the content of logarithm in parentheses.;požaduje základ logaritmu v závorkách.;
+Not all functions have been loaded because some have corrupted data.;Nebyly načeteny všechny funkce, protože některé mají poškozená data.;

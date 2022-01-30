@@ -54,8 +54,10 @@
         <CheckBox x:Name="checkBoxInverse" Content="Inverse" HorizontalAlignment="Left" Margin="256,91,0,0" VerticalAlignment="Top" Width="94" Checked="InverseCheckedChanged" Unchecked="InverseCheckedChanged"/>
         <CheckBox x:Name="checkBoxKeepOrigin" Content="Keep origin" HorizontalAlignment="Left" Margin="256,112,0,0" VerticalAlignment="Top" Width="94"/>
         <ListBox x:Name="listBoxFunctions" Margin="67,284,0,0" BorderThickness="1,1,1,1" VerticalAlignment="Top" Height="138" SelectionChanged="ListBoxFunctionsSelectionChanged" HorizontalAlignment="Left" Width="158"/>
-        <Button x:Name="buttonAddFunction" Content="+" HorizontalAlignment="Left" Margin="17,288,0,0" VerticalAlignment="Top" Height="36" Width="40" Click="ButtonAddFunctionClick" FontSize="36" Padding="0,-10,1,0"/>
-        <Button x:Name="buttonRemoveFunction" Content="-" HorizontalAlignment="Left" Margin="17,332,0,0" VerticalAlignment="Top" Height="36" Width="40" Click="ButtonRemoveFunctionClick" FontSize="36" Padding="0,-10,1,0"/>
-        <Button x:Name="buttonDeselectFunction" Content="✖" HorizontalAlignment="Left" Margin="17,381,0,0" VerticalAlignment="Top" Height="36" Width="40" Click="ButtonDeselectFunctionClick"/>
+        <Button x:Name="buttonAddFunction" Content="+" HorizontalAlignment="Left" Margin="17,288,0,0" VerticalAlignment="Top" Height="36" Width="40" Click="ListBoxFunctionOperationButtonsClick" FontSize="36" Padding="0,-10,1,0"/>
+        <Button x:Name="buttonRemoveFunction" Content="-" HorizontalAlignment="Left" Margin="17,332,0,0" VerticalAlignment="Top" Height="36" Width="40" Click="ListBoxFunctionOperationButtonsClick" FontSize="36" Padding="0,-10,1,0"/>
+        <Button x:Name="buttonDeselectFunction" Content="✖" HorizontalAlignment="Left" Margin="17,381,0,0" VerticalAlignment="Top" Height="36" Width="40" Click="ListBoxFunctionOperationButtonsClick"/>
+        <Button x:Name="buttonSaveFunctions" Content="Save Functions" HorizontalAlignment="Left" Margin="242,297,0,0" VerticalAlignment="Top" Height="37" Width="91" Click="ListBoxFunctionOperationButtonsClick" IsEnabled="False"/>
+        <Button x:Name="buttonLoadFunctions" Content="Load Functions" HorizontalAlignment="Left" Margin="242,362,0,0" VerticalAlignment="Top" Height="37" Width="91" Click="ListBoxFunctionOperationButtonsClick"/>
     </Grid>
 </Window>

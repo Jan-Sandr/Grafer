@@ -42,7 +42,7 @@ namespace Grafer
             Czech = 1
         }
 
-        List<Function> functions = new List<Function>();
+        readonly List<Function> functions = new List<Function>();
 
         private Language language;
         private Function? gFunction;
@@ -135,7 +135,7 @@ namespace Grafer
         private void CreateFunction()
         {
             string name = GenerateUniqueName();
-            gFunction = new Function(name, equationInput.Text, gMinimumX, gMaximumX, limitX.IsChecked == true, coordinateSystem, rectangleColor.Fill, checkBoxInverse.IsChecked == true);
+            gFunction = new Function(name, rectangleColor.Fill, equationInput.Text, limitX.IsChecked == true, gMinimumX, gMaximumX, coordinateSystem, checkBoxInverse.IsChecked == true);
             gFunction.CalculatePoints();
         }
 
@@ -285,6 +285,8 @@ namespace Grafer
             }
         }
 
+        #region Změna míry
+
         //Aktualizace komponentů na aktuální míru (pokud se změnila).
         private void UpdateToMeasure()
         {
@@ -292,7 +294,7 @@ namespace Grafer
             {
                 UpdateCoordinateSystem();
 
-                UpdateRangeMeasure();
+                UpdateRangeMeasure(gFunction.Type);
 
                 SetDegreeLabelsVisibility();
             }
@@ -309,9 +311,9 @@ namespace Grafer
         }
 
         //Aktualizuje míru v políčkách pro rozsah.
-        private void UpdateRangeMeasure()
+        private void UpdateRangeMeasure(Function.FunctionType functionType)
         {
-            if (gFunction!.Type == Function.FunctionType.TrigonometricFunction)
+            if (functionType == Function.FunctionType.TrigonometricFunction)
             {
                 minimumXInput.SetValueType(RangeInput.DisplayValueType.Degree);
                 maximumXInput.SetValueType(RangeInput.DisplayValueType.Degree);
@@ -337,6 +339,8 @@ namespace Grafer
                 labelDegreeMaximum.Visibility = Visibility.Hidden;
             }
         }
+
+        #endregion
 
         #region Oznámení chyb
 
@@ -642,8 +646,66 @@ namespace Grafer
 
         #region Ovládání listboxu
 
-        //Kliknutí na tlačítko přidat funkci.
-        private void ButtonAddFunctionClick(object sender, RoutedEventArgs e)
+        enum ListBoxOperations
+        {
+            Add,
+            Remove,
+            Deselect,
+            Load,
+            Save
+        }
+
+        //Vyvovále se při kliknutí na jedno s tlačítek spojené s listboxem pro funkce.
+        private void ListBoxFunctionOperationButtonsClick(object sender, RoutedEventArgs e)
+        {
+            Button operationButton = (Button)sender;
+
+            //Získání názvu operace buttoAddFunction -> Add.
+            ListBoxOperations operation = (ListBoxOperations)Enum.Parse(typeof(ListBoxOperations), operationButton.Name[6..].Split('F')[0]); 
+
+            ListBoxFunctionOperations(operation);
+        }
+
+        //Switch s jednotlivými operacemi listboxu.
+        private void ListBoxFunctionOperations(ListBoxOperations operation)
+        {
+            //Vyvolá operaci listboxu na základě typu.
+            switch(operation)
+            {
+                case ListBoxOperations.Add:
+                    {
+                        AddFunction();
+                        break;
+                    }
+                case ListBoxOperations.Remove:
+                    {
+                        RemoveFunction();
+                        break;
+                    }
+                case ListBoxOperations.Deselect:
+                    {
+                        listBoxFunctions.SelectedIndex = -1;
+                        break;
+                    }
+                case ListBoxOperations.Save:
+                    {
+                        SaveFunctions();
+                        break;
+                    }
+                case ListBoxOperations.Load:
+                    {
+                        LoadFunctions();
+                        break;
+                    }
+            }
+
+            buttonSaveFunctions.IsEnabled = functions.Count > 0;
+        }
+
+        #region Přidání funkce do listů
+
+        //Přidání funkce do listů pokud je validní.
+        private void AddFunction()
         {
             addingNewFunction = true;
             Start();
@@ -652,25 +714,15 @@ namespace Grafer
             {
                 AddFunctionToList(gFunction);
             }
-           
-            addingNewFunction = false;
-        }
 
-        //Kliknutí na tlačítko odebrat funkci.
-        private void ButtonRemoveFunctionClick(object sender, RoutedEventArgs e)
-        {
-            if (listBoxFunctions.SelectedIndex != -1)
-            {
-                functions.RemoveAt(listBoxFunctions.SelectedIndex);
-                listBoxFunctions.Items.RemoveAt(listBoxFunctions.SelectedIndex);
-            }
+            addingNewFunction = false;
         }
 
         //Přidání funkce do listu.
         private void AddFunctionToList(Function function)
         {
-                functions.Add(function);
-                AddFunctionToListBox();
+            functions.Add(function);
+            AddFunctionToListBox();
         }
 
         //Přidání checkboxu, který reprezentuje funkci v listboxu.
@@ -687,11 +739,117 @@ namespace Grafer
             listBoxFunctions.Items.Add(checkBox);
         }
 
+        #endregion
+
+        #region Odebrání funkce z listu
+
+        //Odebrání funkce z listů.
+        private void RemoveFunction()
+        {
+            if (listBoxFunctions.SelectedIndex != -1)
+            {
+                functions.RemoveAt(listBoxFunctions.SelectedIndex);
+                listBoxFunctions.Items.RemoveAt(listBoxFunctions.SelectedIndex);
+            }
+        }
+
+        #endregion
+
+        #region Uložení funkcí do souboru
+
+        //Uložení funkcí do souboru.
+        private void SaveFunctions()
+        {
+            System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog()
+            {
+                Filter = "CSV files | *.csv"
+            };
+            
+            if(saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                WriteToFile(saveFileDialog.FileName);
+            }
+        }
+
+        //Zápis funkcí do souboru.
+        private void WriteToFile(string path)
+        {
+            string lines = "Name;Color;Relation;Is limited;Minimum;Maximum;Is inverse;Type;\r\n";
+
+            for (int i = 0; i < functions.Count; i++)
+            {
+                lines += $"{functions[i].Name};{functions[i].Brush};{functions[i].InputRelation};{functions[i].IsLimited};{functions[i].MinimumX};{functions[i].MaximumX};{functions[i].Inverse};{functions[i].Type};\r\n";
+            }
+
+            File.WriteAllText(path, lines);
+        }
+
+        #endregion
+
+        #region Čtení funkcí ze souboru
+
+        //Dialog pro souboru na načtení.
+        private void LoadFunctions()
+        {
+            System.Windows.Forms.OpenFileDialog openFileDialog = new System.Windows.Forms.OpenFileDialog()
+            {
+                Filter = "CSV files | *.csv"
+            };
+
+            if (openFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            {
+                LoadFunctionsFromFile(openFileDialog.FileName);
+            }
+
+            listBoxFunctions.SelectedIndex = listBoxFunctions.Items.Count - 1;
+        }
+
+        //Načte funkce ze souboru.
+        private void LoadFunctionsFromFile(string path)
+        {
+            FileCompiler file = new FileCompiler(path, true);
+
+            if (file.IsOK)
+            {
+                file.Read();
+
+                if (file.IsDataOK)
+                {
+                    ReadFunctionsFromFile(file.Data);
+                }
+                else
+                {
+                    NotifyError(file.ErrorMessage);
+                }
+            }
+            else
+            {
+                NotifyError(file.ErrorMessage);
+            }
+        }
+
+        //Přečte načtené funkce ze souboru.;
+        private void ReadFunctionsFromFile(List<string> functionsFromFile)
+        {
+            for (int i = 0; i < functionsFromFile.Count; i++)
+            {
+                LoadUserInterfaceValues(functionsFromFile[i].Split(';'));
+                AddFunction();
+            }
+
+            if (functions.Count != functionsFromFile.Count)
+            {
+                MessageBox.Show(messages[32].Split(';')[(int)language]);
+            }
+        }
+
+        #endregion
+
         //Přepsání vybrané funkce v listboxu.
         private void UpdateFunctionInList(Function function)
         {
-                functions[listBoxFunctions.SelectedIndex] = function;
-                (listBoxFunctions.Items[listBoxFunctions.SelectedIndex] as CheckBox)!.Content = function.Name;
+            functions[listBoxFunctions.SelectedIndex] = function;
+            (listBoxFunctions.Items[listBoxFunctions.SelectedIndex] as CheckBox)!.Content = function.Name;
         }
 
         //Změna vybrané funkce v listboxu.
@@ -700,32 +858,37 @@ namespace Grafer
             if (listBoxFunctions.SelectedIndex != -1)
             {
                 gFunction = functions[listBoxFunctions.SelectedIndex];
-                LoadUserInterfaceValuesFromFunction(gFunction);
-                Start();    
+                LoadUserInterfaceValues(gFunction.PropertiesValueToArray());
+                Start();
             }
         }
 
         //Načtení vlastností funkce do uživatelských prvků.
-        private void LoadUserInterfaceValuesFromFunction(Function function)
+        private void LoadUserInterfaceValues(string[] data)
         {
-            limitX.IsChecked = function.IsLimited;
+            rectangleColor.Fill = new SolidColorBrush((Color)ColorConverter.ConvertFromString(data[1])); // Barva
 
-            if(function.IsLimited)
+            equationInput.Text = data[2]; // Předpis
+
+            limitX.IsChecked = bool.Parse(data[3]); // Omezená
+
+            Function.FunctionType functionType = (Function.FunctionType)Enum.Parse(typeof(Function.FunctionType), data[7]);
+
+            if (limitX.IsChecked == true)
             {
-                minimumXInput.Text = function.MinimumX.ToString();
-                maximumXInput.Text = function.MaximumX.ToString();
+                UpdateRangeMeasure(functionType);
+
+                if(functionType == Function.FunctionType.TrigonometricFunction)
+                {
+                    data[4] = data[4].ToDegrees();
+                    data[5] = data[5].ToDegrees();
+                }
+
+                minimumXInput.Text = data[4]; // Minimum
+                maximumXInput.Text = data[5]; // Maximum
             }
 
-            rectangleColor.Fill = function.Brush;
-            checkBoxInverse.IsChecked = function.Inverse;
-
-            equationInput.Text = function.InputRelation;
-        }
-
-        //Zrušení výběru v listboxu
-        private void ButtonDeselectFunctionClick(object sender, RoutedEventArgs e)
-        {
-            listBoxFunctions.SelectedIndex = -1;
+            checkBoxInverse.IsChecked = bool.Parse(data[6]); // Inverzní
         }
 
         #endregion
