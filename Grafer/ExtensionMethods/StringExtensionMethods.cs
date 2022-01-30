@@ -71,5 +71,11 @@ namespace Grafer.ExtensionMethods
 
             return collection;
         }
+
+        //Převod čísla na stupně ve stringu.
+        public static string ToDegrees(this string value)
+        {
+            return double.Parse(value).ToDegrees().ToString();  
+        }
     }
 }
