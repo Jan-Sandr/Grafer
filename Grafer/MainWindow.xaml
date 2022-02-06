@@ -59,5 +59,6 @@
         <Button x:Name="buttonDeselectFunction" Content="✖" HorizontalAlignment="Left" Margin="17,381,0,0" VerticalAlignment="Top" Height="36" Width="40" Click="ListBoxFunctionOperationButtonsClick"/>
         <Button x:Name="buttonSaveFunctions" Content="Save Functions" HorizontalAlignment="Left" Margin="242,297,0,0" VerticalAlignment="Top" Height="37" Width="91" Click="ListBoxFunctionOperationButtonsClick" IsEnabled="False"/>
         <Button x:Name="buttonLoadFunctions" Content="Load Functions" HorizontalAlignment="Left" Margin="242,362,0,0" VerticalAlignment="Top" Height="37" Width="91" Click="ListBoxFunctionOperationButtonsClick"/>
+        <CheckBox x:Name="checkBoxMultipleFunctions" Content="Multiple funcitons" HorizontalAlignment="Left" Margin="67,264,0,0" VerticalAlignment="Top" Width="120" IsEnabled="False" Checked="CheckBoxMultipleFunctionsCheckedChanged" Unchecked="CheckBoxMultipleFunctionsCheckedChanged"/>
     </Grid>
 </Window>

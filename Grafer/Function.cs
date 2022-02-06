@@ -120,10 +120,12 @@ namespace Grafer
         //Výpočítání křivky.
         public void CalculatePoints()
         {
+            curves.Clear();
             PrepareForCalculation();
             DoCalculation();
             SaveCurve(points);
             points = new List<Point>();
+            GetBackup();
         }
 
         //Výpoočet bodů.
@@ -218,6 +220,7 @@ namespace Grafer
             {
                 Polyline curve = GetDeepCurveCopy(curves[i]);
                 curve.Opacity = opacity;
+                curve.Uid = Name;
 
                 if (inverse)
                 {
@@ -277,8 +280,22 @@ namespace Grafer
         //Nastavení výpočetního rozsahu. Pokud by byl rozsah větší než plátno, omezí to jen na viditelnou plochu interně.
         private void SetCalculationXRange()
         {
-            calculationMinimumX = ((-Math.Abs(MinimumX) > coordinateSystem.NumberRange + (coordinateSystem.AbsoluteShift.OnX / 100 / coordinateSystem.Zoom)) ? -coordinateSystem.NumberRange - coordinateSystem.AbsoluteShift.OnX / 100 / coordinateSystem.Zoom : MinimumX);
-            calculationMaximumX = ((MaximumX > coordinateSystem.NumberRange - (coordinateSystem.AbsoluteShift.OnX / 100 / coordinateSystem.Zoom)) ? coordinateSystem.NumberRange - coordinateSystem.AbsoluteShift.OnX / 100 / coordinateSystem.Zoom : MaximumX);
+            //V základu je rozsah od viditelného minima do maxima soustavy souřadnic
+            calculationMinimumX = (-coordinateSystem.Width / 200 - coordinateSystem.AbsoluteShift.OnX / 100) / coordinateSystem.Zoom;
+            calculationMaximumX = (coordinateSystem.Width / 200 - coordinateSystem.AbsoluteShift.OnX / 100) / coordinateSystem.Zoom;
+
+            if (IsLimited)
+            {
+                if (!double.IsNegativeInfinity(MinimumX))
+                {
+                    calculationMinimumX = ((-Math.Abs(MinimumX) > coordinateSystem.NumberRange + (coordinateSystem.AbsoluteShift.OnX / 100 / coordinateSystem.Zoom)) ? -coordinateSystem.NumberRange - coordinateSystem.AbsoluteShift.OnX / 100 / coordinateSystem.Zoom : MinimumX);
+                }
+
+                if (!double.IsPositiveInfinity(MaximumX))
+                {
+                    calculationMaximumX = ((MaximumX > coordinateSystem.NumberRange - (coordinateSystem.AbsoluteShift.OnX / 100 / coordinateSystem.Zoom)) ? coordinateSystem.NumberRange - coordinateSystem.AbsoluteShift.OnX / 100 / coordinateSystem.Zoom : MaximumX);
+                }
+            }
         }
 
         //Dosazení za x.
