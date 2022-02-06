@@ -109,6 +109,40 @@ namespace Grafer.CustomControls
             Children.RemoveRange(defaultElementsCount, Children.Count - defaultElementsCount);
         }
 
+        //Odebere konkrétné funkci na základě Uid.
+        public void RemoveFunction(string name)
+        {
+            for (int i = defaultElementsCount; i < Children.Count; i++)
+            {
+                UIElement uIElement = Children[i];
+
+                if (uIElement!.Uid == name)
+                {
+                    Children.Remove(uIElement);
+                    i--;
+                }
+            }
+        }
+
+        //Jestli už funkci systém obsahuje na základě Uid.
+        public bool ContainsFunction(string name)
+        {
+            bool result = false;
+
+            for (int i = defaultElementsCount; i < Children.Count; i++)
+            {
+                UIElement uIElement = Children[i];
+
+                if (uIElement!.Uid == name)
+                {
+                    result = true;
+                    break;
+                }
+            }
+
+            return result;
+        }
+
         //Metoda pro zachycení skrolování.
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {

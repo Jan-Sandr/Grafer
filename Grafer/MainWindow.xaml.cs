@@ -95,6 +95,8 @@ namespace Grafer
             Start();
         }
 
+        #region Tvorba nové funkce
+
         // 1. Začátek procesu.
         private void Start()
         {
@@ -106,6 +108,12 @@ namespace Grafer
             }
 
             Draw(); // 4. Vykreslení funkce.
+
+            // 5. Pokud je více funkcí najednou překreslí se všechny zaškrtlé.
+            if (checkBoxMultipleFunctions.IsChecked == true)
+            {
+                Recalculation();
+            }
         }
 
         //Hlavní proces
@@ -119,7 +127,7 @@ namespace Grafer
                 {
                     CreateFunction(); // 5. vytvoření funkce.
 
-                    if(!addingNewFunction && listBoxFunctions.SelectedIndex != -1)
+                    if (!addingNewFunction && listBoxFunctions.SelectedIndex != -1)
                     {
                         UpdateFunctionInList(gFunction!);
                     }
@@ -147,6 +155,8 @@ namespace Grafer
             SetStatus("OK", defaultStatusColor);
         }
 
+        #endregion
+
         #region Získání rozsahu x
 
         //Získání rozsahu x.
@@ -158,15 +168,9 @@ namespace Grafer
             }
             else
             {
-                GetXRangeFromCoordinateSystem();
+                gMinimumX = double.NegativeInfinity;
+                gMaximumX = double.PositiveInfinity;
             }
-        }
-
-        //Pokud není zaškrtnuto omezit, tak se rozsah získá ze šířky plátna.
-        private void GetXRangeFromCoordinateSystem()
-        {
-            gMinimumX = (-coordinateSystem.Width / 200 - coordinateSystem.AbsoluteShift.OnX / 100) / coordinateSystem.Zoom;
-            gMaximumX = (coordinateSystem.Width / 200 - coordinateSystem.AbsoluteShift.OnX / 100) / coordinateSystem.Zoom;
         }
 
         //Získání rozsahu x z inputů od uživatele.
@@ -254,6 +258,8 @@ namespace Grafer
 
         #endregion
 
+        #region Kreslení
+
         //Kreslení
         private void Draw()
         {
@@ -261,11 +267,11 @@ namespace Grafer
 
             if (gFunction != null)
             {
-                UpdateToMeasure();
+                UpdateToMeasure(gFunction);
 
                 if (gFunction.IsDrawable())
                 {
-                    DrawFunction();
+                    DrawFunction(gFunction);
                 }
                 else
                 {
@@ -275,39 +281,41 @@ namespace Grafer
         }
 
         //Vykreslení funkce.
-        private void DrawFunction()
+        private void DrawFunction(Function function)
         {
-            gFunction!.Plot(gFunction.Inverse, 1);
+            function.Plot(function.Inverse, 1);
 
             if (checkBoxKeepOrigin.IsChecked == true) // Při inverzní, jestli má vykreslit původní křivku s nižší viditelností.
             {
-                gFunction.Plot(false, 0.3);
+                function.Plot(false, 0.3);
             }
         }
+
+        #endregion
 
         #region Změna míry
 
         //Aktualizace komponentů na aktuální míru (pokud se změnila).
-        private void UpdateToMeasure()
+        private void UpdateToMeasure(Function function)
         {
-            if (previousFunctionType != gFunction!.Type)
+            if (previousFunctionType != function.Type)
             {
-                UpdateCoordinateSystem();
+                UpdateCoordinateSystem(function);
 
-                UpdateRangeMeasure(gFunction.Type);
+                UpdateRangeMeasure(function.Type);
 
-                SetDegreeLabelsVisibility();
+                SetDegreeLabelsVisibility(function.Type);
             }
         }
 
         //Pošle informace souřadnicové systém o tom jakou mírou má použit.
-        private void UpdateCoordinateSystem()
+        private void UpdateCoordinateSystem(Function function)
         {
-            Measure horizontalMeasure = gFunction!.Type == Function.FunctionType.TrigonometricFunction ? CoordinateSystem.Measure.Degree : CoordinateSystem.Measure.Numerical;
-            Measure verticalMeasure = gFunction.Type == Function.FunctionType.InverseTrigonometricFunction ? CoordinateSystem.Measure.Degree : CoordinateSystem.Measure.Numerical;
+            Measure horizontalMeasure = function.Type == Function.FunctionType.TrigonometricFunction ? CoordinateSystem.Measure.Degree : CoordinateSystem.Measure.Numerical;
+            Measure verticalMeasure = function.Type == Function.FunctionType.InverseTrigonometricFunction ? CoordinateSystem.Measure.Degree : CoordinateSystem.Measure.Numerical;
 
             coordinateSystem.Refresh(horizontalMeasure, verticalMeasure);
-            previousFunctionType = gFunction!.Type;
+            previousFunctionType = function.Type;
         }
 
         //Aktualizuje míru v políčkách pro rozsah.
@@ -326,9 +334,9 @@ namespace Grafer
         }
 
         //Aktualizuje zda se zobrazí stupně za políčky pro rozsah.
-        private void SetDegreeLabelsVisibility()
+        private void SetDegreeLabelsVisibility(Function.FunctionType functionType)
         {
-            if (gFunction!.Type == Function.FunctionType.TrigonometricFunction)
+            if (functionType == Function.FunctionType.TrigonometricFunction)
             {
                 labelDegreeMinimum.Visibility = Visibility.Visible;
                 labelDegreeMaximum.Visibility = Visibility.Visible;
@@ -590,7 +598,7 @@ namespace Grafer
                     number = listBoxFunctions.SelectedIndex == -1 ? GetNextFunctionNumber() : functions[listBoxFunctions.SelectedIndex].Number;
                 }
             }
-           
+
             return $"f{number}: {equationInput.Text}";
         }
 
@@ -661,7 +669,7 @@ namespace Grafer
             Button operationButton = (Button)sender;
 
             //Získání názvu operace buttoAddFunction -> Add.
-            ListBoxOperations operation = (ListBoxOperations)Enum.Parse(typeof(ListBoxOperations), operationButton.Name[6..].Split('F')[0]); 
+            ListBoxOperations operation = (ListBoxOperations)Enum.Parse(typeof(ListBoxOperations), operationButton.Name[6..].Split('F')[0]);
 
             ListBoxFunctionOperations(operation);
         }
@@ -670,7 +678,7 @@ namespace Grafer
         private void ListBoxFunctionOperations(ListBoxOperations operation)
         {
             //Vyvolá operaci listboxu na základě typu.
-            switch(operation)
+            switch (operation)
             {
                 case ListBoxOperations.Add:
                     {
@@ -700,6 +708,7 @@ namespace Grafer
             }
 
             buttonSaveFunctions.IsEnabled = functions.Count > 0;
+            checkBoxMultipleFunctions.IsEnabled = functions.Count > 0;
         }
 
         #region Přidání funkce do listů
@@ -732,9 +741,11 @@ namespace Grafer
             {
                 Name = "checkBox" + gFunction!.Name.Split(':')[0],
                 Content = gFunction.Name,
-                IsEnabled = false
-
+                IsEnabled = checkBoxMultipleFunctions.IsChecked == true
             };
+
+            checkBox.Checked += CheckBoxFunctionCheckedChanged;
+            checkBox.Unchecked += CheckBoxFunctionCheckedChanged;
 
             listBoxFunctions.Items.Add(checkBox);
         }
@@ -764,8 +775,8 @@ namespace Grafer
             {
                 Filter = "CSV files | *.csv"
             };
-            
-            if(saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+
+            if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 WriteToFile(saveFileDialog.FileName);
             }
@@ -878,7 +889,7 @@ namespace Grafer
             {
                 UpdateRangeMeasure(functionType);
 
-                if(functionType == Function.FunctionType.TrigonometricFunction)
+                if (functionType == Function.FunctionType.TrigonometricFunction)
                 {
                     data[4] = data[4].ToDegrees();
                     data[5] = data[5].ToDegrees();
@@ -889,6 +900,75 @@ namespace Grafer
             }
 
             checkBoxInverse.IsChecked = bool.Parse(data[6]); // Inverzní
+        }
+
+        #endregion
+
+        #region Metody pro více funkcí najednou
+
+        //Událost při změny hodnoty zaškrtnutí více funkcí najednou.
+        private void CheckBoxMultipleFunctionsCheckedChanged(object sender, RoutedEventArgs e)
+        {
+            for (int i = 0; i < functions.Count; i++)
+            {
+                (listBoxFunctions.Items[i] as CheckBox)!.IsEnabled = checkBoxMultipleFunctions.IsChecked == true;
+
+                if (checkBoxMultipleFunctions.IsChecked == false)
+                {
+                    (listBoxFunctions.Items[i] as CheckBox)!.IsChecked = false;
+                }
+            }
+
+            coordinateSystem.RemoveFunctions();
+
+            Start();
+        }
+
+        //Když se změní hodnota zaškrtnutí nějakého checkboxu v listu.
+        private void CheckBoxFunctionCheckedChanged(object sender, RoutedEventArgs e)
+        {
+            CheckBox checkBoxFunction = (sender as CheckBox)!;
+
+            int index = GetCheckBoxIndex(checkBoxFunction.Content.ToString()!);
+
+            if (checkBoxFunction.IsChecked == false)
+            {
+                coordinateSystem.RemoveFunction(functions[index].Name);
+            }
+
+            UpdateToMeasure(functions[index]);
+
+            Recalculation();
+        }
+
+        //Získá index právě zaškrtlého checkboxu.
+        private int GetCheckBoxIndex(string content)
+        {
+            int index = 0;
+
+            for (int i = 0; i < listBoxFunctions.Items.Count; i++)
+            {
+                if ((listBoxFunctions.Items[i] as CheckBox)!.Content.ToString() == content)
+                {
+                    index = i;
+                    break;
+                }
+            }
+
+            return index;
+        }
+
+        //Přepočítá zaškrnuté funkce k aktuálním hodnotám.
+        private void Recalculation()
+        {
+            for (int i = 0; i < functions.Count; i++)
+            {
+                if ((listBoxFunctions.Items[i] as CheckBox)!.IsChecked == true && !coordinateSystem.ContainsFunction(functions[i].Name))
+                {
+                    functions[i].CalculatePoints();
+                    DrawFunction(functions[i]);
+                }
+            }
         }
 
         #endregion
