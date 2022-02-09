@@ -33,6 +33,7 @@ namespace Grafer
             changedByScrool = true;
             sliderZoomLevel.Value = coordinateSystem.ZoomLevel;
             changedByScrool = false;
+
             Start();
         }
 
@@ -289,6 +290,16 @@ namespace Grafer
             {
                 function.Plot(false, 0.3);
             }
+
+            DrawFunctionsLabels();
+        }
+
+        //Vykreslení popisků funkcí.
+        private void DrawFunctionsLabels()
+        {
+            int bottomMargin = 35 + (scrollButtonSection.Visibility == Visibility.Visible ? Convert.ToInt16(buttonSection.Height + 15) : 0);
+            coordinateSystem.RemoveLabels();
+            coordinateSystem.DrawFunctionsLabels(bottomMargin);
         }
 
         #endregion
@@ -412,7 +423,7 @@ namespace Grafer
             {
                 equationInput.Text = "";
                 equationInput.Focus();
-                Reset();
+                Start();
             }
         }
 
@@ -532,9 +543,9 @@ namespace Grafer
         {
             buttonDraw.IsEnabled = equationInput.Text.Trim() != "";
 
-            if (!buttonDraw.IsEnabled)
+            if (!buttonDraw.IsEnabled && gFunction != null)
             {
-                coordinateSystem.RemoveFunctions();
+                coordinateSystem.RemoveItem(gFunction.Name);
             }
         }
 
@@ -566,6 +577,7 @@ namespace Grafer
         private void ButtonShowHideButtonsClick(object sender, RoutedEventArgs e)
         {
             scrollButtonSection.Visibility = scrollButtonSection.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+            DrawFunctionsLabels();
         }
 
         //Kliknutí na obdelník s barvou.
@@ -933,12 +945,12 @@ namespace Grafer
 
             if (checkBoxFunction.IsChecked == false)
             {
-                coordinateSystem.RemoveFunction(functions[index].Name);
+                coordinateSystem.RemoveItem(functions[index].Name);
             }
 
             UpdateToMeasure(functions[index]);
 
-            Recalculation();
+            Start();
         }
 
         //Získá index právě zaškrtlého checkboxu.
