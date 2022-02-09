@@ -109,8 +109,23 @@ namespace Grafer.CustomControls
             Children.RemoveRange(defaultElementsCount, Children.Count - defaultElementsCount);
         }
 
+        //Odebere všechny popisky funkcí.
+        public void RemoveLabels()
+        {
+            for (int i = defaultElementsCount; i < Children.Count; i++)
+            {
+                UIElement uIElement = Children[i];
+
+                if (uIElement!.Uid.Contains("Label"))
+                {
+                    Children.Remove(uIElement);
+                    i--;
+                }
+            }
+        }
+
         //Odebere konkrétné funkci na základě Uid.
-        public void RemoveFunction(string name)
+        public void RemoveItem(string name)
         {
             for (int i = defaultElementsCount; i < Children.Count; i++)
             {
@@ -141,6 +156,42 @@ namespace Grafer.CustomControls
             }
 
             return result;
+        }
+
+        //Vykreslení popisků funkcí.
+        public void DrawFunctionsLabels(int baseBottomMargin)
+        {
+            string previousName = "";
+            int bottomMargin = baseBottomMargin;
+
+            for (int i = defaultElementsCount; i < Children.Count; i++)
+            {
+                if (Children[i] is Polyline && Children[i].Uid != previousName)
+                {
+                    TextBlock functionLabel = FunctionLabel(Children[i].Uid, (Children[i] as Polyline)!.Stroke, bottomMargin);
+                    Children.Add(functionLabel);
+                    previousName = Children[i].Uid;
+                    bottomMargin += 35;
+                }
+            }
+        }
+
+        //Šablona pro popisek funkce.
+        private TextBlock FunctionLabel(string content, Brush brush, int bottomMargin)
+        {
+            return new TextBlock()
+            {
+                Text = content,
+                FontFamily = new FontFamily("Arial"),
+                FontSize = 25,
+                Foreground = brush,
+                RenderTransform = new TranslateTransform()
+                {
+                    X = 20,
+                    Y = Height - bottomMargin
+                },
+                Uid = content + " Label"
+            };
         }
 
         //Metoda pro zachycení skrolování.
