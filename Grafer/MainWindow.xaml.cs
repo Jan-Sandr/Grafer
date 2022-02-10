@@ -61,6 +61,7 @@ namespace Grafer
         private readonly Color defaultStatusColor = Color.FromRgb(125, 255, 99); // výchozí barva statusu.
 
         private bool addingNewFunction;
+        bool IsMainMenuVisible = true;
 
         #region Načítání dat
 
@@ -495,14 +496,25 @@ namespace Grafer
         {
             AdjustCoordinateSystemSize();
             AdjustButtonSectionLayout();
+            AdjustHideShowMainMenuButtonMargin();
+            coordinateSystem.Refresh();
+            Start();
         }
 
         //Přizpůsobení plátna velikosti aplikace.
         private void AdjustCoordinateSystemSize()
         {
-            coordinateSystem.Width = ActualWidth - 400;
+            coordinateSystem.Width = IsMainMenuVisible ? ActualWidth - 400 : ActualWidth;
             coordinateSystem.Height = ActualHeight - 39;
-            coordinateSystem.Margin = new Thickness(384, 0, 0, 700 - coordinateSystem.Height);
+
+            if (IsMainMenuVisible)
+            {
+                coordinateSystem.Margin = new Thickness(384, 0, 0, 700 - coordinateSystem.Height);
+            }
+            else
+            {
+                coordinateSystem.Margin = new Thickness(0, 0, 400, 700 - coordinateSystem.Height);
+            }
         }
 
         //Přizpůsobení sekce s tlačítky velikosti aplikace
@@ -528,12 +540,23 @@ namespace Grafer
             buttonSection.Margin = new Thickness(0, 0, 0, buttonsBottomMargin);
         }
 
+        //Upravuje pozici tlačítka pro schování hlavního menu
+        private void AdjustHideShowMainMenuButtonMargin()
+        {
+            if (IsMainMenuVisible)
+            {
+                buttonHideShowMainMenu.Margin = new Thickness(406, 20, 0, 0);
+            }
+            else
+            {
+                buttonHideShowMainMenu.Margin = new Thickness(26, 20, 0, 0);
+            }
+        }
+
         //Změna velikosti aplikace.
         private void ApplicationResize(object sender, SizeChangedEventArgs e)
         {
             AdjustComponentsToApplicationSize();
-            coordinateSystem.Refresh();
-            Start();
         }
 
         #endregion
@@ -984,5 +1007,15 @@ namespace Grafer
         }
 
         #endregion
+
+        //Událost při kliku na tlačítko, které ovládá viditelnost hlavního menu.
+        private void ButtonHideShowMainMenuClick(object sender, RoutedEventArgs e)
+        {
+            IsMainMenuVisible = !IsMainMenuVisible;
+
+            buttonHideShowMainMenu.Content = IsMainMenuVisible ? "🢦" : "🢧";
+
+            AdjustComponentsToApplicationSize();
+        }
     }
 }
