@@ -106,7 +106,6 @@ namespace Grafer
                             isInvertible = curves[i].Points[j - 1].Y < curves[i].Points[j].Y;
                         }
                     }
-
                 }
             }
             else
@@ -425,7 +424,7 @@ namespace Grafer
                     }
                 case "√":
                     {
-                        y = Root(double.Parse(relation[index + 1]), 1 / double.Parse(relation[index - 1]));
+                        y = Root(double.Parse(relation[index + 1]), double.Parse(relation[index - 1]));
                         break;
                     }
                 case "sin":
@@ -461,7 +460,28 @@ namespace Grafer
         //Odmocnění
         private double Root(double number, double index)
         {
-            return (index > 0 && !double.IsInfinity(index)) ? Math.Pow(number, index) : double.NaN;
+            double result = double.NaN;
+
+            if (index > 0 && !double.IsInfinity(index))
+            {
+                if (index % 2 == 0)
+                {
+                    result = Math.Pow(number, 1 / index);
+                }
+                else
+                {
+                    if (number < 0)
+                    {
+                        result = -Math.Pow(-number, 1 / index);
+                    }
+                    else
+                    {
+                        result = Math.Pow(number, 1 / index);
+                    }
+                }
+            }
+
+            return result;
         }
 
         private double TrigFunc(double number, string argument, Func<double, double> func, Func<double, double> arcusFunc)
