@@ -19,7 +19,9 @@ namespace Grafer.CustomControls
             Create();
         }
 
-        public event EventHandler? AbsoluteShiftChanged; // Event který nastane při změne posunu.
+        public event EventHandler? AbsoluteShiftChanged; // Event který nastane při změne posunu soustavy.
+
+        public event EventHandler? FunctionShiftChanged; // Event který nastane při změně posunu funkce.
 
         public int ZoomLevel { get; set; } = 0; // Slouží pro výpočet zoomu a zároveň celočíselný vyjádření zoomu.
 
@@ -43,7 +45,24 @@ namespace Grafer.CustomControls
             }
         }
 
-        private Space previousAbsoluteShift = new Space(0, 0); // Absolutní posunít před započetím pohybu v soustavě.
+        private Space functionShift = new Space(0, 0);
+
+        public Space FunctionShift
+        {
+            get
+            {
+                return functionShift;
+            }
+            set
+            {
+                functionShift = value;
+                FunctionShiftChanged?.Invoke(this, EventArgs.Empty);
+            }
+        }
+
+        private Space previousAbsoluteShift = new Space(0, 0); // Absolutní posunutí před započetím pohybu v soustavě.
+
+        private Space previousFunctionShift = new Space(0, 0); // Minulé posunutí funkce před započetím pohybu v soustavě
 
         private Space spaceBetween = new Space(100, 100); // Mezera mezi mřížními přímkami.
 
@@ -159,20 +178,15 @@ namespace Grafer.CustomControls
         }
 
         //Vykreslení popisků funkcí.
-        public void DrawFunctionsLabels(int baseBottomMargin)
+        public void DrawFunctionsLabels(string[] contents, Brush[] brushes, int baseBottomMargin)
         {
-            string previousName = "";
             int bottomMargin = baseBottomMargin;
 
-            for (int i = defaultElementsCount; i < Children.Count; i++)
+            for (int i = 0; i < contents.Length; i++)
             {
-                if (Children[i] is Polyline && Children[i].Uid != previousName)
-                {
-                    TextBlock functionLabel = FunctionLabel(Children[i].Uid, (Children[i] as Polyline)!.Stroke, bottomMargin);
-                    Children.Add(functionLabel);
-                    previousName = Children[i].Uid;
-                    bottomMargin += 35;
-                }
+                TextBlock functionLabel = FunctionLabel(contents[i], brushes[i], bottomMargin);
+                Children.Add(functionLabel);
+                bottomMargin += 35;
             }
         }
 
@@ -197,26 +211,32 @@ namespace Grafer.CustomControls
         //Metoda pro zachycení skrolování.
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            absoluteShift = AdjustAbsoluteShiftToZoom(e.Delta);
+            absoluteShift = AdjustShiftToZoom(e.Delta, absoluteShift);
+            functionShift = AdjustShiftToZoom(e.Delta, functionShift);
             ZoomLevel = GetZoomLevel(e.Delta);
             SetValues();
             Create();
         }
 
-        //Zmáčknutí levého tlačíka na myši.
-        protected override void OnMouseLeftButtonDown(MouseButtonEventArgs e)
-        {
-            isMouseDown = true;
-            mouseDownPosition = e.GetPosition(this);
-            previousAbsoluteShift = AbsoluteShift;
-        }
-
         //Resetování posunutí.
         protected override void OnMouseDown(MouseButtonEventArgs e)
         {
+            isMouseDown = true;
+            mouseDownPosition = e.GetPosition(this);
+
             if (e.MiddleButton == MouseButtonState.Pressed)
             {
                 AbsoluteShift = new Space(0, 0);
+            }
+
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                previousAbsoluteShift = AbsoluteShift;
+            }
+
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                previousFunctionShift = FunctionShift;
             }
         }
 
@@ -227,7 +247,15 @@ namespace Grafer.CustomControls
             {
                 Point mousePosition = e.GetPosition(this);
 
-                AbsoluteShift = new Space(previousAbsoluteShift.OnX - (mouseDownPosition.X - mousePosition.X), (previousAbsoluteShift.OnY - (mouseDownPosition.Y - mousePosition.Y)));
+                if (e.LeftButton == MouseButtonState.Pressed)
+                {
+                    AbsoluteShift = new Space(previousAbsoluteShift.OnX - (mouseDownPosition.X - mousePosition.X), previousAbsoluteShift.OnY - (mouseDownPosition.Y - mousePosition.Y));
+                }
+
+                if (e.RightButton == MouseButtonState.Pressed)
+                {
+                    FunctionShift = new Space(previousFunctionShift.OnX - (mouseDownPosition.X - mousePosition.X), previousFunctionShift.OnY - (mouseDownPosition.Y - mousePosition.Y));
+                }
             }
         }
 
@@ -270,24 +298,25 @@ namespace Grafer.CustomControls
             return new Space(xSpace, ySpace);
         }
 
-        //Úprava hodnoty pusuní při změne zoomu.
-        private Space AdjustAbsoluteShiftToZoom(int delta)
+        //Úprava hodnoty pusunutí při změne zoomu.
+        private Space AdjustShiftToZoom(int delta, Space inputShift)
         {
-            double absoluteShiftX = absoluteShift.OnX;
-            double absoluteShiftY = absoluteShift.OnY;
+            double newShiftX = inputShift.OnX;
+            double newShiftY = inputShift.OnY;
 
             if (delta == 120 && ZoomLevel < 4)
             {
-                absoluteShiftX *= 1.25;
-                absoluteShiftY *= 1.25;
+                newShiftX *= 1.25;
+                newShiftY *= 1.25;
             }
 
             if (delta == -120 && ZoomLevel > -4)
             {
-                absoluteShiftX /= 1.25;
-                absoluteShiftY /= 1.25;
+                newShiftX /= 1.25;
+                newShiftY /= 1.25;
             }
-            return new Space(absoluteShiftX, absoluteShiftY);
+
+            return new Space(newShiftX, newShiftY);
         }
 
         //Vykreslení mřížky.

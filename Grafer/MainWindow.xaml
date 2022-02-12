@@ -8,7 +8,7 @@
         mc:Ignorable="d"
         Title="Grafer" Height="700" Width="1100" PreviewKeyDown="ShortcutsPress" ResizeMode="CanResize" SizeChanged="ApplicationResize" MinWidth="600" MinHeight="400" Loaded="ApplicationLoaded">
     <Grid x:Name="gridMain" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-        <control:EquationInput x:Name="equationInput" Margin="66,156,0,0" VerticalAlignment="Top" Width="140" Height="auto" HorizontalAlignment="Left" SelectionChanged="OnSelectionChanged" TextWrapping="Wrap" TextChanged="EquationInputTextChanged" SizeChanged="EquationInputSizeChanged"/>
+        <control:EquationInput x:Name="equationInput" Margin="66,156,0,0" VerticalAlignment="Top" Width="140" Height="auto" HorizontalAlignment="Left" SelectionChanged="OnSelectionChanged" TextWrapping="Wrap" TextChanged="EquationInputTextChanged" SizeChanged="EquationInputSizeChanged" Foreground="Black"/>
         <Label x:Name="labelY" Content="y =" HorizontalAlignment="Left" Margin="21,153,0,0" VerticalAlignment="Top" RenderTransformOrigin="-6.559,3.773" FontSize="20"/>
         <Label Content="min:" HorizontalAlignment="Left" Margin="24,111,0,0" VerticalAlignment="Top"/>
         <Label Content="max:" HorizontalAlignment="Left" Margin="134,111,0,0" VerticalAlignment="Top"/>
@@ -40,6 +40,7 @@
         <Button x:Name="buttonSaveFunctions" Content="Save Functions" HorizontalAlignment="Left" Margin="242,297,0,0" VerticalAlignment="Top" Height="37" Width="91" Click="ListBoxFunctionOperationButtonsClick" IsEnabled="False"/>
         <Button x:Name="buttonLoadFunctions" Content="Load Functions" HorizontalAlignment="Left" Margin="242,362,0,0" VerticalAlignment="Top" Height="37" Width="91" Click="ListBoxFunctionOperationButtonsClick"/>
         <CheckBox x:Name="checkBoxMultipleFunctions" Content="Multiple funcitons" HorizontalAlignment="Left" Margin="67,264,0,0" VerticalAlignment="Top" Width="120" IsEnabled="False" Checked="CheckBoxMultipleFunctionsCheckedChanged" Unchecked="CheckBoxMultipleFunctionsCheckedChanged"/>
+        <CheckBox x:Name="checkBoxFreeFunction" Content="Free function" HorizontalAlignment="Left" Margin="256,132,0,0" VerticalAlignment="Top" Width="94" Checked="CheckBoxFreeFunctionChanged" Unchecked="CheckBoxFreeFunctionChanged"/>
         <control:CoordinateSystem x:Name="coordinateSystem" Margin="384,0,0,0" Background="#FFF1EDED" Height="700" Width="700" ClipToBounds="True" VerticalAlignment="Top"/>
         <ScrollViewer x:Name="scrollButtonSection"  Margin="384,0,0,0" Height="110" Width="700" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Background="White" VerticalAlignment="Top" Visibility="Hidden">
             <Canvas x:Name="buttonSection" Margin="0,0,0,20" Width="700" Background="White" Height="90" VerticalAlignment="Bottom">
