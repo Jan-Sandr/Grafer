@@ -213,11 +213,17 @@ namespace Grafer
         }
 
         //Vykreslení funkce do plátna.
-        public void Plot(bool inverse, double opacity)
+        public void Plot(bool inverse, double opacity, Space freeShift = new Space())
         {
             for (int i = 0; i < curves.Count; i++)
             {
                 Polyline curve = GetDeepCurveCopy(curves[i]);
+
+                if (freeShift.OnX != 0 || freeShift.OnY != 0)
+                {
+                    curve.Points = AddFreeShift(curve.Points, freeShift);
+                }
+
                 curve.Opacity = opacity;
                 curve.Uid = Name;
 
@@ -274,6 +280,22 @@ namespace Grafer
                 X = coordinateSystem.Width / 2 + coordinateSystem.Height / 2 - point.Y + coordinateSystem.AbsoluteShift.OnY + coordinateSystem.AbsoluteShift.OnX,
                 Y = coordinateSystem.Height / 2 + coordinateSystem.Width / 2 - point.X + coordinateSystem.AbsoluteShift.OnY + coordinateSystem.AbsoluteShift.OnX
             };
+        }
+
+        private PointCollection AddFreeShift(PointCollection points, Space freeShift)
+        {
+            for (int i = 0; i < points.Count; i++)
+            {
+                Point point = points[i];
+
+                points[i] = new Point()
+                {
+                    X = point.X + freeShift.OnX,
+                    Y = point.Y + freeShift.OnY
+                };
+            }
+
+            return points;
         }
 
         //Nastavení výpočetního rozsahu. Pokud by byl rozsah větší než plátno, omezí to jen na viditelnou plochu interně.
@@ -528,6 +550,11 @@ namespace Grafer
             }
 
             return propertiesValue;
+        }
+
+        public string GetIndetificator()
+        {
+            return Name.Split(':')[0];
         }
     }
 }

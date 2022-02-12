@@ -19,6 +19,21 @@ namespace Grafer
             InitializeComponent();
             coordinateSystem.MouseWheel += CoordinateSystemMouseWheel;
             coordinateSystem.AbsoluteShiftChanged += CoordinateSystemAbsoluteShiftChanged;
+            coordinateSystem.FunctionShiftChanged += CoordinateSystemFunctionShiftChanged;
+        }
+
+        private void CoordinateSystemFunctionShiftChanged(object? sender, EventArgs e)
+        {
+            if (gFunction != null)
+            {
+                coordinateSystem.RemoveItem(gFunction.Name);
+
+                if (coordinateSystem.FunctionShift.OnX != 0 || coordinateSystem.FunctionShift.OnY != 0)
+                {
+                    checkBoxFreeFunction.IsChecked = true;
+                }
+                DrawFunction(gFunction, coordinateSystem.FunctionShift);
+            }
         }
 
         //Vyvolání překreslení funkce při změny posunutí soustavy.
@@ -61,7 +76,8 @@ namespace Grafer
         private readonly Color defaultStatusColor = Color.FromRgb(125, 255, 99); // výchozí barva statusu.
 
         private bool addingNewFunction;
-        bool IsMainMenuVisible = true;
+        private bool IsMainMenuVisible = true;
+        private int hiddenRelationIndex = -1;
 
         #region Načítání dat
 
@@ -94,6 +110,7 @@ namespace Grafer
         //Kliknutí na tlačítko vykreslit.
         private void ButtonDrawClick(object sender, RoutedEventArgs e)
         {
+            checkBoxFreeFunction.IsChecked = false;
             Start();
         }
 
@@ -273,7 +290,7 @@ namespace Grafer
 
                 if (gFunction.IsDrawable())
                 {
-                    DrawFunction(gFunction);
+                    DrawFunction(gFunction, coordinateSystem.FunctionShift);
                 }
                 else
                 {
@@ -283,9 +300,9 @@ namespace Grafer
         }
 
         //Vykreslení funkce.
-        private void DrawFunction(Function function)
+        private void DrawFunction(Function function, Space functionShift = new Space())
         {
-            function.Plot(function.Inverse, 1);
+            function.Plot(function.Inverse, 1, functionShift);
 
             if (checkBoxKeepOrigin.IsChecked == true) // Při inverzní, jestli má vykreslit původní křivku s nižší viditelností.
             {
@@ -300,8 +317,51 @@ namespace Grafer
         {
             int bottomMargin = 35 + (scrollButtonSection.Visibility == Visibility.Visible ? Convert.ToInt16(buttonSection.Height + 15) : 0);
             coordinateSystem.RemoveLabels();
-            coordinateSystem.DrawFunctionsLabels(bottomMargin);
+            string[] labelsContent = new string[0];
+            Brush[] labelsBrush = new Brush[0];
+            GetLabelsContentAndBrush(ref labelsContent, ref labelsBrush);
+
+            if (labelsContent.Length > 0)
+            {
+                coordinateSystem.DrawFunctionsLabels(labelsContent, labelsBrush, bottomMargin);
+            }
         }
+
+        //Naplní informace potřebné k popiskům tedy jejich obsah a barvičku. 
+        private void GetLabelsContentAndBrush(ref string[] labelsContent, ref Brush[] labelsBrush)
+        {
+            List<string> contents = new List<string>(listBoxFunctions.Items.Count + 1);
+            List<Brush> brushes = new List<Brush>(listBoxFunctions.Items.Count + 1);
+
+            //Funkce z listu.
+            for (int i = 0; i < listBoxFunctions.Items.Count; i++)
+            {
+                if ((listBoxFunctions.Items[i] as CheckBox)!.IsChecked == true)
+                {
+                    contents.Add((listBoxFunctions.Items[i] as CheckBox)!.Content.ToString()!);
+                    brushes.Add(functions[i].Brush);
+                }
+            }
+
+            //Funkce z předpisu.
+            if (gFunction != null && !contents.Any(s => s.Contains(gFunction!.Name.Split(':')[0])))
+            {
+                if (checkBoxFreeFunction.IsChecked == true)
+                {
+                    contents.Add(gFunction.GetIndetificator() + (language == Language.English ? ": Unknown" : ": Neznámý"));
+                }
+                else
+                {
+                    contents.Add(gFunction.Name);
+                }
+
+                brushes.Add(gFunction.Brush);
+            }
+
+            labelsContent = contents.ToArray();
+            labelsBrush = brushes.ToArray();
+        }
+
 
         #endregion
 
@@ -417,6 +477,7 @@ namespace Grafer
         {
             if (e.Key == Key.Enter)
             {
+                checkBoxFreeFunction.IsChecked = false;
                 Start();
             }
 
@@ -424,6 +485,7 @@ namespace Grafer
             {
                 equationInput.Text = "";
                 equationInput.Focus();
+                checkBoxFreeFunction.IsChecked = false;
                 Start();
             }
         }
@@ -481,10 +543,7 @@ namespace Grafer
 
             SetStatus("OK", defaultStatusColor);
 
-            if (equationInput.Text.Trim() != "" && !equationInput.IsEquationValid)
-            {
-                NotifyInvalidInput(equationInput, equationInput.InvalidSection.SelectionStart, equationInput.InvalidSection.SelectionLength, equationInput.InvalidSection.MessageID);
-            }
+            Start();
         }
 
         #endregion
@@ -751,6 +810,7 @@ namespace Grafer
         //Přidání funkce do listů pokud je validní.
         private void AddFunction()
         {
+            checkBoxFreeFunction.IsChecked = false;
             addingNewFunction = true;
             Start();
 
@@ -895,7 +955,11 @@ namespace Grafer
         private void UpdateFunctionInList(Function function)
         {
             functions[listBoxFunctions.SelectedIndex] = function;
-            (listBoxFunctions.Items[listBoxFunctions.SelectedIndex] as CheckBox)!.Content = function.Name;
+
+            if (checkBoxFreeFunction.IsChecked == false)
+            {
+                (listBoxFunctions.Items[listBoxFunctions.SelectedIndex] as CheckBox)!.Content = function.Name;
+            }
         }
 
         //Změna vybrané funkce v listboxu.
@@ -905,6 +969,7 @@ namespace Grafer
             {
                 gFunction = functions[listBoxFunctions.SelectedIndex];
                 LoadUserInterfaceValues(gFunction.PropertiesValueToArray());
+                checkBoxFreeFunction.IsChecked = false;
                 Start();
             }
         }
@@ -1016,6 +1081,35 @@ namespace Grafer
             buttonHideShowMainMenu.Content = IsMainMenuVisible ? "🢦" : "🢧";
 
             AdjustComponentsToApplicationSize();
+        }
+
+        //Změna zaškrnutní u políčka jestli je funkce uvolněná.
+        private void CheckBoxFreeFunctionChanged(object sender, RoutedEventArgs e)
+        {
+            if (checkBoxFreeFunction.IsChecked == true)
+            {
+                equationInput.Foreground = equationInput.Background;
+
+                if (listBoxFunctions.SelectedIndex != -1)
+                {
+                    hiddenRelationIndex = listBoxFunctions.SelectedIndex;
+                    (listBoxFunctions.Items[hiddenRelationIndex] as CheckBox)!.Content = functions[hiddenRelationIndex].Name.Split(':')[0] + (language == Language.English ? ": Unknown" : ": Neznámý");
+                }
+                else
+                {
+                    hiddenRelationIndex = -1;
+                }
+            }
+            else
+            {
+                equationInput.Foreground = Brushes.Black;
+                coordinateSystem.FunctionShift = new Space();
+
+                if (hiddenRelationIndex != -1)
+                {
+                    (listBoxFunctions.Items[hiddenRelationIndex] as CheckBox)!.Content = functions[hiddenRelationIndex].Name;
+                }
+            }
         }
     }
 }
