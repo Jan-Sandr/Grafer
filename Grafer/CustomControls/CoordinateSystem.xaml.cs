@@ -190,6 +190,24 @@ namespace Grafer.CustomControls
             }
         }
 
+        //Vyznačení posunutí na osách.
+        public void MarkLine(double x1, double y1, double x2, double y2, string name)
+        {
+            Line markLine = new Line()
+            {
+                X1 = x1,
+                Y1 = y1,
+                X2 = x2,
+                Y2 = y2,
+                Stroke = Brushes.DarkGoldenrod,
+                StrokeThickness = 3,
+                StrokeDashArray = new DoubleCollection() { 3, 3 },
+                Uid = name
+            };
+
+            Children.Add(markLine);
+        }
+
         //Šablona pro popisek funkce.
         private TextBlock FunctionLabel(string content, Brush brush, int bottomMargin)
         {

@@ -27,7 +27,10 @@ namespace Grafer
         {
             RemoveAll(s => s == " ");
 
-            SubstitutePi();
+            if (Count == 1)
+            {
+                Substitution();
+            }
 
             if (Count > 1)
             {
@@ -40,6 +43,8 @@ namespace Grafer
                 EncapsulateLogarithmBase();
 
                 Insertions();
+
+                Substitution();
 
                 ConvertDegrees();
 
@@ -64,7 +69,7 @@ namespace Grafer
         {
             for (int i = 0; i < Count - 1; i++)
             {
-                if (this[i].Any(char.IsLetter) && this[i] != "x" && this[i] != "π" && char.IsLetter(char.Parse(this[i + 1])) && this[i + 1] != "x" && this[i + 1] != "π")
+                if (this[i].Any(char.IsLetter) && this[i] != "x" && !this[i].IsConstant() && char.IsLetter(char.Parse(this[i + 1])) && this[i + 1] != "x" && !this[i + 1].IsConstant())
                 {
                     this[i] += this[i + 1];
                     RemoveAt(i + 1);
@@ -87,12 +92,28 @@ namespace Grafer
             }
         }
 
-        //Dosazení za Pi
+        //Dosazování za konstanty.
+        private void Substitution()
+        {
+            SubstitutePi();
+            SubstituteE();
+        }
+
+        //Dosazení za Pi.
         private void SubstitutePi()
         {
             for (int i = 0; i < Count; i++)
             {
                 this[i] = (this[i] == "π") ? Math.PI.ToString() : this[i];
+            }
+        }
+
+        //Dosazení za e.
+        private void SubstituteE()
+        {
+            for (int i = 0; i < Count; i++)
+            {
+                this[i] = (this[i] == "e") ? Math.E.ToString() : this[i];
             }
         }
 
