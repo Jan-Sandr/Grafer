@@ -53,7 +53,7 @@ namespace Grafer.CustomControls
         {
             string[] special = new string[3] { "-", "[", "]" }; // tyto znaky nejdou zadávat do regexu.
 
-            if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( ) ^ √ , s i n c o s t a g ° π | l ]") && !special.Contains(e.Text))
+            if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( ) ^ √ , s i n c o s t a g ° π | l e ]") && !special.Contains(e.Text))
             {
                 e.Handled = true;
             }

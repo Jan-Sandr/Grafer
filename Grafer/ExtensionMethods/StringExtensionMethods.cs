@@ -77,5 +77,11 @@ namespace Grafer.ExtensionMethods
         {
             return double.Parse(value).ToDegrees().ToString();
         }
+
+        //Jestli se jedná o konstantu pi ne e.
+        public static bool IsConstant(this string value)
+        {
+            return value == "π" || value == "e";
+        }
     }
 }

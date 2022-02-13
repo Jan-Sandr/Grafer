@@ -9,9 +9,9 @@ namespace Grafer
 
         private static int[] elementsIndex = System.Array.Empty<int>(); // Pole s indexy, kde nejsou prázdná místa v rovnici.
 
-        private readonly static char[] allowedBeginningChars = new char[10] { 'x', '-', '(', '√', 's', 'c', 't', 'π', '|', 'l' }; // Povolené znaky na začátku předpisu.
+        private readonly static char[] allowedBeginningChars = new char[11] { 'x', '-', '(', '√', 's', 'c', 't', 'π', '|', 'l', 'e' }; // Povolené znaky na začátku předpisu.
 
-        private readonly static char[] allowedEndeningChars = new char[5] { 'x', ')', '°', 'π', '|' }; // Povolené znaky na konci předpisu.
+        private readonly static char[] allowedEndeningChars = new char[6] { 'x', ')', '°', 'π', '|', 'e' }; // Povolené znaky na konci předpisu.
 
         //Kontrola rovnice
         public static bool IsEquationValid(string equation)
@@ -349,7 +349,7 @@ namespace Grafer
             {
                 bool stillBuilding = false;
 
-                if (char.IsLetter(equation[elementsIndex[i]]) && equation[elementsIndex[i]] != 'x' && equation[elementsIndex[i]] != 'π')
+                if (char.IsLetter(equation[elementsIndex[i]]) && equation[elementsIndex[i]] != 'x' && equation[elementsIndex[i]] != 'π' && equation[elementsIndex[i]] != 'e')
                 {
                     if (functionName.Length == 0)
                     {

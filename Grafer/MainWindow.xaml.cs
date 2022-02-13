@@ -284,6 +284,8 @@ namespace Grafer
         {
             coordinateSystem.RemoveFunctions();
 
+            MarkLines();
+
             if (gFunction != null)
             {
                 UpdateToMeasure(gFunction);
@@ -1080,6 +1082,12 @@ namespace Grafer
 
             buttonHideShowMainMenu.Content = IsMainMenuVisible ? "🢦" : "🢧";
 
+            if (!IsMainMenuVisible)
+            {
+                scrollButtonSection.Visibility = Visibility.Collapsed;
+                markLineSection.Visibility = Visibility.Collapsed;
+            }
+
             AdjustComponentsToApplicationSize();
         }
 
@@ -1110,6 +1118,46 @@ namespace Grafer
                     (listBoxFunctions.Items[hiddenRelationIndex] as CheckBox)!.Content = functions[hiddenRelationIndex].Name;
                 }
             }
+        }
+
+        //Událost, která se vyvolá při změně textu v políčkách pro označení posunutí.
+        private void InputMarkLineTextChanged(object sender, TextChangedEventArgs e)
+        {
+            MarkLines();
+
+            if (inputMarkLineY.Text == "")
+            {
+                coordinateSystem.RemoveItem("markLineY");
+            }
+
+            if (inputMarkLineX.Text == "")
+            {
+                coordinateSystem.RemoveItem("markLineX");
+            }
+        }
+
+        //Vyznačení posunutí.
+        private void MarkLines()
+        {
+            if (inputMarkLineY.IsValid)
+            {
+                double y = (-inputMarkLineY.Value * coordinateSystem.Zoom * 100) + coordinateSystem.Height / 2 + coordinateSystem.AbsoluteShift.OnY;
+                coordinateSystem.RemoveItem("markLineY");
+                coordinateSystem.MarkLine(0, y, coordinateSystem.Width, y, "markLineY");
+            }
+
+            if (inputMarkLineX.IsValid)
+            {
+                double x = coordinateSystem.Width / 2 + (inputMarkLineX.Value * coordinateSystem.Zoom * 100) + coordinateSystem.AbsoluteShift.OnX;
+                coordinateSystem.RemoveItem("markLineX");
+                coordinateSystem.MarkLine(x, 0, x, coordinateSystem.Height, "markLineX");
+            }
+        }
+
+        //Ovládání viditelnosti boxu pro ovládání vyznačení posunutí.
+        private void ButtonShowHideMarkSettingsClick(object sender, RoutedEventArgs e)
+        {
+            markLineSection.Visibility = markLineSection.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
         }
     }
 }
