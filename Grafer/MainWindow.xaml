@@ -43,6 +43,7 @@
         <CheckBox x:Name="checkBoxFreeFunction" Content="Free function" HorizontalAlignment="Left" Margin="256,132,0,0" VerticalAlignment="Top" Width="94" Checked="CheckBoxFreeFunctionChanged" Unchecked="CheckBoxFreeFunctionChanged"/>
         <Button x:Name="buttonShowHideMarkSettings" Content="Mark Lines" HorizontalAlignment="Left" Margin="242,157,0,0" VerticalAlignment="Top" Height="37" Width="80" Click="ButtonShowHideMarkSettingsClick"/>
         <Button x:Name="buttonExportCoordinateSystem" Content="Take a snap" HorizontalAlignment="Left" Margin="248,5,0,0" VerticalAlignment="Top" Height="37" Width="80" Click="ButtonExportCoordinateSystemClick"/>
+        <Button x:Name="buttonsShowHelp" Content="Help" HorizontalAlignment="Left" Margin="248,45,0,0" VerticalAlignment="Top" Height="37" Width="80" Click="ButtonShowHelpClick"/>
         <control:CoordinateSystem x:Name="coordinateSystem" Margin="384,0,0,0" Background="#FFF1EDED" Height="700" Width="700" ClipToBounds="True" VerticalAlignment="Top"/>
         <ScrollViewer x:Name="scrollButtonSection"  Margin="384,0,0,0" Height="110" Width="700" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Background="White" VerticalAlignment="Top" Visibility="Hidden">
             <Canvas x:Name="buttonSection" Margin="0,0,0,20" Width="700" Background="White" Height="90" VerticalAlignment="Bottom">
@@ -63,14 +64,12 @@
                 <Button x:Name="buttonArcCotangent" Content="cotg⁻¹" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="cotg⁻¹" Canvas.Left="616" Canvas.Top="49"/>
             </Canvas>
         </ScrollViewer>
-       <Button x:Name="buttonHideShowMainMenu" Content="🢦" HorizontalAlignment="Left" Margin="406,20,0,0" VerticalAlignment="Top" Height="36" Width="40" Click="ButtonHideShowMainMenuClick" FontSize="25" Padding="1,-1,1,1"/>
+        <Button x:Name="buttonHideShowMainMenu" Content="🢦" HorizontalAlignment="Left" Margin="406,20,0,0" VerticalAlignment="Top" Height="36" Width="40" Click="ButtonHideShowMainMenuClick" FontSize="25" Padding="1,-1,1,1"/>
         <Canvas x:Name="markLineSection" Margin="384,82,0,0" VerticalAlignment="Top" Height="98" Background="White" HorizontalAlignment="Left" Width="130" Visibility="Collapsed">
             <control:RangeInput x:Name="inputMarkLineY" Canvas.Left="37" TextWrapping="Wrap" Canvas.Top="22" Width="76" TextChanged="InputMarkLineTextChanged"/>
             <Label x:Name="labelMarkLineY" Content="y =" Canvas.Left="10" Canvas.Top="18"/>
             <Label x:Name="labelMarkLineX" Content="x =" Canvas.Left="10" Canvas.Top="54"/>
             <control:RangeInput x:Name="inputMarkLineX" Canvas.Left="37" TextWrapping="Wrap" Canvas.Top="58" Width="76" TextChanged="InputMarkLineTextChanged"/>
         </Canvas>
-       
-
     </Grid>
 </Window>
