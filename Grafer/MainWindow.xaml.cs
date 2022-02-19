@@ -504,7 +504,7 @@ namespace Grafer
         }
 
         //Čtení souboru.
-        private static string[] ReadFile(string filePath, bool haveHead)
+        private string[] ReadFile(string filePath, bool haveHead)
         {
             FileCompiler fileCompiler = new FileCompiler(filePath, haveHead);
 
@@ -512,7 +512,7 @@ namespace Grafer
 
             if (!fileCompiler.IsOK || !fileCompiler.IsDataOK)
             {
-                MessageBox.Show(fileCompiler.ErrorMessage);
+                Notify(fileCompiler.ErrorMessage);
             }
 
             return fileCompiler.Data.ToArray();
@@ -940,15 +940,17 @@ namespace Grafer
         //Přečte načtené funkce ze souboru.;
         private void ReadFunctionsFromFile(List<string> functionsFromFile)
         {
+            int functionsCountBefore = functions.Count;
+
             for (int i = 0; i < functionsFromFile.Count; i++)
             {
                 LoadUserInterfaceValues(functionsFromFile[i].Split(';'));
                 AddFunction();
             }
 
-            if (functions.Count != functionsFromFile.Count)
+            if (functions.Count != functionsFromFile.Count + functionsCountBefore)
             {
-                MessageBox.Show(messages[32].Split(';')[(int)language]);
+                Notify(messages[32].Split(';')[(int)language]);
             }
         }
 
@@ -1177,7 +1179,7 @@ namespace Grafer
         //Vytvoří bitmapu canvasu.
         private CroppedBitmap CoordinateSystemToBitmap()
         {
-            RenderTargetBitmap bitmap = new RenderTargetBitmap((int)Width, (int)Height, 96, 96, PixelFormats.Pbgra32);
+            RenderTargetBitmap bitmap = new RenderTargetBitmap((int)ActualWidth, (int)ActualHeight, 96, 96, PixelFormats.Pbgra32);
 
             bitmap.Render(coordinateSystem);
 
@@ -1192,6 +1194,48 @@ namespace Grafer
             pngEncoder.Frames.Add(BitmapFrame.Create(bitmap));
 
             pngEncoder.Save(File.OpenWrite(path));
+        }
+
+        //Kliknutí na tlačítko nápověda.
+        private void ButtonShowHelpClick(object sender, RoutedEventArgs e)
+        {
+            string rootInfo = language == Language.English ? "Root example: 3√2 -> cube root of two, 3 * 3√2 -> 3 times cube root of two." : "Příklad odmocniny: 3√2 -> třetí odmocnina ze dvou, 3 * 3√2 -> třikrát třetí odmocnina ze dvou.";
+            string logarithmInfo = language == Language.English ? "Logarithm example: log[2](x) -> logarithm x with base two, log(x) -> logarithm x with base ten." : "Příklad logaritmu: log[2](x) -> logaritmus x se základem 2 -> logaritmus x se základem deset.";
+            string shortcutsInfo = language == Language.English ? "Keyboard shortcuts:" : "Klávesové zkratky:";
+            string enterInfo = language == Language.English ? "Presses button draw" : "Zmáčkně tlačítko vykreslit";
+            string escapeInfo = language == Language.English ? "Clear relation" : "Vymaže předpis";
+            Notify(
+                rootInfo + Environment.NewLine +
+                logarithmInfo + Environment.NewLine + Environment.NewLine +
+                shortcutsInfo + Environment.NewLine +
+                "Shift +" + Environment.NewLine +
+                "P = π" + Environment.NewLine +
+                "O = °" + Environment.NewLine +
+                "N = ^" + Environment.NewLine +
+                "D = √" + Environment.NewLine +
+                "I = ∞" + Environment.NewLine +
+                "S = sin() " + Environment.NewLine +
+                "C = cos()" + Environment.NewLine +
+                "T = tg()" + Environment.NewLine +
+                "G = cotg()" + Environment.NewLine +
+                "L = log[10]()" + Environment.NewLine +
+                "CTRL +" + Environment.NewLine +
+                "S = sin⁻¹() " + Environment.NewLine +
+                "C = cos⁻¹()" + Environment.NewLine +
+                "T = tg⁻¹()" + Environment.NewLine +
+                "G = cotg⁻¹()" + Environment.NewLine +
+                "L = ln()" + Environment.NewLine +
+                Environment.NewLine +
+                Environment.NewLine +
+                "Enter = " + enterInfo + Environment.NewLine +
+                "Esc = " + escapeInfo
+                );
+        }
+
+        //Metoda pro message box.
+        private void Notify(string message)
+        {
+            MessageBox.Show(message);
         }
     }
 }
