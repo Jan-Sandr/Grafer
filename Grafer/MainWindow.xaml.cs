@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Imaging;
 using static Grafer.CustomControls.CoordinateSystem;
 
 namespace Grafer
@@ -793,7 +794,7 @@ namespace Grafer
                     }
                 case ListBoxOperations.Save:
                     {
-                        SaveFunctions();
+                        SaveToFile("csv", WriteFunctionsToFile);
                         break;
                     }
                 case ListBoxOperations.Load:
@@ -866,21 +867,21 @@ namespace Grafer
         #region Uložení funkcí do souboru
 
         //Uložení funkcí do souboru.
-        private void SaveFunctions()
+        private void SaveToFile(string fileType, Action<string> WritingMethod)
         {
             System.Windows.Forms.SaveFileDialog saveFileDialog = new System.Windows.Forms.SaveFileDialog()
             {
-                Filter = "CSV files | *.csv"
+                Filter = $"{fileType.ToUpper()} files | *.{fileType}"
             };
 
             if (saveFileDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                WriteToFile(saveFileDialog.FileName);
+                WritingMethod(saveFileDialog.FileName);
             }
         }
 
         //Zápis funkcí do souboru.
-        private void WriteToFile(string path)
+        private void WriteFunctionsToFile(string path)
         {
             string lines = "Name;Color;Relation;Is limited;Minimum;Maximum;Is inverse;Type;\r\n";
 
@@ -1158,6 +1159,39 @@ namespace Grafer
         private void ButtonShowHideMarkSettingsClick(object sender, RoutedEventArgs e)
         {
             markLineSection.Visibility = markLineSection.Visibility == Visibility.Visible ? Visibility.Collapsed : Visibility.Visible;
+        }
+
+        //Kliknutí na tlačítko pro uložení aktuálního stavu plátna.
+        private void ButtonExportCoordinateSystemClick(object sender, RoutedEventArgs e)
+        {
+            SaveToFile("png", ExportCoordinateSystem);
+        }
+
+        private void ExportCoordinateSystem(string path)
+        {
+            CroppedBitmap bitmap = CoordinateSystemToBitmap();
+
+            ExportBitmap(path, bitmap);
+        }
+
+        //Vytvoří bitmapu canvasu.
+        private CroppedBitmap CoordinateSystemToBitmap()
+        {
+            RenderTargetBitmap bitmap = new RenderTargetBitmap((int)Width, (int)Height, 96, 96, PixelFormats.Pbgra32);
+
+            bitmap.Render(coordinateSystem);
+
+            return new CroppedBitmap(bitmap, new Int32Rect((int)coordinateSystem.Margin.Left, 0, (int)coordinateSystem.Width, (int)coordinateSystem.Height));
+        }
+
+        //Uloží canvas do souboru png.
+        private void ExportBitmap(string path, CroppedBitmap bitmap)
+        {
+            BitmapEncoder pngEncoder = new PngBitmapEncoder();
+
+            pngEncoder.Frames.Add(BitmapFrame.Create(bitmap));
+
+            pngEncoder.Save(File.OpenWrite(path));
         }
     }
 }
