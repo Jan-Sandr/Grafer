@@ -79,6 +79,7 @@ namespace Grafer
         private bool addingNewFunction;
         private bool IsMainMenuVisible = true;
         private int hiddenRelationIndex = -1;
+        private RangeInput? previousFocusedRangeInput;
 
         #region Načítání dat
 
@@ -89,6 +90,7 @@ namespace Grafer
             LoadDataFromFiles(directory);
             LoadData();
             LocalizeUserInterface();
+            previousFocusedRangeInput = minimumXInput;
         }
 
         //Načte data aplikace, ne ze souborů.
@@ -498,9 +500,33 @@ namespace Grafer
         {
             Button button = (Button)sender;
 
+            if (button.Name == "buttonInfinity")
+            {
+                RangeInputInsertion();
+            }
+            else
+            {
+                EquationInsertion(button.Uid);
+            }
+        }
+
+        //Vložení zkratky z tlačítka do rozsahu.
+        private void RangeInputInsertion()
+        {
+            if (previousFocusedRangeInput != null)
+            {
+                previousFocusedRangeInput.Focus();
+
+                previousFocusedRangeInput.InsertInfinity();
+            }
+        }
+
+        //Vložení zkratky z tlačítka do rovnice.
+        private void EquationInsertion(string shortcut)
+        {
             equationInput.Focus();
 
-            equationInput.InsertShortcut(button.Uid);
+            equationInput.InsertShortcut(shortcut);
         }
 
         //Čtení souboru.
@@ -859,6 +885,11 @@ namespace Grafer
             {
                 functions.RemoveAt(listBoxFunctions.SelectedIndex);
                 listBoxFunctions.Items.RemoveAt(listBoxFunctions.SelectedIndex);
+            }
+
+            if (listBoxFunctions.Items.Count == 0)
+            {
+                checkBoxMultipleFunctions.IsChecked = false;
             }
         }
 
@@ -1236,6 +1267,12 @@ namespace Grafer
         private void Notify(string message)
         {
             MessageBox.Show(message);
+        }
+
+        //Uložení posledního zaměřeného rozsahu pro očekávané vložení nekonečna.
+        private void RangeInputGotFocus(object sender, RoutedEventArgs e)
+        {
+            previousFocusedRangeInput = (RangeInput)sender;
         }
     }
 }

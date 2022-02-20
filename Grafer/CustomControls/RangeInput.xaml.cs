@@ -142,12 +142,38 @@ namespace Grafer.CustomControls
             }
         }
 
+        //Event, který nastane při zmáčknutí klávesi.
+        protected override void OnPreviewKeyDown(KeyEventArgs e)
+        {
+            SpaceRestriction(e);
+            ShortcutInput(e);
+        }
+
         //Zakázení použití mezerníku.
-        private void SpaceRestriction(object sender, KeyEventArgs e)
+        private void SpaceRestriction(KeyEventArgs e)
         {
             if (e.Key == Key.Space)
             {
                 e.Handled = true;
+            }
+        }
+
+        //Vstup z klávesnice pro zkratku nekonečna.
+        private void ShortcutInput(KeyEventArgs e)
+        {
+            if (Keyboard.Modifiers.ToString() == "Shift" && e.Key.ToString() == "I")
+            {
+                InsertInfinity();
+            }
+        }
+
+        //Vložení nekonečna.
+        public void InsertInfinity()
+        {
+            if (!Text.Contains("∞"))
+            {
+                Text = Text.Insert(SelectionStart, "∞");
+                SelectionStart++;
             }
         }
     }
