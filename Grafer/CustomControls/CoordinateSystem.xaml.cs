@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Grafer.ExtensionMethods;
+using System;
 using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
@@ -64,6 +65,24 @@ namespace Grafer.CustomControls
             }
         }
 
+        public bool ShowPointer
+        {
+            get
+            {
+                return showPointer;
+            }
+            set
+            {
+                showPointer = value;
+
+                pointer.Visibility = showPointer ? Visibility.Visible : Visibility.Collapsed;
+            }
+        }
+
+        private bool showPointer = false;
+
+        private TextBlock pointer;
+
         private Space previousAbsoluteShift = new Space(0, 0); // Absolutní posunutí před započetím pohybu v soustavě.
 
         private Space previousFunctionShift = new Space(0, 0); // Minulé posunutí funkce před započetím pohybu v soustavě
@@ -114,7 +133,20 @@ namespace Grafer.CustomControls
                 DrawNumbers();
             }
 
+            pointer = new TextBlock()
+            {
+                Text = "[0;0]",
+                FontFamily = new FontFamily("Cambria"),
+                FontSize = 20,
+                Foreground = Brushes.Navy,
+                RenderTransform = previousPointerPosition,
+                Visibility = showPointer == true ? Visibility.Visible : Visibility.Collapsed,
+            };
+
+            Children.Add(pointer);
+
             defaultElementsCount = Children.Count;
+
         }
 
         //Překreslení soustavy.
@@ -287,6 +319,63 @@ namespace Grafer.CustomControls
                     FunctionShift = new Space(previousFunctionShift.OnX - (mouseDownPosition.X - mousePosition.X), previousFunctionShift.OnY - (mouseDownPosition.Y - mousePosition.Y));
                 }
             }
+
+            if (ShowPointer)
+            {
+                SetPointer(e);
+            }
+        }
+
+        private Transform previousPointerPosition = new TranslateTransform(0, 0);
+
+        //Natavení pozice ukazovátka
+        private void SetPointer(MouseEventArgs e)
+        {
+            double cursorX = e.GetPosition(this).X;
+            double cursorY = e.GetPosition(this).Y;
+
+            if (Width - cursorX < 120) // Pokud je kurzor hodně vpravo, tak se zobrazí na druhé straně kurzoru.
+            {
+                cursorX -= 100;
+            }
+
+            if (cursorY < 30) // POkud je kurzor hodně nahoře, tak se zobrazí pod kurzorem.
+            {
+                cursorY += 50;
+            }
+
+            pointer.RenderTransform = new TranslateTransform() // Posunutí, aby to nepřekrýval kurzor.
+            {
+                X = cursorX + 10,
+                Y = cursorY - 25
+            };
+
+            previousPointerPosition = new TranslateTransform()
+            {
+                X = e.GetPosition(this).X,
+                Y = e.GetPosition(this).Y
+            };
+
+            pointer.Text = GetCursorCoordinates();
+        }
+
+        //Získání souřadnici kurozru pro zobrazení.
+        private string GetCursorCoordinates()
+        {
+            string cursorX = Math.Round((previousPointerPosition.Value.OffsetX - Width / 2 - AbsoluteShift.OnX) / Zoom / 100, 2).ToString();
+            string cursorY = Math.Round(-(previousPointerPosition.Value.OffsetY - Height / 2 - AbsoluteShift.OnY) / Zoom / 100, 2).ToString();
+
+            if (xMeasure == Measure.Degree)
+            {
+                cursorX = Math.Round(double.Parse(cursorX.ToDegrees()), 0) + "°";
+            }
+
+            if (yMeasure == Measure.Degree)
+            {
+                cursorY = Math.Round(double.Parse(cursorY.ToDegrees()), 0) + "°";
+            }
+
+            return $"[{cursorX};{cursorY}]";
         }
 
         //Úvolnění levého tlačítka myši.
@@ -299,6 +388,17 @@ namespace Grafer.CustomControls
         protected override void OnMouseLeave(MouseEventArgs e)
         {
             isMouseDown = false;
+
+            pointer.Visibility = Visibility.Collapsed;
+        }
+
+        //Když myš vstupí do soustavy.
+        protected override void OnMouseEnter(MouseEventArgs e)
+        {
+            if (showPointer)
+            {
+                pointer.Visibility = Visibility.Visible;
+            }
         }
 
         //Nastavení zoomLevel maximální je absolutní 4.

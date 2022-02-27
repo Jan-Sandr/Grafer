@@ -1337,5 +1337,11 @@ namespace Grafer
             coordinateSystem.Refresh();
             Start();
         }
+
+        //Změna stavu checkboxu na ukazovátko.
+        private void ShowPointerCheckedChanged(object sender, RoutedEventArgs e)
+        {
+            coordinateSystem.ShowPointer = checkBoxShowPointer.IsChecked == true;
+        }
     }
 }
