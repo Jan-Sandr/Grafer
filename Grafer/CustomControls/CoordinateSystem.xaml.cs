@@ -425,6 +425,18 @@ namespace Grafer.CustomControls
             double xSpace = defaultMeasureSpace[xMeasure] * Zoom;
             double ySpace = defaultMeasureSpace[yMeasure] * Zoom;
 
+            if (ZoomLevel < -2)
+            {
+                xSpace *= 2;
+                ySpace *= 2;
+            }
+
+            if (ZoomLevel > 2)
+            {
+                xSpace /= 2;
+                ySpace /= 2;
+            }
+
             return new Space(xSpace, ySpace);
         }
 
@@ -523,7 +535,19 @@ namespace Grafer.CustomControls
         //Přičítá popisnou hodnotu na základě míry.
         private double GetGridNumberIncrement(Measure currentMeasure, double currentValue)
         {
-            return currentValue + (currentMeasure == Measure.Degree ? 60 : 1);
+            double increment = currentMeasure == Measure.Degree ? 60 : 1;
+
+            if (ZoomLevel > 2)
+            {
+                increment /= 2;
+            }
+
+            if (ZoomLevel < -2)
+            {
+                increment *= 2;
+            }
+
+            return currentValue + increment;
         }
 
         //Získání vychozí pozice - střed vykreslování.
