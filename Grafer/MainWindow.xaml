@@ -23,8 +23,9 @@
                 <Label x:Name="labelZoomMaximum" Content="+" FontSize="20" Canvas.Left="193" Canvas.Top="63" Foreground="Navy"/>
                 <Label x:Name="labelZoomDefault" Content="100%" FontSize="15" Canvas.Left="110" Canvas.Top="95"/>
                 <Button x:Name="buttonShowHideMarkSettings" Content="Mark Lines" Height="27" Width="80" Click="ButtonShowHideMarkSettingsClick" Canvas.Left="170" Canvas.Top="126" Foreground="Navy" FontFamily="Segoe UI"/>
-                <CheckBox x:Name="checkBoxShowGrid" Content="Show grid" Width="110" Checked="ShowGridCheckedChanged" Unchecked="ShowGridCheckedChanged" Canvas.Left="11" Canvas.Top="125" Foreground="Navy"/>
-                <CheckBox x:Name="checkBoxShowGridLabels" Content="Show grid's labels" Width="115" Checked="ShowGridLabelsCheckedChanged" Unchecked="ShowGridLabelsCheckedChanged" Canvas.Left="11" Canvas.Top="149" Foreground="Navy"></CheckBox>
+                <CheckBox x:Name="checkBoxShowGrid" Content="Show grid" Width="110" Checked="ShowGridCheckedChanged" Unchecked="ShowGridCheckedChanged" Canvas.Left="11" Canvas.Top="122" Foreground="Navy"/>
+                <CheckBox x:Name="checkBoxShowGridLabels" Content="Show grid's labels" Width="115" Checked="ShowGridLabelsCheckedChanged" Unchecked="ShowGridLabelsCheckedChanged" Canvas.Left="11" Canvas.Top="146" Foreground="Navy"/>
+                <CheckBox x:Name="checkBoxShowPointer" Content="Show Pointer" Width="115" Checked="ShowPointerCheckedChanged" Unchecked="ShowPointerCheckedChanged" Canvas.Left="11" Canvas.Top="170" Foreground="Navy"/>
                 <Button x:Name="buttonExportCoordinateSystem" Content="Take a snap" Height="27" Width="80" Click="ButtonExportCoordinateSystemClick" Canvas.Left="170" Canvas.Top="158" Foreground="Navy"/>
 
                 <Label x:Name="labelMultipleFunctionsControl" Content="List of functions" Canvas.Left="8" Canvas.Top="190" FontSize="27" FontFamily="Microsoft Sans Serif" FontWeight="Bold" Foreground="Navy" Padding="0,0,0,0"/>
