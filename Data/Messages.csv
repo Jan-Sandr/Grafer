@@ -20,7 +20,7 @@ cannot contain anything other than a number after the comma.;nemůže obsahovat 
 cannot contain number with two or more commas.;nemůže obsahovat číslo se dvěma nebo více čárkami.;
 contains unknown expression.;obsahuje neznámý výraz.;
 requires brackets after trigonometric expression.;požaduje závroku za trigonemtrickým výrazem.;
-contains badly written arcus. Please use button or shortcut for correct format.;obsahuje špatně napsaný arcus. Prosím použijte tlačítko nebo zkratku pro zprávný zápis.;
+contains badly written arcus. Please use button or shortcut for correct format.;obsahuje špatně napsaný arcus. Prosím použijte tlačítko nebo zkratku pro správný zápis.;
 requires number before degree character.;požaduje číslo před znakem stupňů.;
 contains odd count of absolute value characters.;obsahuje lichý počet znaků absolutní hodnoty.;
 cannot contain only operation in absalute value.;nemůže obsahovat v absolutní hodnotě pouze operaci.;

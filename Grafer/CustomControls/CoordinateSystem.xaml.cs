@@ -14,7 +14,7 @@ namespace Grafer.CustomControls
         public CoordinateSystem()
         {
             InitializeComponent();
-            Width = 700;
+            Width = 780;
             Height = 700;
             Create();
         }
@@ -28,6 +28,10 @@ namespace Grafer.CustomControls
         public double Zoom { get; private set; } = 1; // Zoom pro násobek mezer na základě přiblížení.
 
         public double NumberRange { get; private set; } = 3.5;
+
+        public bool AreGridLabelsVisible { get; set; } = true;
+
+        public bool AreGridLinesVisible { get; set; } = true;
 
         private Space absoluteShift = new Space(0, 0);
 
@@ -99,8 +103,16 @@ namespace Grafer.CustomControls
             Children.Clear();
 
             DrawAxes();
-            DrawGrid();
-            DrawNumbers();
+
+            if (AreGridLinesVisible)
+            {
+                DrawGrid();
+            }
+
+            if (AreGridLabelsVisible)
+            {
+                DrawNumbers();
+            }
 
             defaultElementsCount = Children.Count;
         }
@@ -214,7 +226,7 @@ namespace Grafer.CustomControls
             return new TextBlock()
             {
                 Text = content,
-                FontFamily = new FontFamily("Arial"),
+                FontFamily = new FontFamily("Cambria"),
                 FontSize = 25,
                 Foreground = brush,
                 RenderTransform = new TranslateTransform()
