@@ -3,74 +3,96 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Grafer"
         xmlns:control="clr-namespace:Grafer.CustomControls"
         mc:Ignorable="d"
-        Title="Grafer" Height="700" Width="1100" PreviewKeyDown="ShortcutsPress" ResizeMode="CanResize" SizeChanged="ApplicationResize" MinWidth="600" MinHeight="400" Loaded="ApplicationLoaded">
+        Title="Grafer" Height="800" Width="1050" PreviewKeyDown="ShortcutsPress" ResizeMode="CanResize" SizeChanged="ApplicationResize" MinWidth="600" MinHeight="400" Loaded="ApplicationLoaded" Background="#FFF0F0F0" WindowStartupLocation="CenterScreen"  WindowStyle="SingleBorderWindow">
     <Grid x:Name="gridMain" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-        <control:EquationInput x:Name="equationInput" Margin="66,156,0,0" VerticalAlignment="Top" Width="140" Height="auto" HorizontalAlignment="Left" SelectionChanged="OnSelectionChanged" TextWrapping="Wrap" TextChanged="EquationInputTextChanged" SizeChanged="EquationInputSizeChanged" Foreground="Black"/>
-        <Label x:Name="labelY" Content="y =" HorizontalAlignment="Left" Margin="21,153,0,0" VerticalAlignment="Top" RenderTransformOrigin="-6.559,3.773" FontSize="20"/>
-        <Label Content="min:" HorizontalAlignment="Left" Margin="24,111,0,0" VerticalAlignment="Top"/>
-        <Label Content="max:" HorizontalAlignment="Left" Margin="134,111,0,0" VerticalAlignment="Top"/>
-        <Button x:Name="buttonDraw" Content="Draw" HorizontalAlignment="Left" Margin="64,206,0,0" VerticalAlignment="Top" Height="37" Width="140" Click="ButtonDrawClick" IsEnabled="False"/>
-        <CheckBox x:Name="limitX" Content="limit x" HorizontalAlignment="Left" Margin="28,91,0,0" VerticalAlignment="Top" Width="94"/>
-        <control:RangeInput x:Name="minimumXInput" HorizontalAlignment="Left" Margin="62,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="19" Uid="Minimum" SelectionChanged="OnSelectionChanged" GotFocus="RangeInputGotFocus"/>
-        <control:RangeInput x:Name="maximumXInput" HorizontalAlignment="Left" Margin="174,116,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="60" Height="19" Uid="Maximum" SelectionChanged="OnSelectionChanged" GotFocus="RangeInputGotFocus"/>
-        <ComboBox x:Name="languageSelect" HorizontalAlignment="Left" Margin="91,7,0,0" VerticalAlignment="Top" Width="120" IsReadOnly="True" SelectedIndex="0" SelectionChanged="LanguageSelectionChanged"/>
-        <Label x:Name="labelLanguage" Content="Language:" HorizontalAlignment="Left" Margin="17,5,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="labelStatus" HorizontalAlignment="Left" Margin="9,428,0,0" VerticalAlignment="Top" RenderTransformOrigin="-6.559,3.773" FontSize="25" FontWeight="Bold" FontFamily="Segoe UI" Foreground="#FF7DFF63" Width="364" Height="Auto">
-            <TextBlock x:Name="textBlockStatus" TextWrapping="Wrap">
+        <ScrollViewer x:Name="scrollControlPanel" VerticalAlignment="Top" Width="280" HorizontalAlignment="Left" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+            <Canvas x:Name="controlPanel" Height="760" VerticalAlignment="Top" HorizontalAlignment="Left" Width="280">
+                <Label x:Name="labelLanguage" Content="Language:" Canvas.Left="2" Canvas.Top="5" Foreground="Navy"/>
+                <ComboBox x:Name="languageSelect" Width="80" IsReadOnly="True" SelectedIndex="0" SelectionChanged="LanguageSelectionChanged" Canvas.Top="8" Canvas.Left="71" Foreground="Navy"/>
+                <Button x:Name="buttonsShowHelp" Content="Help" Height="22" Width="80" Click="ButtonShowHelpClick" Canvas.Left="170" Canvas.Top="8" Foreground="Navy"/>
+
+                <Label x:Name="labelCoordinateSystem" Content="Coordinate system" Canvas.Left="8" Canvas.Top="35" FontSize="27" FontFamily="Microsoft Sans Serif" FontWeight="Bold" Padding="0,0,0,0">
+                    <Label.Foreground>
+                        <SolidColorBrush Color="Navy"/>
+                    </Label.Foreground>
+                </Label>
+                <Label x:Name="labelZoomMinimum" Content="-" FontSize="25" Canvas.Left="45" Canvas.Top="59" Foreground="Navy"/>
+                <Slider x:Name="sliderZoomLevel" Width="134" Maximum="4" Minimum="-4" SmallChange="1" IsSnapToTickEnabled="True" AutoToolTipPlacement="None" ToolTip="" ValueChanged="SliderZoomLevelValueChanged" TickPlacement="BottomRight" ToolTipOpening="SliderZoomLevelToolTipOpening" Canvas.Left="64" Canvas.Top="76" Foreground="Black" Height="30"/>
+                <Label x:Name="labelZoomMaximum" Content="+" FontSize="20" Canvas.Left="193" Canvas.Top="63" Foreground="Navy"/>
+                <Label x:Name="labelZoomDefault" Content="100%" FontSize="15" Canvas.Left="110" Canvas.Top="95"/>
+                <Button x:Name="buttonShowHideMarkSettings" Content="Mark Lines" Height="27" Width="80" Click="ButtonShowHideMarkSettingsClick" Canvas.Left="170" Canvas.Top="126" Foreground="Navy" FontFamily="Segoe UI"/>
+                <CheckBox x:Name="checkBoxShowGrid" Content="Show grid" Width="110" Checked="ShowGridCheckedChanged" Unchecked="ShowGridCheckedChanged" Canvas.Left="11" Canvas.Top="125" Foreground="Navy"/>
+                <CheckBox x:Name="checkBoxShowGridLabels" Content="Show grid's labels" Width="115" Checked="ShowGridLabelsCheckedChanged" Unchecked="ShowGridLabelsCheckedChanged" Canvas.Left="11" Canvas.Top="149" Foreground="Navy"></CheckBox>
+                <Button x:Name="buttonExportCoordinateSystem" Content="Take a snap" Height="27" Width="80" Click="ButtonExportCoordinateSystemClick" Canvas.Left="170" Canvas.Top="158" Foreground="Navy"/>
+
+                <Label x:Name="labelMultipleFunctionsControl" Content="List of functions" Canvas.Left="8" Canvas.Top="190" FontSize="27" FontFamily="Microsoft Sans Serif" FontWeight="Bold" Foreground="Navy" Padding="0,0,0,0"/>
+                <Button x:Name="buttonLoadFunctions" Content="Load list" Height="37" Width="90" Click="ListBoxFunctionOperationButtonsClick" Canvas.Left="64" Canvas.Top="230" Foreground="Navy"/>
+                <Button x:Name="buttonSaveFunctions" Content="Save list" Height="37" Width="90" Click="ListBoxFunctionOperationButtonsClick" IsEnabled="False" Canvas.Top="230" Canvas.Left="160" Foreground="Navy"/>
+                <ListBox x:Name="listBoxFunctions" BorderThickness="1,1,1,1" Height="138" SelectionChanged="ListBoxFunctionsSelectionChanged" Width="186" Canvas.Left="64" Canvas.Top="274"/>
+                <Button x:Name="buttonAddFunction" Content="+" Height="36" Width="40" Click="ListBoxFunctionOperationButtonsClick" FontSize="36" Padding="0,-10,1,0" Canvas.Left="16" Canvas.Top="280" Foreground="Navy"/>
+                <Button x:Name="buttonRemoveFunction" Content="-" Height="36" Width="40" Click="ListBoxFunctionOperationButtonsClick" FontSize="36" Padding="0,-10,1,0" Canvas.Left="16" Canvas.Top="325" Foreground="Navy"/>
+                <Button x:Name="buttonDeselectFunction" Content="✖" Height="36" Width="40" Click="ListBoxFunctionOperationButtonsClick" Canvas.Left="16" Canvas.Top="370" Foreground="Navy"/>
+                <CheckBox x:Name="checkBoxMultipleFunctions" Content="Multiple funcitons" Width="120" IsEnabled="False" Checked="CheckBoxMultipleFunctionsCheckedChanged" Unchecked="CheckBoxMultipleFunctionsCheckedChanged" Canvas.Left="64" Canvas.Top="425" Foreground="Navy"/>
+
+                <Label x:Name="labelFunctionControl" Content="Function" Canvas.Left="8" Canvas.Top="445" FontSize="27" FontFamily="Microsoft Sans Serif" FontWeight="Bold" Foreground="Navy" Padding="0,0,0,0"/>
+                <Label x:Name="labelColor" Content="color:" Canvas.Left="7" Canvas.Top="485" Visibility="Visible" Foreground="Navy"/>
+                <Rectangle x:Name="rectangleColor" Height="26" Width="199" Fill="Black" MouseUp="RectangleColorMouseUp" Stroke="#FFCEC1C1" Canvas.Left="51" Canvas.Top="485" RadiusX="0" RadiusY="0"/>
+                <CheckBox x:Name="checkBoxInverse" Content="Inverse" Width="94" Checked="InverseCheckedChanged" Unchecked="InverseCheckedChanged" Canvas.Left="17" Canvas.Top="520" FlowDirection="RightToLeft" Foreground="Navy"/>
+                <CheckBox x:Name="checkBoxKeepOrigin" Content="Keep origin" Width="114" Canvas.Left="136" Canvas.Top="520" FlowDirection="RightToLeft" Foreground="Navy"/>
+                <CheckBox x:Name="limitX" Content="limit x" Width="94" Canvas.Left="16" Canvas.Top="547" FlowDirection="RightToLeft" Foreground="Navy"/>
+                <CheckBox x:Name="checkBoxFreeFunction" Content="Free function" Width="94" Checked="CheckBoxFreeFunctionChanged" Unchecked="CheckBoxFreeFunctionChanged" Canvas.Left="156" Canvas.Top="547" FlowDirection="RightToLeft" Foreground="Navy"/>
+                <control:RangeInput x:Name="minimumXInput" TextWrapping="Wrap" Width="60" Height="auto" Uid="Minimum" SelectionChanged="OnSelectionChanged" GotFocus="RangeInputGotFocus" Canvas.Left="50" Canvas.Top="571" Foreground="Navy" FontFamily="Cambria" FontSize="18"/>
+                <Label x:Name="labelDegreeMinimum" Content="°" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Visibility="Hidden" Canvas.Left="108" Canvas.Top="565"/>
+                <Label x:Name="labelLimitX" Content="≤ x ≤" Canvas.Left="128" Canvas.Top="568" FontSize="18" Foreground="Navy" FontFamily="Cambria"/>
+                <control:RangeInput x:Name="maximumXInput" TextWrapping="Wrap" Width="60" Height="auto" Uid="Maximum" SelectionChanged="OnSelectionChanged" GotFocus="RangeInputGotFocus" Canvas.Left="190" Canvas.Top="571" Foreground="Navy" FontFamily="Cambria" FontSize="18"/>
+                <Label x:Name="labelDegreeMaximum" Content="°" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Visibility="Hidden" Canvas.Left="247" Canvas.Top="565"/>
+                <Label x:Name="labelY" Content="y =" RenderTransformOrigin="-6.559,3.773" FontSize="25" Canvas.Left="7" Canvas.Top="597" Foreground="Navy" FontFamily="Cambria"/>
+                <control:EquationInput x:Name="equationInput" Width="200" SelectionChanged="OnSelectionChanged" TextWrapping="Wrap" TextChanged="EquationInputTextChanged" SizeChanged="EquationInputSizeChanged" Foreground="Black" Canvas.Left="50" Canvas.Top="600" FontSize="25" FontFamily="Cambria" Background="White"/>
+                <Button x:Name="buttonDraw" Content="Draw" Height="37" Width="80" Click="ButtonDrawClick" IsEnabled="False" Canvas.Left="50" Canvas.Top="642" Foreground="Navy"/>
+                <Button x:Name="buttonShowHideButtons" Content="Buttons" Height="37" Width="80" Click="ButtonShowHideButtonsClick" Canvas.Left="170" Canvas.Top="642" Foreground="Navy"/>
+                <Label x:Name="labelStatus" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI" Foreground="#FF7DFF63" Width="263" Height="Auto" Canvas.Left="7" Canvas.Top="676">
+                    <TextBlock x:Name="textBlockStatus" TextWrapping="Wrap" Height="auto">
                  Status: OK
-            </TextBlock>
-        </Label>
-        <Slider x:Name="sliderZoomLevel" HorizontalAlignment="Left" Margin="91,49,0,0" VerticalAlignment="Top" Width="120" Maximum="4" Minimum="-4" SmallChange="1" IsSnapToTickEnabled="True" AutoToolTipPlacement="None" ToolTip="" ValueChanged="SliderZoomLevelValueChanged" TickPlacement="BottomRight" ToolTipOpening="SliderZoomLevelToolTipOpening"/>
-        <Label x:Name="labelZoomMinimum" Content="-" HorizontalAlignment="Left" Margin="66,38,0,0" VerticalAlignment="Top" FontSize="20"/>
-        <Label x:Name="labelZoomMaximum" Content="+" HorizontalAlignment="Left" Margin="215,45,0,0" VerticalAlignment="Top"/>
-        <Label x:Name="labelDegreeMinimum" Content="°" HorizontalAlignment="Left" Margin="120,106,0,0" VerticalAlignment="Top" FontSize="20" Visibility="Hidden"/>
-        <Label x:Name="labelDegreeMaximum" Content="°" HorizontalAlignment="Left" Margin="233,106,0,0" VerticalAlignment="Top" FontSize="20" Visibility="Hidden"/>
-        <Button x:Name="buttonShowHideButtons" Content="Buttons" HorizontalAlignment="Left" Margin="242,206,0,0" VerticalAlignment="Top" Height="37" Width="80" Click="ButtonShowHideButtonsClick"/>
-        <Rectangle x:Name="rectangleColor" HorizontalAlignment="Left" Height="19" Margin="174,87,0,0" VerticalAlignment="Top" Width="59" Fill="Black" MouseUp="RectangleColorMouseUp" Stroke="#FFCEC1C1"/>
-        <Label x:Name="labelColor" Content="color:" HorizontalAlignment="Left" Margin="129,82,0,0" VerticalAlignment="Top"/>
-        <CheckBox x:Name="checkBoxInverse" Content="Inverse" HorizontalAlignment="Left" Margin="256,91,0,0" VerticalAlignment="Top" Width="94" Checked="InverseCheckedChanged" Unchecked="InverseCheckedChanged"/>
-        <CheckBox x:Name="checkBoxKeepOrigin" Content="Keep origin" HorizontalAlignment="Left" Margin="256,112,0,0" VerticalAlignment="Top" Width="94"/>
-        <ListBox x:Name="listBoxFunctions" Margin="67,284,0,0" BorderThickness="1,1,1,1" VerticalAlignment="Top" Height="138" SelectionChanged="ListBoxFunctionsSelectionChanged" HorizontalAlignment="Left" Width="158"/>
-        <Button x:Name="buttonAddFunction" Content="+" HorizontalAlignment="Left" Margin="17,288,0,0" VerticalAlignment="Top" Height="36" Width="40" Click="ListBoxFunctionOperationButtonsClick" FontSize="36" Padding="0,-10,1,0"/>
-        <Button x:Name="buttonRemoveFunction" Content="-" HorizontalAlignment="Left" Margin="17,332,0,0" VerticalAlignment="Top" Height="36" Width="40" Click="ListBoxFunctionOperationButtonsClick" FontSize="36" Padding="0,-10,1,0"/>
-        <Button x:Name="buttonDeselectFunction" Content="✖" HorizontalAlignment="Left" Margin="17,381,0,0" VerticalAlignment="Top" Height="36" Width="40" Click="ListBoxFunctionOperationButtonsClick"/>
-        <Button x:Name="buttonSaveFunctions" Content="Save Functions" HorizontalAlignment="Left" Margin="242,297,0,0" VerticalAlignment="Top" Height="37" Width="91" Click="ListBoxFunctionOperationButtonsClick" IsEnabled="False"/>
-        <Button x:Name="buttonLoadFunctions" Content="Load Functions" HorizontalAlignment="Left" Margin="242,362,0,0" VerticalAlignment="Top" Height="37" Width="91" Click="ListBoxFunctionOperationButtonsClick"/>
-        <CheckBox x:Name="checkBoxMultipleFunctions" Content="Multiple funcitons" HorizontalAlignment="Left" Margin="67,264,0,0" VerticalAlignment="Top" Width="120" IsEnabled="False" Checked="CheckBoxMultipleFunctionsCheckedChanged" Unchecked="CheckBoxMultipleFunctionsCheckedChanged"/>
-        <CheckBox x:Name="checkBoxFreeFunction" Content="Free function" HorizontalAlignment="Left" Margin="256,132,0,0" VerticalAlignment="Top" Width="94" Checked="CheckBoxFreeFunctionChanged" Unchecked="CheckBoxFreeFunctionChanged"/>
-        <Button x:Name="buttonShowHideMarkSettings" Content="Mark Lines" HorizontalAlignment="Left" Margin="242,157,0,0" VerticalAlignment="Top" Height="37" Width="80" Click="ButtonShowHideMarkSettingsClick"/>
-        <Button x:Name="buttonExportCoordinateSystem" Content="Take a snap" HorizontalAlignment="Left" Margin="248,5,0,0" VerticalAlignment="Top" Height="37" Width="80" Click="ButtonExportCoordinateSystemClick"/>
-        <Button x:Name="buttonsShowHelp" Content="Help" HorizontalAlignment="Left" Margin="248,45,0,0" VerticalAlignment="Top" Height="37" Width="80" Click="ButtonShowHelpClick"/>
-        <control:CoordinateSystem x:Name="coordinateSystem" Margin="384,0,0,0" Background="#FFF1EDED" Height="700" Width="700" ClipToBounds="True" VerticalAlignment="Top"/>
-        <ScrollViewer x:Name="scrollButtonSection"  Margin="384,0,0,0" Height="110" Width="700" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Background="White" VerticalAlignment="Top" Visibility="Hidden">
-            <Canvas x:Name="buttonSection" Margin="0,0,0,20" Width="700" Background="White" Height="90" VerticalAlignment="Bottom">
-                <Button x:Name="buttonExponent" Content="^" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="^" Canvas.Left="20" Canvas.Top="13"/>
-                <Button x:Name="buttonRoot" Content="√" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="√" Canvas.Left="20" Canvas.Top="49"/>
-                <Button x:Name="buttonDegree" Content="°" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="°" Canvas.Left="94" Canvas.Top="13"/>
-                <Button x:Name="buttonPi" Content="π" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="π" Canvas.Left="94" Canvas.Top="49"/>
-                <Button x:Name="buttonAbsoluteValue" Content="|" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="|" Canvas.Left="168" Canvas.Top="13"/>
-                <Button x:Name="buttonInfinity" Content="∞" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="∞" Canvas.Left="168" Canvas.Top="49"/>
-                <Button x:Name="buttonLogarithm" Content="log[10]" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="log[10]" Canvas.Left="242" Canvas.Top="13"/>
-                <Button x:Name="buttonNaturalLogarithm" Content="ln" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="ln" Canvas.Left="242" Canvas.Top="49"/>
-                <Button x:Name="buttonSine" Content="sin" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="sin" Canvas.Left="384" Canvas.Top="13"/>
-                <Button x:Name="buttonCosine" Content="cos" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="cos" Canvas.Left="384" Canvas.Top="49"/>
-                <Button x:Name="buttonTangent" Content="tg" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="tg" Canvas.Left="458" Canvas.Top="13"/>
-                <Button x:Name="buttonCotangent" Content="cotg" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="cotg" Canvas.Left="458" Canvas.Top="49"/>
-                <Button x:Name="buttonArcSine" Content="sin⁻¹" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="sin⁻¹" Canvas.Left="542" Canvas.Top="13"/>
-                <Button x:Name="buttonArcCosine" Content="cos⁻¹" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="cos⁻¹" Canvas.Left="542" Canvas.Top="49"/>
-                <Button x:Name="buttonArcTangent" Content="tg⁻¹" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="tg⁻¹" Canvas.Left="616" Canvas.Top="13"/>
-                <Button x:Name="buttonArcCotangent" Content="cotg⁻¹" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="cotg⁻¹" Canvas.Left="616" Canvas.Top="49"/>
+                    </TextBlock>
+                </Label>
             </Canvas>
         </ScrollViewer>
-        <Button x:Name="buttonHideShowMainMenu" Content="🢦" HorizontalAlignment="Left" Margin="406,20,0,0" VerticalAlignment="Top" Height="36" Width="40" Click="ButtonHideShowMainMenuClick" FontSize="25" Padding="1,-1,1,1"/>
-        <Canvas x:Name="markLineSection" Margin="384,82,0,0" VerticalAlignment="Top" Height="98" Background="White" HorizontalAlignment="Left" Width="130" Visibility="Collapsed">
-            <control:RangeInput x:Name="inputMarkLineY" Canvas.Left="37" TextWrapping="Wrap" Canvas.Top="22" Width="76" TextChanged="InputMarkLineTextChanged"/>
-            <Label x:Name="labelMarkLineY" Content="y =" Canvas.Left="10" Canvas.Top="18"/>
-            <Label x:Name="labelMarkLineX" Content="x =" Canvas.Left="10" Canvas.Top="54"/>
-            <control:RangeInput x:Name="inputMarkLineX" Canvas.Left="37" TextWrapping="Wrap" Canvas.Top="58" Width="76" TextChanged="InputMarkLineTextChanged"/>
+
+        <control:CoordinateSystem x:Name="coordinateSystem" Margin="280,0,0,0" Background="#FFF1EDED" Height="700" ClipToBounds="True" VerticalAlignment="Top" HorizontalAlignment="Left" Width="770"/>
+
+        <ScrollViewer x:Name="scrollButtonSection" Margin="300,650,50,0" Height="110" Width="700" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Background="#FFF0F0F0" VerticalAlignment="Top" Visibility="Collapsed">
+            <Canvas x:Name="buttonSection" Margin="0,0,0,20" Width="700" Background="#FFF0F0F0" Height="90" VerticalAlignment="Bottom">
+                <Button x:Name="buttonExponent" Content="^" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="^" Canvas.Left="20" Canvas.Top="13" FontFamily="Cambria" Height="31"/>
+                <Button x:Name="buttonRoot" Content="√" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="√" Canvas.Left="20" Canvas.Top="49" FontFamily="Cambria" Height="31"/>
+                <Button x:Name="buttonDegree" Content="°" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="°" Canvas.Left="94" Canvas.Top="13" FontFamily="Cambria" Height="31"/>
+                <Button x:Name="buttonPi" Content="π" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="π" Canvas.Left="94" Canvas.Top="49" FontFamily="Cambria" Height="31"/>
+                <Button x:Name="buttonAbsoluteValue" Content="|" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="|" Canvas.Left="168" Canvas.Top="13"/>
+                <Button x:Name="buttonInfinity" Content="∞" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="∞" Canvas.Left="168" Canvas.Top="49" FontFamily="Cambria" Height="31"/>
+                <Button x:Name="buttonLogarithm" Content="log[10]" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="log[10]" Canvas.Left="242" Canvas.Top="13" FontFamily="Cambria"/>
+                <Button x:Name="buttonNaturalLogarithm" Content="ln" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="ln" Canvas.Left="242" Canvas.Top="49" FontFamily="Cambria" Height="31"/>
+                <Button x:Name="buttonSine" Content="sin" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="sin" Canvas.Left="384" Canvas.Top="13" FontFamily="Cambria" Height="31"/>
+                <Button x:Name="buttonCosine" Content="cos" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="cos" Canvas.Left="384" Canvas.Top="49" FontFamily="Cambria" Height="31"/>
+                <Button x:Name="buttonTangent" Content="tg" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="tg" Canvas.Left="458" Canvas.Top="13" FontFamily="Cambria" Height="31"/>
+                <Button x:Name="buttonCotangent" Content="cotg" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="cotg" Canvas.Left="458" Canvas.Top="49" FontFamily="Cambria" Height="31"/>
+                <Button x:Name="buttonArcSine" Content="sin⁻¹" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="sin⁻¹" Canvas.Left="542" Canvas.Top="13" FontFamily="Cambria" Height="31"/>
+                <Button x:Name="buttonArcCosine" Content="cos⁻¹" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="cos⁻¹" Canvas.Left="542" Canvas.Top="49" FontFamily="Cambria" Height="31"/>
+                <Button x:Name="buttonArcTangent" Content="tg⁻¹" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="tg⁻¹" Canvas.Left="616" Canvas.Top="13" FontFamily="Cambria" Height="31"/>
+                <Button x:Name="buttonArcCotangent" Content="cotg⁻¹" Width="64" FontSize="20" Click="InsertionButtonClick" Uid="cotg⁻¹" Canvas.Left="616" Canvas.Top="49" FontFamily="Cambria" Height="31"/>
+            </Canvas>
+        </ScrollViewer>
+
+        <Button x:Name="buttonHideShowMainMenu" Content="🢦" HorizontalAlignment="Left" Margin="320,20,0,0" VerticalAlignment="Top" Height="36" Width="40" Click="ButtonHideShowMainMenuClick" FontSize="25" Padding="1,-1,1,1" Foreground="Navy"/>
+
+        <Canvas x:Name="markLineSection" Margin="280,82,0,0" VerticalAlignment="Top" Height="120" Background="#FFF0F0F0" HorizontalAlignment="Left" Width="130" Visibility="Collapsed">
+            <Rectangle x:Name="rectangleMarkLineSectionBorder" Width="130" Height="120" Stroke="#FFAAA7A7"/>
+            <Label x:Name="labelAxisYShift" Content="Y-axis offset:" FontSize="15" Canvas.Left="5" Padding="0,0,0,0" Canvas.Top="6"/>
+            <Label x:Name="labelMarkLineY" Content="y =" Canvas.Left="10" Canvas.Top="26" FontFamily="Cambria" FontSize="18"/>
+            <control:RangeInput x:Name="inputMarkLineY" Canvas.Left="40" TextWrapping="Wrap" Canvas.Top="30" Width="76" TextChanged="InputMarkLineTextChanged" FontFamily="Cambria" FontSize="18"/>
+            <Label x:Name="labelAxisXShift" Content="X-axis offset:" FontSize="15" Canvas.Left="5" Canvas.Top="61" Padding="0,0,0,0"/>
+            <Label x:Name="labelMarkLineX" Content="x =" Canvas.Left="10" Canvas.Top="81" FontFamily="Cambria" FontSize="18"/>
+            <control:RangeInput x:Name="inputMarkLineX" Canvas.Left="40" TextWrapping="Wrap" Canvas.Top="85" Width="76" TextChanged="InputMarkLineTextChanged" FontFamily="Cambria" FontSize="18"/>
         </Canvas>
     </Grid>
 </Window>

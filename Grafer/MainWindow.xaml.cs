@@ -91,14 +91,18 @@ namespace Grafer
             LoadData();
             LocalizeUserInterface();
             previousFocusedRangeInput = minimumXInput;
+            checkBoxShowGrid.IsChecked = true;
+            checkBoxShowGridLabels.IsChecked = true;
         }
 
         //Načte data aplikace, ne ze souborů.
         private void LoadData()
         {
-            language = Language.English;
+            string systemLanguage = System.Globalization.CultureInfo.InstalledUICulture.Name;
             languageSelect.Items.Add(Language.English);
             languageSelect.Items.Add(Language.Czech);
+            language = systemLanguage == "cs-CZ" ? Language.Czech : Language.English;
+            languageSelect.SelectedIndex = (int)language;
         }
 
         //Načte data ze souborů.
@@ -349,7 +353,7 @@ namespace Grafer
             }
 
             //Funkce z předpisu.
-            if (gFunction != null && !contents.Any(s => s.Contains(gFunction!.Name.Split(':')[0])))
+            if (gFunction != null && !contents.Any(s => s.Contains(gFunction!.GetIndetificator())))
             {
                 if (checkBoxFreeFunction.IsChecked == true)
                 {
@@ -366,7 +370,6 @@ namespace Grafer
             labelsContent = contents.ToArray();
             labelsBrush = brushes.ToArray();
         }
-
 
         #endregion
 
@@ -471,8 +474,16 @@ namespace Grafer
         //Nastaví zprávu status a jeho barvu.
         private void SetStatus(string message, Color color)
         {
-            textBlockStatus.Text = $"Status: {message}";
-            textBlockStatus.Foreground = new SolidColorBrush(color);
+            if (message == "OK")
+            {
+                labelStatus.Visibility = Visibility.Hidden;
+            }
+            else
+            {
+                labelStatus.Visibility = Visibility.Visible;
+                textBlockStatus.Text = $"Status: {message}";
+                textBlockStatus.Foreground = new SolidColorBrush(color);
+            }
         }
 
         #endregion
@@ -546,10 +557,18 @@ namespace Grafer
 
         #region Lokalizace
 
-        //Localizace prostředí.
+        //Lokalizace prostředí.
         private void LocalizeUserInterface()
         {
-            List<ContentControl> controls = gridMain.Children.OfType<ContentControl>().ToList();
+            LocalizeControlPanel();
+
+            LocalizeMarkLineSection();
+        }
+
+        //Lokalizace ovládacího panelu.
+        private void LocalizeControlPanel()
+        {
+            List<ContentControl> controls = controlPanel.Children.OfType<ContentControl>().ToList();
 
             for (int i = 0; i < controls.Count; i++)
             {
@@ -561,6 +580,13 @@ namespace Grafer
             }
 
             equationInput.Uid = (language == Language.English) ? "Relation" : "Předpis";
+        }
+
+        //Lokalizace označovací sekce.
+        private void LocalizeMarkLineSection()
+        {
+            labelAxisXShift.Content = language == Language.English ? "X-axis offset:" : "Posunutí na ose X:";
+            labelAxisYShift.Content = language == Language.English ? "Y-axis offset:" : "Posunutí na ose Y:";
         }
 
         //Změna jazyka.
@@ -592,12 +618,12 @@ namespace Grafer
         //Přizpůsobení plátna velikosti aplikace.
         private void AdjustCoordinateSystemSize()
         {
-            coordinateSystem.Width = IsMainMenuVisible ? ActualWidth - 400 : ActualWidth;
+            coordinateSystem.Width = IsMainMenuVisible ? ActualWidth - controlPanel.ActualWidth - 15 : ActualWidth;
             coordinateSystem.Height = ActualHeight - 39;
 
             if (IsMainMenuVisible)
             {
-                coordinateSystem.Margin = new Thickness(384, 0, 0, 700 - coordinateSystem.Height);
+                coordinateSystem.Margin = new Thickness(280, 0, 0, 700 - coordinateSystem.Height);
             }
             else
             {
@@ -610,7 +636,7 @@ namespace Grafer
         {
             scrollButtonSection.Width = coordinateSystem.Width;
 
-            scrollButtonSection.Margin = new Thickness(384, ActualHeight - scrollButtonSection.Height - 39, 0, 0);
+            scrollButtonSection.Margin = new Thickness(300, ActualHeight - scrollButtonSection.Height - 39, 0, 0);
 
             AdjustButtonSectionInnerMargin();
         }
@@ -620,7 +646,7 @@ namespace Grafer
         {
             double buttonsBottomMargin = 20;
 
-            if (coordinateSystem.Width < 700) // Scrollbar posunu nahoru - pro vyrovnání.
+            if (scrollButtonSection.Width < 700) // Scrollbar posunu nahoru - pro vyrovnání.
             {
                 buttonsBottomMargin = 3;
             }
@@ -633,11 +659,11 @@ namespace Grafer
         {
             if (IsMainMenuVisible)
             {
-                buttonHideShowMainMenu.Margin = new Thickness(406, 20, 0, 0);
+                buttonHideShowMainMenu.Margin = new Thickness(300, 20, 0, 0);
             }
             else
             {
-                buttonHideShowMainMenu.Margin = new Thickness(26, 20, 0, 0);
+                buttonHideShowMainMenu.Margin = new Thickness(20, 20, 0, 0);
             }
         }
 
@@ -660,12 +686,28 @@ namespace Grafer
             }
         }
 
+        int previousLineCount = 1;
+
         //Posunutí tlačítka vykreslit.
         private void EquationInputSizeChanged(object sender, SizeChangedEventArgs e)
         {
             double marginTopMultiply = equationInput.LineCount - 1;
 
-            buttonDraw.Margin = new Thickness(64, 206 + (26 * marginTopMultiply), 0, 0);
+            if (previousLineCount < equationInput.LineCount)
+            {
+                controlPanel.Height += 26;
+            }
+
+            if (previousLineCount > equationInput.LineCount)
+            {
+                controlPanel.Height -= 26;
+            }
+
+            Canvas.SetTop(buttonDraw, 642 + (26 * marginTopMultiply));
+            Canvas.SetTop(buttonShowHideButtons, 642 + (26 * marginTopMultiply));
+            Canvas.SetTop(labelStatus, 684 + (26 * marginTopMultiply));
+
+            previousLineCount = equationInput.LineCount;
         }
 
         //Událost při pohybu jezdítka pro nastavení přiblížení soustavy.
@@ -722,7 +764,7 @@ namespace Grafer
                 }
             }
 
-            return $"f{number}: {equationInput.Text}";
+            return $"f{number}: y = {equationInput.Text}";
         }
 
         //Získá nejmenší volné číslé pro jméno funkce.
@@ -863,9 +905,11 @@ namespace Grafer
         {
             CheckBox checkBox = new CheckBox
             {
-                Name = "checkBox" + gFunction!.Name.Split(':')[0],
+                Name = "checkBox" + gFunction!.GetIndetificator(),
                 Content = gFunction.Name,
-                IsEnabled = checkBoxMultipleFunctions.IsChecked == true
+                IsEnabled = checkBoxMultipleFunctions.IsChecked == true,
+                FontFamily = new FontFamily("Cambria"),
+                FontSize = 15
             };
 
             checkBox.Checked += CheckBoxFunctionCheckedChanged;
@@ -1135,7 +1179,7 @@ namespace Grafer
                 if (listBoxFunctions.SelectedIndex != -1)
                 {
                     hiddenRelationIndex = listBoxFunctions.SelectedIndex;
-                    (listBoxFunctions.Items[hiddenRelationIndex] as CheckBox)!.Content = functions[hiddenRelationIndex].Name.Split(':')[0] + (language == Language.English ? ": Unknown" : ": Neznámý");
+                    (listBoxFunctions.Items[hiddenRelationIndex] as CheckBox)!.Content = functions[hiddenRelationIndex].GetIndetificator() + (language == Language.English ? ": Unknown" : ": Neznámý");
                 }
                 else
                 {
@@ -1224,7 +1268,10 @@ namespace Grafer
 
             pngEncoder.Frames.Add(BitmapFrame.Create(bitmap));
 
-            pngEncoder.Save(File.OpenWrite(path));
+            FileStream fileStream = new FileStream(path, FileMode.CreateNew);
+            pngEncoder.Save(fileStream);
+
+            fileStream.Close();
         }
 
         //Kliknutí na tlačítko nápověda.
@@ -1273,6 +1320,22 @@ namespace Grafer
         private void RangeInputGotFocus(object sender, RoutedEventArgs e)
         {
             previousFocusedRangeInput = (RangeInput)sender;
+        }
+
+        //Změna stavu checkboxu na popisky.
+        private void ShowGridLabelsCheckedChanged(object sender, RoutedEventArgs e)
+        {
+            coordinateSystem.AreGridLabelsVisible = checkBoxShowGridLabels.IsChecked == true;
+            coordinateSystem.Refresh();
+            Start();
+        }
+
+        //Změna stavu checkboxu na mřížku.
+        private void ShowGridCheckedChanged(object sender, RoutedEventArgs e)
+        {
+            coordinateSystem.AreGridLinesVisible = checkBoxShowGrid.IsChecked == true;
+            coordinateSystem.Refresh();
+            Start();
         }
     }
 }
