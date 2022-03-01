@@ -135,8 +135,8 @@ namespace Grafer
 
             Draw(); // 4. Vykreslení funkce.
 
-            // 5. Pokud je více funkcí najednou překreslí se všechny zaškrtlé.
-            if (checkBoxMultipleFunctions.IsChecked == true)
+            // 5. Překreslení zaškrtnutých funkcí. 
+            if (functions.Count > 0)
             {
                 Recalculation();
             }
@@ -169,7 +169,7 @@ namespace Grafer
         private void CreateFunction()
         {
             string name = GenerateUniqueName();
-            gFunction = new Function(name, rectangleColor.Fill, equationInput.Text, limitX.IsChecked == true, gMinimumX, gMaximumX, coordinateSystem, checkBoxInverse.IsChecked == true);
+            gFunction = new Function(name, rectangleColor.Fill, equationInput.Text, gMinimumX, gMaximumX, coordinateSystem, checkBoxInverse.IsChecked == true);
             gFunction.CalculatePoints();
         }
 
@@ -188,15 +188,17 @@ namespace Grafer
         //Získání rozsahu x.
         private void GetXRange()
         {
-            if (limitX.IsChecked == true)
+            if (minimumXInput.Text == "")
             {
-                GetXRangeFromInputs();
+                minimumXInput.Text = double.NegativeInfinity.ToString();
             }
-            else
+
+            if (maximumXInput.Text == "")
             {
-                gMinimumX = double.NegativeInfinity;
-                gMaximumX = double.PositiveInfinity;
+                maximumXInput.Text = double.PositiveInfinity.ToString();
             }
+
+            GetXRangeFromInputs();
         }
 
         //Získání rozsahu x z inputů od uživatele.
@@ -873,7 +875,6 @@ namespace Grafer
             }
 
             buttonSaveFunctions.IsEnabled = functions.Count > 0;
-            checkBoxMultipleFunctions.IsEnabled = functions.Count > 0;
         }
 
         #region Přidání funkce do listů
@@ -907,7 +908,6 @@ namespace Grafer
             {
                 Name = "checkBox" + gFunction!.GetIndetificator(),
                 Content = gFunction.Name,
-                IsEnabled = checkBoxMultipleFunctions.IsChecked == true,
                 FontFamily = new FontFamily("Cambria"),
                 FontSize = 15
             };
@@ -929,11 +929,6 @@ namespace Grafer
             {
                 functions.RemoveAt(listBoxFunctions.SelectedIndex);
                 listBoxFunctions.Items.RemoveAt(listBoxFunctions.SelectedIndex);
-            }
-
-            if (listBoxFunctions.Items.Count == 0)
-            {
-                checkBoxMultipleFunctions.IsChecked = false;
             }
         }
 
@@ -962,7 +957,7 @@ namespace Grafer
 
             for (int i = 0; i < functions.Count; i++)
             {
-                lines += $"{functions[i].Name};{functions[i].Brush};{functions[i].InputRelation};{functions[i].IsLimited};{functions[i].MinimumX};{functions[i].MaximumX};{functions[i].Inverse};{functions[i].Type};\r\n";
+                lines += $"{functions[i].Name};{functions[i].Brush};{functions[i].InputRelation};{functions[i].MinimumX};{functions[i].MaximumX};{functions[i].Inverse};{functions[i].Type};\r\n";
             }
 
             File.WriteAllText(path, lines);
@@ -1061,48 +1056,25 @@ namespace Grafer
 
             equationInput.Text = data[2]; // Předpis
 
-            limitX.IsChecked = bool.Parse(data[3]); // Omezená
+            Function.FunctionType functionType = (Function.FunctionType)Enum.Parse(typeof(Function.FunctionType), data[6]);
 
-            Function.FunctionType functionType = (Function.FunctionType)Enum.Parse(typeof(Function.FunctionType), data[7]);
+            UpdateRangeMeasure(functionType);
 
-            if (limitX.IsChecked == true)
+            if (functionType == Function.FunctionType.TrigonometricFunction)
             {
-                UpdateRangeMeasure(functionType);
-
-                if (functionType == Function.FunctionType.TrigonometricFunction)
-                {
-                    data[4] = data[4].ToDegrees();
-                    data[5] = data[5].ToDegrees();
-                }
-
-                minimumXInput.Text = data[4]; // Minimum
-                maximumXInput.Text = data[5]; // Maximum
+                data[3] = data[3].ToDegrees();
+                data[4] = data[4].ToDegrees();
             }
 
-            checkBoxInverse.IsChecked = bool.Parse(data[6]); // Inverzní
+            minimumXInput.Text = data[3]; // Minimum
+            maximumXInput.Text = data[4]; // Maximum
+
+            checkBoxInverse.IsChecked = bool.Parse(data[5]); // Inverzní
         }
 
         #endregion
 
         #region Metody pro více funkcí najednou
-
-        //Událost při změny hodnoty zaškrtnutí více funkcí najednou.
-        private void CheckBoxMultipleFunctionsCheckedChanged(object sender, RoutedEventArgs e)
-        {
-            for (int i = 0; i < functions.Count; i++)
-            {
-                (listBoxFunctions.Items[i] as CheckBox)!.IsEnabled = checkBoxMultipleFunctions.IsChecked == true;
-
-                if (checkBoxMultipleFunctions.IsChecked == false)
-                {
-                    (listBoxFunctions.Items[i] as CheckBox)!.IsChecked = false;
-                }
-            }
-
-            coordinateSystem.RemoveFunctions();
-
-            Start();
-        }
 
         //Když se změní hodnota zaškrtnutí nějakého checkboxu v listu.
         private void CheckBoxFunctionCheckedChanged(object sender, RoutedEventArgs e)

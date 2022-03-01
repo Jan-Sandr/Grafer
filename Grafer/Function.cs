@@ -13,7 +13,6 @@ namespace Grafer
         public string Name { get; } = string.Empty;
         public Brush Brush { get; }
         public string InputRelation { get; }
-        public bool IsLimited { get; }
         public double MinimumX { get; }
         public double MaximumX { get; }
         public bool Inverse { get; }
@@ -41,13 +40,12 @@ namespace Grafer
         private int[] calculationOrderIndexesBackup = Array.Empty<int>(); // záloha výpočetního postupu.
         private double calculationMinimumX, calculationMaximumX; // Výpočetní minimum a maximum.
 
-        public Function(string name, Brush color, string relation, bool isLimited, double minimumX, double maximumX, CoordinateSystem coordinateSystem, bool inverse)
+        public Function(string name, Brush color, string relation, double minimumX, double maximumX, CoordinateSystem coordinateSystem, bool inverse)
         {
             Name = name;
             this.relation = new Relation(relation);
             MinimumX = minimumX;
             MaximumX = maximumX;
-            IsLimited = isLimited;
             calculationOrder = new CalculationOrder();
             curves = new List<Polyline>();
             points = new List<Point>();
@@ -305,17 +303,14 @@ namespace Grafer
             calculationMinimumX = (-coordinateSystem.Width / 200 - coordinateSystem.AbsoluteShift.OnX / 100) / coordinateSystem.Zoom;
             calculationMaximumX = (coordinateSystem.Width / 200 - coordinateSystem.AbsoluteShift.OnX / 100) / coordinateSystem.Zoom;
 
-            if (IsLimited)
+            if (!double.IsNegativeInfinity(MinimumX))
             {
-                if (!double.IsNegativeInfinity(MinimumX))
-                {
-                    calculationMinimumX = ((-Math.Abs(MinimumX) > coordinateSystem.NumberRange + (coordinateSystem.AbsoluteShift.OnX / 100 / coordinateSystem.Zoom)) ? -coordinateSystem.NumberRange - coordinateSystem.AbsoluteShift.OnX / 100 / coordinateSystem.Zoom : MinimumX);
-                }
+                calculationMinimumX = ((-Math.Abs(MinimumX) > coordinateSystem.NumberRange + (coordinateSystem.AbsoluteShift.OnX / 100 / coordinateSystem.Zoom)) ? -coordinateSystem.NumberRange - coordinateSystem.AbsoluteShift.OnX / 100 / coordinateSystem.Zoom : MinimumX);
+            }
 
-                if (!double.IsPositiveInfinity(MaximumX))
-                {
-                    calculationMaximumX = ((MaximumX > coordinateSystem.NumberRange - (coordinateSystem.AbsoluteShift.OnX / 100 / coordinateSystem.Zoom)) ? coordinateSystem.NumberRange - coordinateSystem.AbsoluteShift.OnX / 100 / coordinateSystem.Zoom : MaximumX);
-                }
+            if (!double.IsPositiveInfinity(MaximumX))
+            {
+                calculationMaximumX = ((MaximumX > coordinateSystem.NumberRange - (coordinateSystem.AbsoluteShift.OnX / 100 / coordinateSystem.Zoom)) ? coordinateSystem.NumberRange - coordinateSystem.AbsoluteShift.OnX / 100 / coordinateSystem.Zoom : MaximumX);
             }
         }
 
