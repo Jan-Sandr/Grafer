@@ -35,14 +35,12 @@
                 <Button x:Name="buttonAddFunction" Content="+" Height="36" Width="40" Click="ListBoxFunctionOperationButtonsClick" FontSize="36" Padding="0,-10,1,0" Canvas.Left="16" Canvas.Top="280" Foreground="Navy"/>
                 <Button x:Name="buttonRemoveFunction" Content="-" Height="36" Width="40" Click="ListBoxFunctionOperationButtonsClick" FontSize="36" Padding="0,-10,1,0" Canvas.Left="16" Canvas.Top="325" Foreground="Navy"/>
                 <Button x:Name="buttonDeselectFunction" Content="✖" Height="36" Width="40" Click="ListBoxFunctionOperationButtonsClick" Canvas.Left="16" Canvas.Top="370" Foreground="Navy"/>
-                <CheckBox x:Name="checkBoxMultipleFunctions" Content="Multiple funcitons" Width="120" IsEnabled="False" Checked="CheckBoxMultipleFunctionsCheckedChanged" Unchecked="CheckBoxMultipleFunctionsCheckedChanged" Canvas.Left="64" Canvas.Top="425" Foreground="Navy"/>
 
                 <Label x:Name="labelFunctionControl" Content="Function" Canvas.Left="8" Canvas.Top="445" FontSize="27" FontFamily="Microsoft Sans Serif" FontWeight="Bold" Foreground="Navy" Padding="0,0,0,0"/>
                 <Label x:Name="labelColor" Content="color:" Canvas.Left="7" Canvas.Top="485" Visibility="Visible" Foreground="Navy"/>
                 <Rectangle x:Name="rectangleColor" Height="26" Width="199" Fill="Black" MouseUp="RectangleColorMouseUp" Stroke="#FFCEC1C1" Canvas.Left="51" Canvas.Top="485" RadiusX="0" RadiusY="0"/>
                 <CheckBox x:Name="checkBoxInverse" Content="Inverse" Width="94" Checked="InverseCheckedChanged" Unchecked="InverseCheckedChanged" Canvas.Left="17" Canvas.Top="520" FlowDirection="RightToLeft" Foreground="Navy"/>
                 <CheckBox x:Name="checkBoxKeepOrigin" Content="Keep origin" Width="114" Canvas.Left="136" Canvas.Top="520" FlowDirection="RightToLeft" Foreground="Navy"/>
-                <CheckBox x:Name="limitX" Content="limit x" Width="94" Canvas.Left="16" Canvas.Top="547" FlowDirection="RightToLeft" Foreground="Navy"/>
                 <CheckBox x:Name="checkBoxFreeFunction" Content="Free function" Width="94" Checked="CheckBoxFreeFunctionChanged" Unchecked="CheckBoxFreeFunctionChanged" Canvas.Left="156" Canvas.Top="547" FlowDirection="RightToLeft" Foreground="Navy"/>
                 <control:RangeInput x:Name="minimumXInput" TextWrapping="Wrap" Width="60" Height="auto" Uid="Minimum" SelectionChanged="OnSelectionChanged" GotFocus="RangeInputGotFocus" Canvas.Left="50" Canvas.Top="571" Foreground="Navy" FontFamily="Cambria" FontSize="18"/>
                 <Label x:Name="labelDegreeMinimum" Content="°" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Visibility="Hidden" Canvas.Left="108" Canvas.Top="565"/>
@@ -84,7 +82,7 @@
             </Canvas>
         </ScrollViewer>
 
-        <Button x:Name="buttonHideShowMainMenu" Content="🢦" HorizontalAlignment="Left" Margin="320,20,0,0" VerticalAlignment="Top" Height="36" Width="40" Click="ButtonHideShowMainMenuClick" FontSize="25" Padding="1,-1,1,1" Foreground="Navy"/>
+        <Button x:Name="buttonHideShowMainMenu" Content="&lt;" HorizontalAlignment="Left" Margin="320,20,0,0" VerticalAlignment="Top" Height="36" Width="40" Click="ButtonHideShowMainMenuClick" FontSize="25" Padding="0,-10,0,-5" Foreground="Navy"/>
 
         <Canvas x:Name="markLineSection" Margin="280,82,0,0" VerticalAlignment="Top" Height="120" Background="#FFF0F0F0" HorizontalAlignment="Left" Width="130" Visibility="Collapsed">
             <Rectangle x:Name="rectangleMarkLineSectionBorder" Width="130" Height="120" Stroke="#FFAAA7A7"/>
