@@ -1,7 +1,6 @@
 ﻿using Grafer.ExtensionMethods;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows.Controls;
@@ -104,8 +103,9 @@ namespace Grafer.CustomControls
 
         private void LoadShortcuts()
         {
-            string path = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName + "\\Data\\Shortcuts.csv";
-            shortcuts = File.ReadAllLines(path).Skip(1).ToArray().ToDictionary();
+            List<string> inputShortcuts = Properties.Resources.Shortcuts.Split("\r\n").Skip(1).ToList();
+
+            shortcuts = inputShortcuts.ToArray().ToDictionary();
         }
     }
 }

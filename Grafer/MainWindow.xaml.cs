@@ -86,17 +86,21 @@ namespace Grafer
         //Spuštení aplikce - jako load ve formsech.
         private void ApplicationLoaded(object sender, RoutedEventArgs e)
         {
-            string directory = Directory.GetParent(Environment.CurrentDirectory).Parent.Parent.Parent.FullName + "\\Data";
-            LoadDataFromFiles(directory);
-            LoadData();
+            LoadDataFromResources();
+            LoadLanguage();
             LocalizeUserInterface();
+            SetUIDefaults();
+        }
+
+        private void SetUIDefaults()
+        {
             previousFocusedRangeInput = minimumXInput;
             checkBoxShowGrid.IsChecked = true;
             checkBoxShowGridLabels.IsChecked = true;
         }
 
-        //Načte data aplikace, ne ze souborů.
-        private void LoadData()
+        //Načte výchozí jazyk prostředí.
+        private void LoadLanguage()
         {
             string systemLanguage = System.Globalization.CultureInfo.InstalledUICulture.Name;
             languageSelect.Items.Add(Language.English);
@@ -105,11 +109,16 @@ namespace Grafer
             languageSelect.SelectedIndex = (int)language;
         }
 
-        //Načte data ze souborů.
-        private void LoadDataFromFiles(string directory)
+        //Načte data z resources.
+        private void LoadDataFromResources()
         {
-            messages = ReadFile(directory + "\\Messages.csv", true);
-            localizationData = ReadFile(directory + "\\UILocalization.csv", true).ToDictionary();
+            List<string> inputMessages = Properties.Resources.Messages.Split("\r\n").Skip(1).ToList();
+
+            messages = inputMessages.ToArray();
+
+            List<string> inputLocalizationData = Properties.Resources.UILocalization.Split("\r\n").Skip(1).ToList();
+
+            localizationData = inputLocalizationData.ToArray().ToDictionary();
         }
 
         #endregion
@@ -359,7 +368,7 @@ namespace Grafer
             {
                 if (checkBoxFreeFunction.IsChecked == true)
                 {
-                    contents.Add(gFunction.GetIndetificator() + (language == Language.English ? ": Unknown" : ": Neznámý"));
+                    contents.Add(gFunction.GetIndetificator());
                 }
                 else
                 {
@@ -540,21 +549,6 @@ namespace Grafer
             equationInput.Focus();
 
             equationInput.InsertShortcut(shortcut);
-        }
-
-        //Čtení souboru.
-        private string[] ReadFile(string filePath, bool haveHead)
-        {
-            FileCompiler fileCompiler = new FileCompiler(filePath, haveHead);
-
-            fileCompiler.Read();
-
-            if (!fileCompiler.IsOK || !fileCompiler.IsDataOK)
-            {
-                Notify(fileCompiler.ErrorMessage);
-            }
-
-            return fileCompiler.Data.ToArray();
         }
 
         #region Lokalizace
@@ -808,15 +802,7 @@ namespace Grafer
         //Událost, která nastavá při změne jestli je inverzní čekbox zaškrtnut.
         private void InverseCheckedChanged(object sender, RoutedEventArgs e)
         {
-            if (checkBoxInverse.IsChecked == true)
-            {
-                checkBoxKeepOrigin.IsEnabled = true;
-            }
-            else
-            {
-                checkBoxKeepOrigin.IsEnabled = false;
-                checkBoxKeepOrigin.IsChecked = false;
-            }
+
         }
 
         #region Ovládání listboxu
@@ -953,7 +939,7 @@ namespace Grafer
         //Zápis funkcí do souboru.
         private void WriteFunctionsToFile(string path)
         {
-            string lines = "Name;Color;Relation;Is limited;Minimum;Maximum;Is inverse;Type;\r\n";
+            string lines = "Name;Color;Relation;Minimum;Maximum;Is inverse;Type;\r\n";
 
             for (int i = 0; i < functions.Count; i++)
             {
@@ -1151,7 +1137,7 @@ namespace Grafer
                 if (listBoxFunctions.SelectedIndex != -1)
                 {
                     hiddenRelationIndex = listBoxFunctions.SelectedIndex;
-                    (listBoxFunctions.Items[hiddenRelationIndex] as CheckBox)!.Content = functions[hiddenRelationIndex].GetIndetificator() + (language == Language.English ? ": Unknown" : ": Neznámý");
+                    (listBoxFunctions.Items[hiddenRelationIndex] as CheckBox)!.Content = functions[hiddenRelationIndex].GetIndetificator();
                 }
                 else
                 {
