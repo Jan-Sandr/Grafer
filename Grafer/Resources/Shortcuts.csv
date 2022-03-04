@@ -1,0 +1,15 @@
+﻿Shortcut;Output;
+ShiftN;^;
+ShiftD;√;
+ShiftS;sin;
+ShiftC;cos;
+ShiftT;tg;
+ShiftG;cotg;
+ShiftO;°;
+ShiftP;π;
+ShiftL;log[10];
+ControlS;sin⁻¹;
+ControlC;cos⁻¹;
+ControlT;tg⁻¹;
+ControlG;cotg⁻¹;
+ControlL;ln;
