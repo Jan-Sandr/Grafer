@@ -18,6 +18,31 @@ namespace Grafer
         public MainWindow()
         {
             InitializeComponent();
+            AddEvents();
+            CenterWindow();
+        }
+
+        private void CenterWindow()
+        {
+            double screenWidth = SystemParameters.PrimaryScreenWidth;
+            double screenHeight = SystemParameters.PrimaryScreenHeight;
+
+            if (screenWidth <= Width)
+            {
+                Width = screenWidth - 100;
+            }
+
+            if (screenHeight <= Height)
+            {
+                Height = screenHeight - 100;
+            }
+
+            Top = (screenHeight - Height) / 2;
+            Left = (screenWidth - Width) / 2;
+        }
+
+        private void AddEvents()
+        {
             coordinateSystem.MouseWheel += CoordinateSystemMouseWheel;
             coordinateSystem.AbsoluteShiftChanged += CoordinateSystemAbsoluteShiftChanged;
             coordinateSystem.FunctionShiftChanged += CoordinateSystemFunctionShiftChanged;
@@ -505,6 +530,7 @@ namespace Grafer
             if (e.Key == Key.Enter)
             {
                 checkBoxFreeFunction.IsChecked = false;
+                equationInput.Focus();
                 Start();
             }
 
@@ -564,8 +590,19 @@ namespace Grafer
         //Lokalizace ovládacího panelu.
         private void LocalizeControlPanel()
         {
-            List<ContentControl> controls = controlPanel.Children.OfType<ContentControl>().ToList();
+            List<ContentControl> panelControls = controlPanel.Children.OfType<ContentControl>().ToList();
 
+            LocalizeControls(panelControls);
+
+            List<ContentControl> underEquationInputControls = canvasUnderEquationInput.Children.OfType<ContentControl>().ToList();
+
+            LocalizeControls(underEquationInputControls);
+
+            equationInput.Uid = (language == Language.English) ? "Relation" : "Předpis";
+        }
+
+        private void LocalizeControls(List<ContentControl> controls)
+        {
             for (int i = 0; i < controls.Count; i++)
             {
                 if (localizationData.ContainsKey(controls[i].Name))
@@ -574,15 +611,14 @@ namespace Grafer
                     controls[i].Content = localizationTexts[(int)language];
                 }
             }
-
-            equationInput.Uid = (language == Language.English) ? "Relation" : "Předpis";
         }
 
         //Lokalizace označovací sekce.
         private void LocalizeMarkLineSection()
         {
-            labelAxisXShift.Content = language == Language.English ? "X-axis offset:" : "Posunutí na ose X:";
-            labelAxisYShift.Content = language == Language.English ? "Y-axis offset:" : "Posunutí na ose Y:";
+            List<ContentControl> controls = markLineSection.Children.OfType<ContentControl>().ToList();
+
+            LocalizeControls(controls);
         }
 
         //Změna jazyka.
@@ -632,7 +668,7 @@ namespace Grafer
         {
             scrollButtonSection.Width = coordinateSystem.Width;
 
-            scrollButtonSection.Margin = new Thickness(300, ActualHeight - scrollButtonSection.Height - 39, 0, 0);
+            scrollButtonSection.Margin = new Thickness(280, ActualHeight - scrollButtonSection.Height - 39, 0, 0);
 
             AdjustButtonSectionInnerMargin();
         }
@@ -684,24 +720,22 @@ namespace Grafer
 
         int previousLineCount = 1;
 
-        //Posunutí tlačítka vykreslit.
+        //Posunutí sekce pod vstupem pro rovnici.
         private void EquationInputSizeChanged(object sender, SizeChangedEventArgs e)
         {
             double marginTopMultiply = equationInput.LineCount - 1;
 
             if (previousLineCount < equationInput.LineCount)
             {
-                controlPanel.Height += 26;
+                controlPanel.Height += 26 * (equationInput.LineCount - previousLineCount);
             }
 
             if (previousLineCount > equationInput.LineCount)
             {
-                controlPanel.Height -= 26;
+                controlPanel.Height -= 26 * (previousLineCount - equationInput.LineCount);
             }
 
-            Canvas.SetTop(buttonDraw, 642 + (26 * marginTopMultiply));
-            Canvas.SetTop(buttonShowHideButtons, 642 + (26 * marginTopMultiply));
-            Canvas.SetTop(labelStatus, 684 + (26 * marginTopMultiply));
+            Canvas.SetTop(canvasUnderEquationInput, 520 + (26 * marginTopMultiply));
 
             previousLineCount = equationInput.LineCount;
         }
@@ -1116,7 +1150,7 @@ namespace Grafer
         {
             IsMainMenuVisible = !IsMainMenuVisible;
 
-            buttonHideShowMainMenu.Content = IsMainMenuVisible ? "🢦" : "🢧";
+            buttonHideShowMainMenu.Content = IsMainMenuVisible ? "<" : ">";
 
             if (!IsMainMenuVisible)
             {
@@ -1236,9 +1270,9 @@ namespace Grafer
         private void ButtonShowHelpClick(object sender, RoutedEventArgs e)
         {
             string rootInfo = language == Language.English ? "Root example: 3√2 -> cube root of two, 3 * 3√2 -> 3 times cube root of two." : "Příklad odmocniny: 3√2 -> třetí odmocnina ze dvou, 3 * 3√2 -> třikrát třetí odmocnina ze dvou.";
-            string logarithmInfo = language == Language.English ? "Logarithm example: log[2](x) -> logarithm x with base two, log(x) -> logarithm x with base ten." : "Příklad logaritmu: log[2](x) -> logaritmus x se základem 2 -> logaritmus x se základem deset.";
+            string logarithmInfo = language == Language.English ? "Logarithm example: log[2](x) -> logarithm x with base two, log[10](x) or log(x) -> logarithm x with base ten." : "Příklad logaritmu: log[2](x) -> logaritmus x se základem 2, log[10](x) nebo log(x) -> logaritmus x se základem deset.";
             string shortcutsInfo = language == Language.English ? "Keyboard shortcuts:" : "Klávesové zkratky:";
-            string enterInfo = language == Language.English ? "Presses button draw" : "Zmáčkně tlačítko vykreslit";
+            string enterInfo = language == Language.English ? "Presses button draw" : "Zmáčkne tlačítko vykreslit";
             string escapeInfo = language == Language.English ? "Clear relation" : "Vymaže předpis";
             Notify(
                 rootInfo + Environment.NewLine +
