@@ -11,6 +11,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="favicon %281%29.ico" />
+    <None Remove="favicon %282%29.ico" />
+    <None Remove="favicon.ico" />
+    <None Remove="Icon.png" />
+    <None Remove="MainIcon.ico" />
     <None Remove="Resources\Messages.csv" />
     <None Remove="Resources\Shortcuts.csv" />
     <None Remove="Resources\UILocalization.csv" />
@@ -20,6 +25,10 @@
     <EmbeddedResource Include="Resources\Messages.csv" />
     <EmbeddedResource Include="Resources\Shortcuts.csv" />
     <EmbeddedResource Include="Resources\UILocalization.csv" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="MainIcon.ico" />
   </ItemGroup>
 
   <ItemGroup>

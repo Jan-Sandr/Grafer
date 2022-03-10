@@ -91,8 +91,7 @@ namespace Grafer.Properties {
         ///ControlC;cos⁻¹;
         ///ControlT;tg⁻¹;
         ///ControlG;cotg⁻¹;
-        ///ControlL;ln;
-        ///.
+        ///ControlL;ln;.
         /// </summary>
         internal static string Shortcuts {
             get {
@@ -113,7 +112,7 @@ namespace Grafer.Properties {
         ///buttonLoadFunctions;Load Functions;Načíst funkce;
         ///checkBoxFreeFunction;Free function;Uvolnit funkci;
         ///buttonShowHideMarkSettings;Mark axis;Posunutí os;
-        ///buttonExportCoordinateSystem;Take a sn [rest of string was truncated]&quot;;.
+        ///buttonExportCoordinateSystem; [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string UILocalization {
             get {

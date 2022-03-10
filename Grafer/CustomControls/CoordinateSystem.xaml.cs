@@ -16,7 +16,7 @@ namespace Grafer.CustomControls
         {
             InitializeComponent();
             Width = 780;
-            Height = 700;
+            Height = 770;
             Create();
         }
 
@@ -81,7 +81,7 @@ namespace Grafer.CustomControls
 
         private bool showPointer = false;
 
-        private TextBlock pointer;
+        private TextBlock pointer = new TextBlock();
 
         private Space previousAbsoluteShift = new Space(0, 0); // Absolutní posunutí před započetím pohybu v soustavě.
 
