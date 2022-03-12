@@ -5,8 +5,8 @@ Function won't be plotted because x's range is outside of drawing canvas.;Funkce
 cannot be empty.;nemůže být prázdné.;
 begins with invalid character.;začíná nevalidním znakem.;
 ends with invalid character.;končí nevalidním znakem.;
-cannot contain more than one minus or comma.;nemůže obsahovat více než jednom mínus nebo čárku.;
-cannot contain comma and minus side by side.;nemůže obsahovat čárku a mínus vedle sebe.;
+cannot contain more than one comma.;nemůže obsahovat více než jednu čárku.;
+cannot contain minus and comma after it.;nemůže obsahovat mínus a za ním čárku.;
 cannot contains two operations in row.;nemůže obsahovat 2 operace za sebou.;
 requires brackets after power or nth root.;požaduje závorku po znaku mocniny nebo odmocniny.;
 cannot contain closing bracket before opening bracket.;nemůže obsahovat koncovou závorku bez otevírací.;
@@ -32,3 +32,4 @@ requires a logarithm before the square brackets.;požaduje logaritmus před hran
 requires after the logarithm square brackets as the base or content in round brackets.;požaduje za logaritmem hranaté závorky jako základ nebo obsah v kulatých závorkách.;
 requires the content of logarithm in parentheses.;požaduje základ logaritmu v závorkách.;
 Not all functions have been loaded because some have corrupted data.;Nebyly načeteny všechny funkce, protože některé mají poškozená data.;
+can contain minus only at beginning.;může obsahovat mínus pouze na začátku.
