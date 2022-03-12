@@ -61,7 +61,8 @@ namespace Grafer.CustomControls
                 return (
                                         !IsRangeEmpty() &&
                                         AreEdgesValid() &&
-                               !ContainsMultipleChars() &&
+                                   IsMinusCharCorrect() &&
+                              !ContainsMultipleCommas() &&
                         !ContainsTwoInvalidcharsInRow()
                        );
             }
@@ -99,12 +100,14 @@ namespace Grafer.CustomControls
             return InvalidSection.MessageID == -1;
         }
 
-        //Jestli obsahuje třeba více minusů nebo čárek.
-        private bool ContainsMultipleChars()
+        //Jestli obsahuje více čárek.
+        private bool ContainsMultipleCommas()
         {
-            if (GetCountOfChars(Text, '-') > 1 || GetCountOfChars(Text, ',') > 1)
+            if (GetCountOfChars(Text, ',') > 1)
             {
-                InvalidSection = (0, 0, 6);
+                int lastCommaIndex = Text.LastIndexOf(',');
+
+                InvalidSection = (lastCommaIndex, 1, 6);
             }
 
             return InvalidSection.MessageID != -1;
@@ -123,13 +126,27 @@ namespace Grafer.CustomControls
             return countOfChars;
         }
 
+        //Kontrola zda se nachází mínus pouze na začátku nebo vůbec.
+        private bool IsMinusCharCorrect()
+        {
+            int minusLastIndex = Text.LastIndexOf("-");
+
+            if (minusLastIndex > 0)
+            {
+                InvalidSection = (minusLastIndex, 1, 33);
+            }
+
+            return InvalidSection.MessageID == -1;
+        }
+
         //Jestli obsahuje dva znaky za sebou, které nejsou možné.
         private bool ContainsTwoInvalidcharsInRow()
         {
-            if (Text.Contains("-,") || Text.Contains(",-"))
+            if (Text.Contains("-,"))
             {
-                InvalidSection = (0, 0, 7);
+                InvalidSection = (0, 2, 7);
             }
+
             return InvalidSection.MessageID != -1;
         }
 
