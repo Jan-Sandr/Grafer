@@ -102,17 +102,15 @@ namespace Grafer.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Component name;English;Czech;
         ///labelLanguage;Language:;Jazyk:;
-        ///equationInput;Relation;Předpis;
-        ///buttonDraw;Draw;Vykreslit;
-        ///labelColor;Color:;Barva:;
-        ///checkBoxInverse;Inverse;Inverzní;
-        ///buttonShowHideButtons;Buttons;Tlačítka;
-        ///checkBoxKeepOrigin;Keep origin;Ponechat původní;
-        ///buttonSaveFunctions;Save Functions;Uložit funkce;
-        ///buttonLoadFunctions;Load Functions;Načíst funkce;
-        ///checkBoxFreeFunction;Free function;Uvolnit funkci;
+        ///buttonsShowHelp;Help;Nápověda;
+        ///labelCoordinateSystem;Coordinate system;Soustava souřadnic;
+        ///checkBoxShowGrid;Show grid;Mřížka;
+        ///checkBoxShowGridLabels;Show grid&apos;s labels;Popisky mřížky;
+        ///checkBoxShowPointer;Show pointer;Ukazovátko;
         ///buttonShowHideMarkSettings;Mark axis;Posunutí os;
-        ///buttonExportCoordinateSystem; [rest of string was truncated]&quot;;.
+        ///buttonExportCoordinateSystem;Take a snap;Vyfotit;
+        ///labelMultipleFunctionsControl;List of functions;Seznam funkcí;
+        ///buttonLoadFunctions;Load Functions;Načíst funkce [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string UILocalization {
             get {

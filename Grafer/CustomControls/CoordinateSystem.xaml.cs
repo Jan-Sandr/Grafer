@@ -24,7 +24,25 @@ namespace Grafer.CustomControls
 
         public event EventHandler? FunctionShiftChanged; // Event který nastane při změně posunu funkce.
 
-        public int ZoomLevel { get; set; } = 0; // Slouží pro výpočet zoomu a zároveň celočíselný vyjádření zoomu.
+        public int ZoomLevel // Slouží pro výpočet zoomu a zároveň celočíselný vyjádření zoomu.
+        {
+            get
+            {
+                return zoomLevel;
+            }
+            set
+            {
+                int delta = value - zoomLevel;
+
+                absoluteShift = AdjustShiftToZoom(delta, absoluteShift);
+                functionShift = AdjustShiftToZoom(delta, functionShift);
+                zoomLevel = value;
+                SetValues();
+                Create();
+            }
+        }
+
+        private int zoomLevel = 0;
 
         public double Zoom { get; private set; } = 1; // Zoom pro násobek mezer na základě přiblížení.
 
@@ -82,6 +100,8 @@ namespace Grafer.CustomControls
         private bool showPointer = false;
 
         private TextBlock pointer = new TextBlock();
+
+        public bool IsFunctionShiftEnabled { get; set; } = false;
 
         private Space previousAbsoluteShift = new Space(0, 0); // Absolutní posunutí před započetím pohybu v soustavě.
 
@@ -146,7 +166,6 @@ namespace Grafer.CustomControls
             Children.Add(pointer);
 
             defaultElementsCount = Children.Count;
-
         }
 
         //Překreslení soustavy.
@@ -273,11 +292,7 @@ namespace Grafer.CustomControls
         //Metoda pro zachycení skrolování.
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            absoluteShift = AdjustShiftToZoom(e.Delta, absoluteShift);
-            functionShift = AdjustShiftToZoom(e.Delta, functionShift);
             ZoomLevel = GetZoomLevel(e.Delta);
-            SetValues();
-            Create();
         }
 
         //Resetování posunutí.
@@ -296,7 +311,7 @@ namespace Grafer.CustomControls
                 previousAbsoluteShift = AbsoluteShift;
             }
 
-            if (e.RightButton == MouseButtonState.Pressed)
+            if (e.RightButton == MouseButtonState.Pressed && IsFunctionShiftEnabled)
             {
                 previousFunctionShift = FunctionShift;
             }
@@ -314,7 +329,7 @@ namespace Grafer.CustomControls
                     AbsoluteShift = new Space(previousAbsoluteShift.OnX - (mouseDownPosition.X - mousePosition.X), previousAbsoluteShift.OnY - (mouseDownPosition.Y - mousePosition.Y));
                 }
 
-                if (e.RightButton == MouseButtonState.Pressed)
+                if (e.RightButton == MouseButtonState.Pressed && IsFunctionShiftEnabled)
                 {
                     FunctionShift = new Space(previousFunctionShift.OnX - (mouseDownPosition.X - mousePosition.X), previousFunctionShift.OnY - (mouseDownPosition.Y - mousePosition.Y));
                 }
@@ -446,13 +461,13 @@ namespace Grafer.CustomControls
             double newShiftX = inputShift.OnX;
             double newShiftY = inputShift.OnY;
 
-            if (delta == 120 && ZoomLevel < 4)
+            if (delta > 0 && ZoomLevel < 4)
             {
                 newShiftX *= 1.25;
                 newShiftY *= 1.25;
             }
 
-            if (delta == -120 && ZoomLevel > -4)
+            if (delta < 0 && ZoomLevel > -4)
             {
                 newShiftX /= 1.25;
                 newShiftY /= 1.25;
