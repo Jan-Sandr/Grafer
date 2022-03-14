@@ -22,6 +22,7 @@ namespace Grafer
             CenterWindow();
         }
 
+        //Vycentrování okna na základě rozlišení.
         private void CenterWindow()
         {
             double screenWidth = SystemParameters.PrimaryScreenWidth;
@@ -41,6 +42,7 @@ namespace Grafer
             Left = (screenWidth - Width) / 2;
         }
 
+        //Přidání eventů do delegátů soustavy souřadnic.
         private void AddEvents()
         {
             coordinateSystem.MouseWheel += CoordinateSystemMouseWheel;
@@ -48,9 +50,10 @@ namespace Grafer
             coordinateSystem.FunctionShiftChanged += CoordinateSystemFunctionShiftChanged;
         }
 
+        //Změna volného posunutí funkce.
         private void CoordinateSystemFunctionShiftChanged(object? sender, EventArgs e)
         {
-            if (gFunction != null)
+            if (gFunction != null && checkBoxFreeFunction.IsEnabled)
             {
                 coordinateSystem.RemoveItem(gFunction.Name);
 
@@ -233,6 +236,22 @@ namespace Grafer
             }
 
             GetXRangeFromInputs();
+
+            ConvertInfinities();
+        }
+
+        //Zajištění aby se do prostředí dostal znak nekonečna a ne text.
+        private void ConvertInfinities()
+        {
+            if (double.IsNegativeInfinity(minimumXInput.NumericalValue))
+            {
+                minimumXInput.Text = "-∞";
+            }
+
+            if (double.IsInfinity(maximumXInput.NumericalValue))
+            {
+                maximumXInput.Text = "∞";
+            }
         }
 
         //Získání rozsahu x z inputů od uživatele.
@@ -746,7 +765,7 @@ namespace Grafer
             if (!changedByScrool)
             {
                 coordinateSystem.ZoomLevel = Convert.ToInt16(sliderZoomLevel.Value);
-                coordinateSystem.Refresh();
+                Start();
             }
         }
 
@@ -766,12 +785,23 @@ namespace Grafer
         //Kliknutí na obdelník s barvou.
         private void RectangleColorMouseUp(object sender, MouseButtonEventArgs e)
         {
+            ShowColorDialog();
+        }
+
+        //Ukáže dialogové okno s výběrem barvy.
+        private void ShowColorDialog()
+        {
             System.Windows.Forms.ColorDialog colorDialog = new System.Windows.Forms.ColorDialog();
 
             if (colorDialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
                 Color selectedColor = Color.FromArgb(255, colorDialog.Color.R, colorDialog.Color.G, colorDialog.Color.B);
                 rectangleColor.Fill = new SolidColorBrush(selectedColor);
+
+                if (gFunction != null)
+                {
+                    Start();
+                }
             }
         }
 
@@ -836,7 +866,21 @@ namespace Grafer
         //Událost, která nastavá při změne jestli je inverzní čekbox zaškrtnut.
         private void InverseCheckedChanged(object sender, RoutedEventArgs e)
         {
+            checkBoxFreeFunction.IsEnabled = !(checkBoxInverse.IsChecked == true);
 
+            if (checkBoxInverse.IsChecked == true)
+            {
+                coordinateSystem.FunctionShift = new Space();
+                checkBoxFreeFunction.IsChecked = false;
+            }
+
+            checkBoxKeepOrigin.IsChecked = checkBoxInverse.IsChecked;
+
+            if (gFunction != null)
+            {
+                coordinateSystem.FunctionShift = new Space();
+                Start();
+            }
         }
 
         #region Ovládání listboxu
@@ -1188,6 +1232,10 @@ namespace Grafer
                     (listBoxFunctions.Items[hiddenRelationIndex] as CheckBox)!.Content = functions[hiddenRelationIndex].Name;
                 }
             }
+
+            coordinateSystem.IsFunctionShiftEnabled = checkBoxFreeFunction.IsChecked == true;
+            checkBoxKeepOrigin.IsChecked = checkBoxFreeFunction.IsChecked;
+            checkBoxInverse.IsEnabled = !(checkBoxFreeFunction.IsChecked == true);
         }
 
         //Událost, která se vyvolá při změně textu v políčkách pro označení posunutí.
@@ -1334,6 +1382,30 @@ namespace Grafer
         private void ShowPointerCheckedChanged(object sender, RoutedEventArgs e)
         {
             coordinateSystem.ShowPointer = checkBoxShowPointer.IsChecked == true;
+        }
+
+        //Změna stavu políčka ponechat původní.
+        private void CheckBoxKeepOriginCheckedChanged(object sender, RoutedEventArgs e)
+        {
+            if (gFunction != null)
+            {
+                Start();
+            }
+        }
+
+        //Kliknutí pravým tlačítkem na souřadnicový systém.
+        private void CoordinateSystemMouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.RightButton == MouseButtonState.Pressed && checkBoxFreeFunction.IsEnabled && gFunction != null)
+            {
+                checkBoxFreeFunction.IsChecked = true;
+            }
+        }
+
+        //Kliknutí na label barva
+        private void LabelColorClick(object sender, MouseButtonEventArgs e)
+        {
+            ShowColorDialog();
         }
     }
 }

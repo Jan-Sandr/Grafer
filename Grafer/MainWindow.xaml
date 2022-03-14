@@ -52,9 +52,9 @@
                 <control:RangeInput x:Name="maximumXInput" TextWrapping="Wrap" Width="60" Height="auto" Uid="Maximum" SelectionChanged="OnSelectionChanged" GotFocus="RangeInputGotFocus" Canvas.Left="190" Canvas.Top="0" Foreground="Navy" FontFamily="Cambria" FontSize="16"/>
                 <Label x:Name="labelDegreeMaximum" Content="°" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Visibility="Hidden" Canvas.Left="247" Canvas.Top="0"/>
                 <CheckBox x:Name="checkBoxInverse" Content="Inverse" Width="94" Checked="InverseCheckedChanged" Unchecked="InverseCheckedChanged" Canvas.Left="50" Canvas.Top="40" Foreground="Navy"/>
-                <CheckBox x:Name="checkBoxKeepOrigin" Content="Keep origin" Width="124" Canvas.Left="128" Canvas.Top="40" Foreground="Navy"/>
+                <CheckBox x:Name="checkBoxKeepOrigin" Content="Keep origin" Width="124" Canvas.Left="128" Canvas.Top="40" Foreground="Navy" Checked="CheckBoxKeepOriginCheckedChanged" Unchecked="CheckBoxKeepOriginCheckedChanged"/>
                 <Rectangle x:Name="rectangleColor" Height="13" Width="14" Fill="Black" MouseUp="RectangleColorMouseUp" Stroke="#FFCEC1C1" Canvas.Left="51" Canvas.Top="73" RadiusX="0" RadiusY="0"/>
-                <Label x:Name="labelColor" Content="Color" Canvas.Left="64" Canvas.Top="66" Visibility="Visible" Foreground="Navy"/>
+                <Label x:Name="labelColor" Content="Color" Canvas.Left="64" Canvas.Top="66" Visibility="Visible" Foreground="Navy" MouseDown="LabelColorClick"/>
                 <CheckBox x:Name="checkBoxFreeFunction" Content="Free function" Width="94" Checked="CheckBoxFreeFunctionChanged" Unchecked="CheckBoxFreeFunctionChanged" Canvas.Left="128" Canvas.Top="73" Foreground="Navy"/>
                 <Button x:Name="buttonDraw" Content="Draw" Height="36" Width="200" Click="ButtonDrawClick" IsEnabled="False" Canvas.Left="50" Canvas.Top="110" Foreground="Navy"/>
                 <Label x:Name="labelStatus" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI" Foreground="#FF7DFF63" Width="263" Height="Auto" Canvas.Left="7" Canvas.Top="150">
@@ -68,7 +68,7 @@
         </ScrollViewer>
 
         <!-- Coordinate system -->
-        <control:CoordinateSystem x:Name="coordinateSystem" Margin="280,0,0,0" Background="#FFF1EDED" Height="770" ClipToBounds="True" VerticalAlignment="Top" HorizontalAlignment="Left" Width="770"/>
+        <control:CoordinateSystem x:Name="coordinateSystem" Margin="280,0,0,0" Background="#FFF1EDED" Height="770" ClipToBounds="True" VerticalAlignment="Top" HorizontalAlignment="Left" Width="770" MouseDown="CoordinateSystemMouseDown"/>
 
         <!-- Buttons section -->
         <ScrollViewer x:Name="scrollButtonSection" Margin="280,650,0,0" Height="110" Width="700" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled" Background="#FFF0F0F0" VerticalAlignment="Top" Visibility="Collapsed" HorizontalContentAlignment="Left" HorizontalAlignment="Left">

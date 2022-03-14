@@ -16,7 +16,22 @@ namespace Grafer.CustomControls
         {
             get
             {
-                return double.Parse(Text);
+                double result;
+
+                if (Text == "-∞")
+                {
+                    result = double.NegativeInfinity;
+                }
+                else if (Text == "∞")
+                {
+                    result = double.PositiveInfinity;
+                }
+                else
+                {
+                    result = double.Parse(Text);
+                }
+
+                return result;
             }
         }
 
