@@ -39,6 +39,13 @@ namespace Grafer
         private string[] relationBackup = Array.Empty<string>(); // Záloha předpisu.
         private int[] calculationOrderIndexesBackup = Array.Empty<int>(); // záloha výpočetního postupu.
         private double calculationMinimumX, calculationMaximumX; // Výpočetní minimum a maximum.
+        private List<double> curveEdgesX = new List<double>();
+
+        private enum Side
+        {
+            Left,
+            Right
+        }
 
         public Function(string name, Brush color, string relation, double minimumX, double maximumX, CoordinateSystem coordinateSystem, bool inverse)
         {
@@ -114,15 +121,140 @@ namespace Grafer
             return isInvertible;
         }
 
-        //Výpočítání křivky.
+        //Výpočítání všech bodů.
         public void CalculatePoints()
         {
-            curves.Clear();
-            PrepareForCalculation();
-            DoCalculation();
-            SaveCurve(points);
+            CalculateCurvesPoints(); 
+
+            if(curves.Count > 0)
+            {
+                if (curves.Count > 1 || ConvertToCalculatedX(curves[0].Points[0].X) != calculationMinimumX || ConvertToCalculatedX(curves[^1].Points[^1].X) != calculationMaximumX)
+                {
+                    AddPrecisePoints();
+                }
+            }
+
+          
+
             points = new List<Point>();
+
             GetBackup();
+        }
+
+        //Výpočet křivek.
+        private void CalculateCurvesPoints()
+        {
+            curves.Clear();
+
+            PrepareForCalculation();
+
+            DoCalculation();
+
+            if (points.Count > 1)
+            {
+                SaveCurve(points);
+            }
+        }
+
+        //Přidání precizních bodů.
+        private void AddPrecisePoints()
+        {
+            for (int i = 0; i < curves.Count; i++)
+            {
+                CalculateEdgePoints(curves[i], Side.Left);
+                CalculateEdgePoints(curves[i], Side.Right);
+            }
+        }
+
+        //Výpočet precizních bodů jedné strany.
+        private void CalculateEdgePoints(Polyline curve, Side side)
+        {
+            double increment = side == Side.Left ? 0.01 : -0.01;
+
+            int validIndex = side == Side.Left ? 0 : curve.Points.Count - 1;
+
+            double firstInvalidX = ConvertToCalculatedX(curve.Points[validIndex].X) - increment;
+
+            List<Point> precisePoints = CalculatePrecisePoints(increment, firstInvalidX);
+
+            if (precisePoints.Count == 3)
+            {
+                AddPrecisePointsToCurve(curve, precisePoints, side, firstInvalidX);
+            }
+        }
+
+        //Přidání precizních bodů křivce.
+        private void AddPrecisePointsToCurve(Polyline curve, List<Point> precisePoints, Side side, double firstInvalidX)
+        {
+            if(IsYDifferent(precisePoints))
+            {
+                if (precisePoints[0].Y < precisePoints[1].Y)
+                {
+                    y = 10000;
+                }
+                else
+                {
+                    y = -10000;
+                }
+
+                precisePoints.Add(new Point(ConvertToCoordinateX(firstInvalidX), y));
+
+                InsertPrecisePoints(curve, precisePoints, side);
+            }
+        }
+
+        //Zda u bodů viditelný rozdíl mezi y souřadnicí.
+        private bool IsYDifferent(List<Point> points)
+        {
+            bool differentY = true;
+
+            for (int i = 0; i < points.Count - 1; i++)
+            {
+                differentY = Math.Abs(points[i].Y - points[i + 1].Y) > 20;
+            }
+
+            return differentY;
+        }
+
+        //Výpočet precizních bodů.
+        private List<Point> CalculatePrecisePoints(double increment, double firstInvalidX)
+        {
+            List<Point> precisePoints = new List<Point>(4);
+
+            for (int i = 0; i < 3; i++)
+            {
+                double smallerNumber = increment * Math.Pow(10, -(i + 1));
+
+                double x = Math.Round(firstInvalidX + smallerNumber, smallerNumber.ToString().Length);
+
+                Point point = CalculatePoint(x);
+
+                if (double.IsNormal(point.Y))
+                {
+                    point = ConvertToCoordinatePoint(point);
+
+                    precisePoints.Add(point);
+                }
+            }
+
+            return precisePoints;
+        }
+
+        //Vloží vypočítáné krajní body.
+        private void InsertPrecisePoints(Polyline curve, List<Point> precisePoints, Side side)
+        {
+            for (int i = 0; i < precisePoints.Count; i++)
+            {
+                if (side == Side.Left)
+                {
+                    curve.Points.Insert(0, precisePoints[i]);
+
+                }
+                else
+                {
+                    curve.Points.Add(precisePoints[i]);
+                }
+            }
         }
 
         //Výpoočet bodů.
@@ -130,24 +262,22 @@ namespace Grafer
         {
             for (double x = calculationMinimumX; x <= calculationMaximumX; x += 0.01)
             {
-                GetBackup();
+                Point point = CalculatePoint(Math.Round(x, 2));
 
-                x = SetX(x);
-
-                ComputeY();
-
-                SavePoint(x, y);
+                SavePoint(point);
             }
         }
 
-        //Nastevní aktuální hodnoty x v předpisu.
-        private double SetX(double x)
+        //Výpočet bodu.
+        private Point CalculatePoint(double x)
         {
-            x = Math.Round(x, 2);
+            GetBackup();
 
             SubstituteX(x);
 
-            return x;
+            ComputeY();
+
+            return new Point(x, y);
         }
 
         //Vypočet y.
@@ -202,7 +332,7 @@ namespace Grafer
         //Jestli není funkce prádzná.
         private bool IsEmpty()
         {
-            if (curves[0].Points.Count == 0)
+            if (curves.Count == 0)
             {
                 ErrorMessageID = 27;
             }
@@ -300,8 +430,8 @@ namespace Grafer
         private void SetCalculationXRange()
         {
             //V základu je rozsah od viditelného minima do maxima soustavy souřadnic
-            calculationMinimumX = (-coordinateSystem.Width / 200 - coordinateSystem.AbsoluteShift.OnX / 100) / coordinateSystem.Zoom;
-            calculationMaximumX = (coordinateSystem.Width / 200 - coordinateSystem.AbsoluteShift.OnX / 100) / coordinateSystem.Zoom;
+            calculationMinimumX = Math.Round((-coordinateSystem.Width / 200 - coordinateSystem.AbsoluteShift.OnX / 100) / coordinateSystem.Zoom, 2);
+            calculationMaximumX = Math.Round((coordinateSystem.Width / 200 - coordinateSystem.AbsoluteShift.OnX / 100) / coordinateSystem.Zoom, 2);
 
             if (!double.IsNegativeInfinity(MinimumX))
             {
@@ -363,9 +493,8 @@ namespace Grafer
         }
 
         //Uložení bodu.
-        private void SavePoint(double x, double y)
+        private void SavePoint(Point point)
         {
-            Point point = new Point(x, y);
             point = ConvertToCoordinatePoint(point);
 
             if (!double.IsNaN(y) && !double.IsInfinity(y) && Math.Abs(point.Y) < 5000) // Pokud bod není definovaný, vzniká mezera.
@@ -403,10 +532,25 @@ namespace Grafer
         {
             point = new Point()
             {
-                X = coordinateSystem.Width / 2 + (point.X * coordinateSystem.Zoom * 100) + coordinateSystem.AbsoluteShift.OnX,
-                Y = (-y * coordinateSystem.Zoom * 100) + coordinateSystem.Height / 2 + coordinateSystem.AbsoluteShift.OnY
+                X = ConvertToCoordinateX(point.X),
+                Y = ConvertToCoordinateY(point.Y)
             };
             return point;
+        }
+
+        private double ConvertToCalculatedX(double x)
+        {
+            return Math.Round((x - coordinateSystem.Width / 2 - coordinateSystem.AbsoluteShift.OnX) / coordinateSystem.Zoom / 100, 2);
+        }
+
+        private double ConvertToCoordinateX(double x)
+        {
+            return coordinateSystem.Width / 2 + (x * coordinateSystem.Zoom * 100) + coordinateSystem.AbsoluteShift.OnX;
+        }
+
+        private double ConvertToCoordinateY(double y)
+        {
+            return coordinateSystem.Height / 2 + (-y * coordinateSystem.Zoom * 100) + coordinateSystem.AbsoluteShift.OnY;
         }
 
         //Operace mezi 2 členy v předpisu.

@@ -47,10 +47,10 @@
                 <!-- Elements under equation input -->
                 <Canvas x:Name="canvasUnderEquationInput" Width="280" Height="240" Canvas.Top="520">
                 <control:RangeInput x:Name="minimumXInput" TextWrapping="Wrap" Width="60" Height="auto" Uid="Minimum" SelectionChanged="OnSelectionChanged" GotFocus="RangeInputGotFocus" Canvas.Left="50" Canvas.Top="0" Foreground="Navy" FontFamily="Cambria" FontSize="16"/>
-                <Label x:Name="labelDegreeMinimum" Content="°" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Visibility="Hidden" Canvas.Left="108" Canvas.Top="0"/>
+                <Label x:Name="labelDegreeMinimum" Content="°" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Visibility="Hidden" Canvas.Left="108" Canvas.Top="-10"/>
                 <Label x:Name="labelLimitX" Content="≤ x ≤" Canvas.Left="128" Canvas.Top="-3" FontSize="16" Foreground="Navy" FontFamily="Cambria"/>
                 <control:RangeInput x:Name="maximumXInput" TextWrapping="Wrap" Width="60" Height="auto" Uid="Maximum" SelectionChanged="OnSelectionChanged" GotFocus="RangeInputGotFocus" Canvas.Left="190" Canvas.Top="0" Foreground="Navy" FontFamily="Cambria" FontSize="16"/>
-                <Label x:Name="labelDegreeMaximum" Content="°" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Visibility="Hidden" Canvas.Left="247" Canvas.Top="0"/>
+                <Label x:Name="labelDegreeMaximum" Content="°" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Visibility="Hidden" Canvas.Left="247" Canvas.Top="-10"/>
                 <CheckBox x:Name="checkBoxInverse" Content="Inverse" Width="94" Checked="InverseCheckedChanged" Unchecked="InverseCheckedChanged" Canvas.Left="50" Canvas.Top="40" Foreground="Navy"/>
                 <CheckBox x:Name="checkBoxKeepOrigin" Content="Keep origin" Width="124" Canvas.Left="128" Canvas.Top="40" Foreground="Navy" Checked="CheckBoxKeepOriginCheckedChanged" Unchecked="CheckBoxKeepOriginCheckedChanged"/>
                 <Rectangle x:Name="rectangleColor" Height="13" Width="14" Fill="Black" MouseUp="RectangleColorMouseUp" Stroke="#FFCEC1C1" Canvas.Left="51" Canvas.Top="73" RadiusX="0" RadiusY="0"/>

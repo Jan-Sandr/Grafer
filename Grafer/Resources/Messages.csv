@@ -1,6 +1,6 @@
 ﻿English;Czech;
 Minimum can't be higher than maximum.;Minimum nemůže být větší jak maximum.;
-Minimum and maximum x can't be same.;Minimum nemůže býýt stejné jako maximum.;
+Minimum and maximum x can't be same.;Minimum nemůže být stejné jako maximum.;
 Function won't be plotted because x's range is outside of drawing canvas.;Funkce nebude vykreslena, protože rozsah x je mimo vyditelnou plochu.;
 cannot be empty.;nemůže být prázdné.;
 begins with invalid character.;začíná nevalidním znakem.;
@@ -25,7 +25,7 @@ requires number before degree character.;požaduje číslo před znakem stupňů
 contains odd count of absolute value characters.;obsahuje lichý počet znaků absolutní hodnoty.;
 cannot contain only operation in absalute value.;nemůže obsahovat v absolutní hodnotě pouze operaci.;
 cannot contain empty absolute value.;nemůže obsahovat prázdnou absolutní hodnotu.;
-After the inversion, it was no longer a function. Try to limit x range;Po inverzi se už nejedná o funkci. Zkuset omezit rozsah x;
+After the inversion, it was no longer a function. Try to limit x range;Po inverzi se už nejedná o funkci. Zkuste omezit rozsah x;
 Function's graph doesn't have valid points.;Graf funkce nemá validní body.;
 cannot contain an empty logarithm base.;nemůže obsahovat prázdný základ logaritmu.;
 requires a logarithm before the square brackets.;požaduje logaritmus před hranatými závorkami.;
