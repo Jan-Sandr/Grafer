@@ -124,9 +124,9 @@ namespace Grafer
         //Výpočítání všech bodů.
         public void CalculatePoints()
         {
-            CalculateCurvesPoints(); 
+            CalculateCurvesPoints();
 
-            if(curves.Count > 0)
+            if (curves.Count > 0)
             {
                 if (curves.Count > 1 || ConvertToCalculatedX(curves[0].Points[0].X) != calculationMinimumX || ConvertToCalculatedX(curves[^1].Points[^1].X) != calculationMaximumX)
                 {
@@ -134,7 +134,7 @@ namespace Grafer
                 }
             }
 
-          
+
 
             points = new List<Point>();
 
@@ -186,7 +186,7 @@ namespace Grafer
         //Přidání precizních bodů křivce.
         private void AddPrecisePointsToCurve(Polyline curve, List<Point> precisePoints, Side side, double firstInvalidX)
         {
-            if(IsYDifferent(precisePoints))
+            if (IsYDifferent(precisePoints))
             {
                 if (precisePoints[0].Y < precisePoints[1].Y)
                 {
