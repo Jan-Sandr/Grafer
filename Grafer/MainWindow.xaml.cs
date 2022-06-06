@@ -237,7 +237,10 @@ namespace Grafer
 
             GetXRangeFromInputs();
 
-            ConvertInfinities();
+            if (isXRangeValid)
+            {
+                ConvertInfinities();
+            }
         }
 
         //Zajištění aby se do prostředí dostal znak nekonečna a ne text.
