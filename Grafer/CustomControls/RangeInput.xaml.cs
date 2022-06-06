@@ -78,7 +78,8 @@ namespace Grafer.CustomControls
                                         AreEdgesValid() &&
                                    IsMinusCharCorrect() &&
                               !ContainsMultipleCommas() &&
-                        !ContainsTwoInvalidcharsInRow()
+                        !ContainsTwoInvalidcharsInRow() &&
+                                       IsInfinityLast()
                        );
             }
         }
@@ -163,6 +164,19 @@ namespace Grafer.CustomControls
             }
 
             return InvalidSection.MessageID != -1;
+        }
+
+        //Kontrola zda znak nekonečna je poslední.
+        private bool IsInfinityLast()
+        {
+            int infinityIndex = Text.LastIndexOf('∞');
+
+            if (infinityIndex != Text.Length - 1)
+            {
+                InvalidSection = (infinityIndex + 1, Text.Length - infinityIndex, 33);
+            }
+
+            return InvalidSection.MessageID == -1;
         }
 
         //Omezení znaků, které lze napsat.
