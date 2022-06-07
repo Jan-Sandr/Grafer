@@ -143,6 +143,8 @@ namespace Grafer.CustomControls
 
             DrawAxes();
 
+            DrawAxesLabels();
+
             if (AreGridLinesVisible)
             {
                 DrawGrid();
@@ -662,6 +664,29 @@ namespace Grafer.CustomControls
 
             Children.Add(axisX);
             Children.Add(axisY);
+        }
+
+        //Vykreslení popisků os.
+        private void DrawAxesLabels()
+        {
+            TextBlock axisXLabel = new TextBlock()
+            {
+                Text = "x",
+                FontFamily = new FontFamily("Arial"),
+                FontSize = 25,
+                RenderTransform = new TranslateTransform(Width - 30, Height / 2 - 40 + AbsoluteShift.OnY)
+            };
+
+            TextBlock axisYLabel = new TextBlock()
+            {
+                Text = "y",
+                FontFamily = new FontFamily("Arial"),
+                FontSize = 25,
+                RenderTransform = new TranslateTransform(Width / 2 - 30 + absoluteShift.OnX, 20)
+            };
+
+            Children.Add(axisXLabel);
+            Children.Add(axisYLabel);
         }
 
         //Vytvoření nové úsečky.
