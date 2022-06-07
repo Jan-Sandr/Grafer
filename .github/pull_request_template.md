@@ -1,6 +1,6 @@
 ## This Pull Request is linked to which task?
 
-#TASKNUMBER
+Closes #TASKNUMBER
 
 ## Solution description
 
