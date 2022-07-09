@@ -171,7 +171,7 @@ namespace Grafer.CustomControls
         {
             int infinityIndex = Text.LastIndexOf('∞');
 
-            if (infinityIndex != Text.Length - 1)
+            if (infinityIndex != -1 && infinityIndex != Text.Length - 1)
             {
                 InvalidSection = (infinityIndex + 1, Text.Length - infinityIndex, 33);
             }
