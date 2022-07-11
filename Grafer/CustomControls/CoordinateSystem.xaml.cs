@@ -673,7 +673,7 @@ namespace Grafer.CustomControls
             {
                 Text = "x",
                 FontFamily = new FontFamily("Arial"),
-                FontSize = 25,
+                FontSize = 20,
                 RenderTransform = new TranslateTransform(Width - 30, Height / 2 - 40 + AbsoluteShift.OnY)
             };
 
@@ -681,7 +681,7 @@ namespace Grafer.CustomControls
             {
                 Text = "y",
                 FontFamily = new FontFamily("Arial"),
-                FontSize = 25,
+                FontSize = 20,
                 RenderTransform = new TranslateTransform(Width / 2 - 30 + absoluteShift.OnX, 20)
             };
 
