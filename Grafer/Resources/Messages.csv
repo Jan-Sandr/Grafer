@@ -34,3 +34,4 @@ requires the content of logarithm in parentheses.;požaduje základ logaritmu v 
 Not all functions have been loaded because some have corrupted data.;Nebyly načeteny všechny funkce, protože některé mají poškozená data.;
 can contain minus only at beginning.;může obsahovat mínus pouze na začátku.;
 cannot contain character after infinity.;nemůže obsahovat znak za nekonečnem.;
+cannot contain number before infinity.;nemůže obsahovat číslo před nekonečnem.;
