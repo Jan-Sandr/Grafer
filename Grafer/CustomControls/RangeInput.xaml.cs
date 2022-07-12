@@ -163,7 +163,7 @@ namespace Grafer.CustomControls
                 InvalidSection = (0, 2, 7);
             }
 
-            for (int i = 0; i < Text.Length -1; i++)
+            for (int i = 0; i < Text.Length - 1; i++)
             {
                 if (char.IsDigit(Text[i]) && Text[i + 1] == '∞')
                 {
