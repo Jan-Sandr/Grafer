@@ -36,7 +36,7 @@ namespace Grafer.CustomControls
                     InvalidSection = EquationCheck.InvalidSection;
                 }
 
-                return isValid;
+                return true; // isValid;
             }
         }
 
