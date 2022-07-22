@@ -26,20 +26,22 @@ namespace Grafer
             InverseTrigonometricFunction
         }
 
-        private Relation relation;
+        private protected Relation relation;
 
         private readonly CalculationOrder calculationOrder;
 
-        private readonly List<Polyline> curves;
+        private protected readonly List<Polyline> curves;
 
-        private readonly CoordinateSystem coordinateSystem;
+        private protected readonly CoordinateSystem coordinateSystem;
 
         private List<Point> points;
         private double y;
         private string[] relationBackup = Array.Empty<string>(); // Záloha předpisu.
         private int[] calculationOrderIndexesBackup = Array.Empty<int>(); // záloha výpočetního postupu.
-        private double calculationMinimumX, calculationMaximumX; // Výpočetní minimum a maximum.
+        private protected double calculationMinimumX, calculationMaximumX; // Výpočetní minimum a maximum.
         private List<double> curveEdgesX = new List<double>();
+
+        private protected double step = 0.01;
 
         private enum Side
         {
@@ -133,8 +135,6 @@ namespace Grafer
                     AddPrecisePoints();
                 }
             }
-
-
 
             points = new List<Point>();
 
@@ -260,7 +260,7 @@ namespace Grafer
         //Výpoočet bodů.
         private void DoCalculation()
         {
-            for (double x = calculationMinimumX; x <= calculationMaximumX; x += 0.01)
+            for (double x = calculationMinimumX; x <= calculationMaximumX; x += step)
             {
                 Point point = CalculatePoint(Math.Round(x, 2));
 
@@ -289,7 +289,7 @@ namespace Grafer
         }
 
         //Příprava pro výpoočet.
-        private void PrepareForCalculation()
+        protected virtual void PrepareForCalculation()
         {
             calculationOrder.Create(relation);
             SetBackup();
@@ -341,7 +341,7 @@ namespace Grafer
         }
 
         //Vykreslení funkce do plátna.
-        public void Plot(bool inverse, double opacity, Space freeShift = new Space())
+        public virtual void Plot(bool inverse, double opacity, Space freeShift = new Space())
         {
             for (int i = 0; i < curves.Count; i++)
             {

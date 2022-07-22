@@ -163,6 +163,15 @@ namespace Grafer.CustomControls
                 InvalidSection = (0, 2, 7);
             }
 
+            for (int i = 0; i < Text.Length - 1; i++)
+            {
+                if (char.IsDigit(Text[i]) && Text[i + 1] == '∞')
+                {
+                    InvalidSection = (i, 1, 35);
+                    break;
+                }
+            }
+
             return InvalidSection.MessageID != -1;
         }
 
@@ -171,9 +180,9 @@ namespace Grafer.CustomControls
         {
             int infinityIndex = Text.LastIndexOf('∞');
 
-            if (infinityIndex != Text.Length - 1)
+            if (infinityIndex != -1 && infinityIndex != Text.Length - 1)
             {
-                InvalidSection = (infinityIndex + 1, Text.Length - infinityIndex, 33);
+                InvalidSection = (infinityIndex + 1, Text.Length - infinityIndex, 34);
             }
 
             return InvalidSection.MessageID == -1;

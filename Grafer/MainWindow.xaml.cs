@@ -205,9 +205,41 @@ namespace Grafer
         //Vytvoření instance funkce.
         private void CreateFunction()
         {
-            string name = GenerateUniqueName();
-            gFunction = new Function(name, rectangleColor.Fill, equationInput.Text, gMinimumX, gMaximumX, coordinateSystem, checkBoxInverse.IsChecked == true);
+            bool isSequence = IsSequence();
+
+            if (isSequence)
+            {
+                string name = GenerateUniqueName("aₙ");
+                gFunction = new Sequence(name, rectangleColor.Fill, equationInput.Text, gMinimumX, gMaximumX, coordinateSystem, checkBoxInverse.IsChecked == true);
+                coordinateSystem.AxisLabelX = "n";
+                coordinateSystem.AxisLabelY = "aₙ";
+                coordinateSystem.Refresh();
+            }
+            else
+            {
+                string name = GenerateUniqueName("y");
+                gFunction = new Function(name, rectangleColor.Fill, equationInput.Text, gMinimumX, gMaximumX, coordinateSystem, checkBoxInverse.IsChecked == true);
+                coordinateSystem.AxisLabelX = "x";
+                coordinateSystem.AxisLabelY = "y";
+                coordinateSystem.Refresh();
+            }
+
             gFunction.CalculatePoints();
+        }
+
+        private bool IsSequence()
+        {
+            bool isSequence = equationInput.Text[0] == 'n';
+
+            for (int i = 0; i < equationInput.Text.Length - 1 && !isSequence; i++)
+            {
+                if (equationInput.Text[i + 1] == 'n' && equationInput.Text[i] != 'i')
+                {
+                    isSequence = true;
+                }
+            }
+
+            return isSequence;
         }
 
         //Vynulování pro výpočet
@@ -811,7 +843,7 @@ namespace Grafer
         #region Generování jména
 
         //Vytvoří unikátní jméno pro funkci.
-        private string GenerateUniqueName()
+        private string GenerateUniqueName(string leftSide)
         {
             int number = 1;
 
@@ -827,7 +859,7 @@ namespace Grafer
                 }
             }
 
-            return $"f{number}: y = {equationInput.Text}";
+            return $"f{number}: {leftSide} = {equationInput.Text}";
         }
 
         //Získá nejmenší volné číslé pro jméno funkce.

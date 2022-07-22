@@ -52,6 +52,10 @@ namespace Grafer.CustomControls
 
         public bool AreGridLinesVisible { get; set; } = true;
 
+        public string AxisLabelX { get; set; } = "x";
+
+        public string AxisLabelY { get; set; } = "y";
+
         private Space absoluteShift = new Space(0, 0);
 
         public Space AbsoluteShift
@@ -667,21 +671,22 @@ namespace Grafer.CustomControls
         }
 
         //Vykreslení popisků os.
-        private void DrawAxesLabels()
+        public void DrawAxesLabels()
         {
+
             TextBlock axisXLabel = new TextBlock()
             {
-                Text = "x",
+                Text = AxisLabelX,
                 FontFamily = new FontFamily("Arial"),
-                FontSize = 25,
+                FontSize = 20,
                 RenderTransform = new TranslateTransform(Width - 30, Height / 2 - 40 + AbsoluteShift.OnY)
             };
 
             TextBlock axisYLabel = new TextBlock()
             {
-                Text = "y",
+                Text = AxisLabelY,
                 FontFamily = new FontFamily("Arial"),
-                FontSize = 25,
+                FontSize = 20,
                 RenderTransform = new TranslateTransform(Width / 2 - 30 + absoluteShift.OnX, 20)
             };
 
