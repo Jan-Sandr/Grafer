@@ -289,7 +289,7 @@ namespace Grafer
         }
 
         //Příprava pro výpoočet.
-         protected virtual void PrepareForCalculation()
+        protected virtual void PrepareForCalculation()
         {
             calculationOrder.Create(relation);
             SetBackup();

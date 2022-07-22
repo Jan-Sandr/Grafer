@@ -43,7 +43,7 @@ namespace Grafer
 
             base.PrepareForCalculation();
 
-                calculationMinimumX = 0;
+            calculationMinimumX = 0;
         }
     }
 }
