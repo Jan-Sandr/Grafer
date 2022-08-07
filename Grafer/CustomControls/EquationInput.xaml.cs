@@ -24,20 +24,67 @@ namespace Grafer.CustomControls
         //Invalidní sekce.
         public (int SelectionStart, int SelectionLength, int MessageID) InvalidSection { get; private set; } = (0, 0, -1);
 
+        public string LeftSide { get; set; } = string.Empty;
+
+        public string RightSide { get; set; } = string.Empty;
+
+           
+
         //Jestli je rovnice v pořádku.
         public bool IsEquationValid
         {
             get
             {
-                bool isValid = EquationCheck.IsEquationValid(Text);
-
-                if (!isValid)
+                InvalidSection = (0, 0, -1);
+                if(Text.Contains("="))
                 {
-                    InvalidSection = EquationCheck.InvalidSection;
+                    if(Text.IndexOf('=') != Text.LastIndexOf('='))
+                    {
+                        InvalidSection = (Text.LastIndexOf('='), 1, 36);
+                        return false;
+                    }
+
+                    LeftSide = Text.Split('=')[0];
+                    RightSide = Text.Split('=')[1];                                         
+                }
+                else
+                {
+                    RightSide = Text;
+                    CompleteEquation();
                 }
 
-                return true; // isValid;
+
+                bool isValid = !AreSidesEmpty() && ContainsCorrectVariablesPair(); // EquationCheck.IsEquationValid(Text) 
+
+                //if (!isValid)
+                //{
+                //    InvalidSection = EquationCheck.InvalidSection;
+                //}
+
+                return isValid; // isValid;
             }
+        }
+
+        private bool ContainsCorrectVariablesPair()
+        {
+            InvalidSection = (Text.Contains("aₙ") && Text.Contains("n")) ||( Text.Contains("y") && Text.Contains("x")) ? (0, 0, -1) : (0, 0, 39);
+
+            return InvalidSection.MessageID == -1;
+        }
+
+        private bool AreSidesEmpty()
+        {
+            if (LeftSide == "")
+            {
+                InvalidSection = (0, 0, 37);
+            }
+
+            if (RightSide == "")
+            {
+                InvalidSection = (Text.Length, 0, 38);
+            }
+
+            return InvalidSection.MessageID != -1;
         }
 
         //Při vkládání textu z klávesnice. 
@@ -52,7 +99,7 @@ namespace Grafer.CustomControls
         {
             string[] special = new string[3] { "-", "[", "]" }; // tyto znaky nejdou zadávat do regexu.
 
-            if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( ) ^ √ , s i n c o s t a g ° π | l e ]") && !special.Contains(e.Text))
+            if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( ) ^ √ , s i n c o s t a g ° π | l e =]") && !special.Contains(e.Text))
             {
                 e.Handled = true;
             }
@@ -106,6 +153,43 @@ namespace Grafer.CustomControls
             List<string> inputShortcuts = Properties.Resources.Shortcuts.Split("\r\n").Skip(1).ToList();
 
             shortcuts = inputShortcuts.ToArray().ToDictionary();
+        }
+
+        private bool IsCompleteEquation()
+        {
+            return Text.Contains("=");
+        }
+
+        private void CompleteEquation()
+        {
+            string leftSide;
+
+            if (IsSequence())
+            {
+                leftSide = "aₙ";
+            }
+            else
+            {
+                leftSide = "y";
+            }
+
+            Text = Text.Insert(0, leftSide + " = ");
+            SelectionStart = Text.Length;
+        }
+
+        public bool IsSequence()
+        {
+            bool isSequence = Text[0] == 'n';
+
+            for (int i = 0; i < Text.Length - 1 && !isSequence; i++)
+            {
+                if (Text[i + 1] == 'n' && Text[i] != 'i')
+                {
+                    isSequence = true;
+                }
+            }
+
+            return isSequence;
         }
     }
 }

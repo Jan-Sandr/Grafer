@@ -35,3 +35,7 @@ Not all functions have been loaded because some have corrupted data.;Nebyly nač
 can contain minus only at beginning.;může obsahovat mínus pouze na začátku.;
 cannot contain character after infinity.;nemůže obsahovat znak za nekonečnem.;
 cannot contain number before infinity.;nemůže obsahovat číslo před nekonečnem.;
+cannot contain more than one equals;nemůže obsahovat více než jedno rovná se;
+doesn't include left side of equation;neobsahuje levou stranu rovnice;
+doesn't include right side of equation;neobsahuje pravou stranu rovnice;
+must contains pair of variables: aₙ and n or y and x.;musí obsahovat dvojci proměnných: aₙ a n nebo y a x.;

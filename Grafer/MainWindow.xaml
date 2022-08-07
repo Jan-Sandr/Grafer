@@ -7,16 +7,16 @@
         mc:Ignorable="d"
         Title="Grafer" Height="800" Width="1050" PreviewKeyDown="ShortcutsPress" SizeChanged="ApplicationResize" MinWidth="700" MinHeight="500" Loaded="ApplicationLoaded" Background="#FFF0F0F0" Icon="/MainIcon.ico">
     <Grid x:Name="gridMain" VerticalAlignment="Top" HorizontalAlignment="Stretch">
-        
+
         <!-- Control Panel -->
         <ScrollViewer x:Name="scrollControlPanel" VerticalAlignment="Top" Width="280" HorizontalAlignment="Left" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
             <Canvas x:Name="controlPanel" Height="760" VerticalAlignment="Top" HorizontalAlignment="Left" Width="280">
-                
+
                 <!-- Settings -->
                 <Label x:Name="labelLanguage" Content="Language:" Canvas.Left="2" Canvas.Top="5" Foreground="Navy"/>
                 <ComboBox x:Name="languageSelect" Width="80" IsReadOnly="True" SelectedIndex="0" SelectionChanged="LanguageSelectionChanged" Canvas.Top="8" Canvas.Left="71" Foreground="Navy" Height="24"/>
                 <Button x:Name="buttonsShowHelp" Content="Help" Height="24" Width="80" Click="ButtonShowHelpClick" Canvas.Left="170" Canvas.Top="8" Foreground="Navy"/>
-                
+
                 <!-- Coordinate system section -->
                 <Label x:Name="labelCoordinateSystem" Content="Coordinate system" Canvas.Left="8" Canvas.Top="43" FontSize="24" FontFamily="Microsoft Sans Serif" FontWeight="Bold" Padding="0,0,0,0" Foreground="Navy"/>
                 <Label x:Name="labelZoomMinimum" Content="-" FontSize="25" Canvas.Left="45" Canvas.Top="64" Foreground="Navy"/>
@@ -41,29 +41,28 @@
                 <!-- Function section -->
                 <Label x:Name="labelFunctionControl" Content="Function" Canvas.Left="8" Canvas.Top="437" FontSize="24" FontFamily="Microsoft Sans Serif" FontWeight="Bold" Foreground="Navy" Padding="0,0,0,0"/>
                 <Button x:Name="buttonShowHideButtons" Content="Buttons" Height="28" Width="80" Click="ButtonShowHideButtonsClick" Canvas.Left="170" Canvas.Top="438" Foreground="Navy"/>
-                <Label x:Name="labelY" Content="y =" FontSize="25" Canvas.Left="7" Canvas.Top="470" Foreground="Navy" FontFamily="Cambria"/>
-                <control:EquationInput x:Name="equationInput" Width="200" SelectionChanged="OnSelectionChanged" TextWrapping="Wrap" TextChanged="EquationInputTextChanged" SizeChanged="EquationInputSizeChanged" Foreground="Black" Canvas.Left="50" Canvas.Top="475" FontSize="25" FontFamily="Cambria" Background="White"/>
+                <control:EquationInput x:Name="equationInput" Width="239" SelectionChanged="OnSelectionChanged" TextWrapping="Wrap" TextChanged="EquationInputTextChanged" SizeChanged="EquationInputSizeChanged" Foreground="Black" Canvas.Left="11" Canvas.Top="475" FontSize="25" FontFamily="Cambria" Background="White" HorizontalAlignment="Left" VerticalAlignment="Center"/>
 
                 <!-- Elements under equation input -->
                 <Canvas x:Name="canvasUnderEquationInput" Width="280" Height="240" Canvas.Top="520">
-                <control:RangeInput x:Name="minimumXInput" TextWrapping="Wrap" Width="60" Height="auto" Uid="Minimum" SelectionChanged="OnSelectionChanged" GotFocus="RangeInputGotFocus" Canvas.Left="50" Canvas.Top="0" Foreground="Navy" FontFamily="Cambria" FontSize="16"/>
-                <Label x:Name="labelDegreeMinimum" Content="°" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Visibility="Hidden" Canvas.Left="108" Canvas.Top="-10"/>
-                <Label x:Name="labelLimitX" Content="≤ x ≤" Canvas.Left="128" Canvas.Top="-3" FontSize="16" Foreground="Navy" FontFamily="Cambria"/>
-                <control:RangeInput x:Name="maximumXInput" TextWrapping="Wrap" Width="60" Height="auto" Uid="Maximum" SelectionChanged="OnSelectionChanged" GotFocus="RangeInputGotFocus" Canvas.Left="190" Canvas.Top="0" Foreground="Navy" FontFamily="Cambria" FontSize="16"/>
-                <Label x:Name="labelDegreeMaximum" Content="°" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Visibility="Hidden" Canvas.Left="247" Canvas.Top="-10"/>
-                <CheckBox x:Name="checkBoxInverse" Content="Inverse" Width="94" Checked="InverseCheckedChanged" Unchecked="InverseCheckedChanged" Canvas.Left="50" Canvas.Top="40" Foreground="Navy"/>
-                <CheckBox x:Name="checkBoxKeepOrigin" Content="Keep origin" Width="124" Canvas.Left="128" Canvas.Top="40" Foreground="Navy" Checked="CheckBoxKeepOriginCheckedChanged" Unchecked="CheckBoxKeepOriginCheckedChanged"/>
-                <Rectangle x:Name="rectangleColor" Height="13" Width="14" Fill="Black" MouseUp="RectangleColorMouseUp" Stroke="#FFCEC1C1" Canvas.Left="51" Canvas.Top="73" RadiusX="0" RadiusY="0"/>
-                <Label x:Name="labelColor" Content="Color" Canvas.Left="64" Canvas.Top="66" Visibility="Visible" Foreground="Navy" MouseDown="LabelColorClick"/>
-                <CheckBox x:Name="checkBoxFreeFunction" Content="Free function" Width="94" Checked="CheckBoxFreeFunctionChanged" Unchecked="CheckBoxFreeFunctionChanged" Canvas.Left="128" Canvas.Top="73" Foreground="Navy"/>
-                <Button x:Name="buttonDraw" Content="Draw" Height="36" Width="200" Click="ButtonDrawClick" IsEnabled="False" Canvas.Left="50" Canvas.Top="110" Foreground="Navy"/>
-                <Label x:Name="labelStatus" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI" Foreground="#FF7DFF63" Width="263" Height="Auto" Canvas.Left="7" Canvas.Top="150">
-                    <TextBlock x:Name="textBlockStatus" TextWrapping="Wrap" Height="auto">
+                    <control:RangeInput x:Name="minimumXInput" TextWrapping="Wrap" Width="60" Height="auto" Uid="Minimum" SelectionChanged="OnSelectionChanged" GotFocus="RangeInputGotFocus" Canvas.Left="50" Canvas.Top="0" Foreground="Navy" FontFamily="Cambria" FontSize="16"/>
+                    <Label x:Name="labelDegreeMinimum" Content="°" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Visibility="Hidden" Canvas.Left="108" Canvas.Top="-10"/>
+                    <Label x:Name="labelLimitX" Content="≤ x ≤" Canvas.Left="128" Canvas.Top="-3" FontSize="16" Foreground="Navy" FontFamily="Cambria"/>
+                    <control:RangeInput x:Name="maximumXInput" TextWrapping="Wrap" Width="60" Height="auto" Uid="Maximum" SelectionChanged="OnSelectionChanged" GotFocus="RangeInputGotFocus" Canvas.Left="190" Canvas.Top="0" Foreground="Navy" FontFamily="Cambria" FontSize="16"/>
+                    <Label x:Name="labelDegreeMaximum" Content="°" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Visibility="Hidden" Canvas.Left="247" Canvas.Top="-10"/>
+                    <CheckBox x:Name="checkBoxInverse" Content="Inverse" Width="94" Checked="InverseCheckedChanged" Unchecked="InverseCheckedChanged" Canvas.Left="50" Canvas.Top="40" Foreground="Navy"/>
+                    <CheckBox x:Name="checkBoxKeepOrigin" Content="Keep origin" Width="124" Canvas.Left="128" Canvas.Top="40" Foreground="Navy" Checked="CheckBoxKeepOriginCheckedChanged" Unchecked="CheckBoxKeepOriginCheckedChanged"/>
+                    <Rectangle x:Name="rectangleColor" Height="13" Width="14" Fill="Black" MouseUp="RectangleColorMouseUp" Stroke="#FFCEC1C1" Canvas.Left="51" Canvas.Top="73" RadiusX="0" RadiusY="0"/>
+                    <Label x:Name="labelColor" Content="Color" Canvas.Left="64" Canvas.Top="66" Visibility="Visible" Foreground="Navy" MouseDown="LabelColorClick"/>
+                    <CheckBox x:Name="checkBoxFreeFunction" Content="Free function" Width="94" Checked="CheckBoxFreeFunctionChanged" Unchecked="CheckBoxFreeFunctionChanged" Canvas.Left="128" Canvas.Top="73" Foreground="Navy"/>
+                    <Button x:Name="buttonDraw" Content="Draw" Height="36" Width="200" Click="ButtonDrawClick" IsEnabled="False" Canvas.Left="50" Canvas.Top="110" Foreground="Navy"/>
+                    <Label x:Name="labelStatus" FontSize="14" FontWeight="Bold" FontFamily="Segoe UI" Foreground="#FF7DFF63" Width="263" Height="Auto" Canvas.Left="7" Canvas.Top="150">
+                        <TextBlock x:Name="textBlockStatus" TextWrapping="Wrap" Height="auto">
                  Status: OK
-                    </TextBlock>
-                </Label>
+                        </TextBlock>
+                    </Label>
                 </Canvas>
-                
+
             </Canvas>
         </ScrollViewer>
 

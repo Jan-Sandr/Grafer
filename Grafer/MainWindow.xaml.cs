@@ -205,12 +205,12 @@ namespace Grafer
         //Vytvoření instance funkce.
         private void CreateFunction()
         {
-            bool isSequence = IsSequence();
+            bool isSequence = equationInput.IsSequence();
 
             if (isSequence)
             {
                 string name = GenerateUniqueName("aₙ");
-                gFunction = new Sequence(name, rectangleColor.Fill, equationInput.Text, gMinimumX, gMaximumX, coordinateSystem, checkBoxInverse.IsChecked == true);
+                gFunction = new Sequence(name, rectangleColor.Fill, equationInput.RightSide, gMinimumX, gMaximumX, coordinateSystem, checkBoxInverse.IsChecked == true);
                 coordinateSystem.AxisLabelX = "n";
                 coordinateSystem.AxisLabelY = "aₙ";
                 coordinateSystem.Refresh();
@@ -218,7 +218,7 @@ namespace Grafer
             else
             {
                 string name = GenerateUniqueName("y");
-                gFunction = new Function(name, rectangleColor.Fill, equationInput.Text, gMinimumX, gMaximumX, coordinateSystem, checkBoxInverse.IsChecked == true);
+                gFunction = new Function(name, rectangleColor.Fill, equationInput.RightSide, gMinimumX, gMaximumX, coordinateSystem, checkBoxInverse.IsChecked == true);
                 coordinateSystem.AxisLabelX = "x";
                 coordinateSystem.AxisLabelY = "y";
                 coordinateSystem.Refresh();
@@ -226,21 +226,7 @@ namespace Grafer
 
             gFunction.CalculatePoints();
         }
-
-        private bool IsSequence()
-        {
-            bool isSequence = equationInput.Text[0] == 'n';
-
-            for (int i = 0; i < equationInput.Text.Length - 1 && !isSequence; i++)
-            {
-                if (equationInput.Text[i + 1] == 'n' && equationInput.Text[i] != 'i')
-                {
-                    isSequence = true;
-                }
-            }
-
-            return isSequence;
-        }
+  
 
         //Vynulování pro výpočet
         private void Reset()
@@ -859,7 +845,7 @@ namespace Grafer
                 }
             }
 
-            return $"f{number}: {leftSide} = {equationInput.Text}";
+            return $"f{number}: {equationInput.Text}";
         }
 
         //Získá nejmenší volné číslé pro jméno funkce.
