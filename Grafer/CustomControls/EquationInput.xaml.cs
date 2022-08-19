@@ -80,7 +80,7 @@ namespace Grafer.CustomControls
                     {
                         int firstIndexAfterEqual = GetSpaceBetweenEqualAndNextChar();
 
-                     
+
                         InvalidSection = (EquationCheck.InvalidSection.SelectionStart + firstIndexAfterEqual, EquationCheck.InvalidSection.SelectionLength, EquationCheck.InvalidSection.MessageID);
                     }
                 }
@@ -106,7 +106,7 @@ namespace Grafer.CustomControls
 
             return space;
         }
-        
+
         //Kontrola zda se nekombinují proměnné pro funkci a posloupnost.
         private bool ContainsCorrectVariablesPair()
         {
@@ -117,7 +117,7 @@ namespace Grafer.CustomControls
 
             return InvalidSection.MessageID == -1;
         }
-        
+
         //Kontrola zda nejsou strany rovnice prázdné.
         private bool AreSidesEmpty()
         {
