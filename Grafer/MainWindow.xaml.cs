@@ -209,16 +209,18 @@ namespace Grafer
 
             if (isSequence)
             {
+                string relation = equationInput.LeftSide.Trim() == "aₙ" ? equationInput.RightSide : equationInput.LeftSide;
                 string name = GenerateUniqueName("aₙ");
-                gFunction = new Sequence(name, rectangleColor.Fill, equationInput.RightSide, gMinimumX, gMaximumX, coordinateSystem, checkBoxInverse.IsChecked == true);
+                gFunction = new Sequence(name, rectangleColor.Fill, relation, gMinimumX, gMaximumX, coordinateSystem, checkBoxInverse.IsChecked == true);
                 coordinateSystem.AxisLabelX = "n";
                 coordinateSystem.AxisLabelY = "aₙ";
                 coordinateSystem.Refresh();
             }
             else
             {
+                string relation = equationInput.LeftSide.Trim() == "y" ? equationInput.RightSide : equationInput.LeftSide;
                 string name = GenerateUniqueName("y");
-                gFunction = new Function(name, rectangleColor.Fill, equationInput.RightSide, gMinimumX, gMaximumX, coordinateSystem, checkBoxInverse.IsChecked == true);
+                gFunction = new Function(name, rectangleColor.Fill, relation, gMinimumX, gMaximumX, coordinateSystem, checkBoxInverse.IsChecked == true);
                 coordinateSystem.AxisLabelX = "x";
                 coordinateSystem.AxisLabelY = "y";
                 coordinateSystem.Refresh();
@@ -226,7 +228,6 @@ namespace Grafer
 
             gFunction.CalculatePoints();
         }
-  
 
         //Vynulování pro výpočet
         private void Reset()

@@ -28,24 +28,37 @@ namespace Grafer.CustomControls
 
         public string RightSide { get; set; } = string.Empty;
 
-           
+        public enum InputType
+        {
+            None,
+            Function,
+            Sequence
+        }
 
+        public InputType EquationType
+        {
+            get
+            {
+
+                return IsEquationValid ? IsSequence() ? InputType.Sequence : InputType.Function : InputType.None;
+            }
+        }
         //Jestli je rovnice v pořádku.
         public bool IsEquationValid
         {
             get
             {
                 InvalidSection = (0, 0, -1);
-                if(Text.Contains("="))
+                if (Text.Contains("="))
                 {
-                    if(Text.IndexOf('=') != Text.LastIndexOf('='))
+                    if (Text.IndexOf('=') != Text.LastIndexOf('='))
                     {
                         InvalidSection = (Text.LastIndexOf('='), 1, 36);
                         return false;
                     }
 
-                    LeftSide = Text.Split('=')[0];
-                    RightSide = Text.Split('=')[1];                                         
+                    LeftSide = Text.Split('=')[0].Trim();
+                    RightSide = Text.Split('=')[1].Trim();
                 }
                 else
                 {
@@ -54,24 +67,58 @@ namespace Grafer.CustomControls
                 }
 
 
-                bool isValid = !AreSidesEmpty() && ContainsCorrectVariablesPair(); // EquationCheck.IsEquationValid(Text) 
+                bool isValid = !AreSidesEmpty() && ContainsCorrectVariablesPair() && AreSidesValid(); // EquationCheck.IsEquationValid(Text) 
 
-                //if (!isValid)
-                //{
-                //    InvalidSection = EquationCheck.InvalidSection;
-                //}
+                if (isValid)
+                {
+                    if (LeftSide != "aₙ" && !EquationCheck.IsEquationValid(LeftSide))
+                    {
+                        InvalidSection = EquationCheck.InvalidSection;
+                    }
 
-                return isValid; // isValid;
+                    if (RightSide != "aₙ" && !EquationCheck.IsEquationValid(RightSide))
+                    {
+                        int firstIndexAfterEqual = GetSpaceBetweenEqualAndNextChar();
+
+                     
+                        InvalidSection = (EquationCheck.InvalidSection.SelectionStart + firstIndexAfterEqual, EquationCheck.InvalidSection.SelectionLength, EquationCheck.InvalidSection.MessageID);
+                    }
+                }
+
+                return isValid && InvalidSection.MessageID == -1; // isValid;
             }
         }
 
+        //Získá index prvního znaku po rovná se.
+        private int GetSpaceBetweenEqualAndNextChar()
+        {
+            int space = 0;
+
+            for (int i = Text.IndexOf("=") + 1; i < Text.Length; i++)
+            {
+                if (Text[i] != ' ')
+                {
+                    space = i;
+                    break;
+                }
+
+            }
+
+            return space;
+        }
+        
+        //Kontrola zda se nekombinují proměnné pro funkci a posloupnost.
         private bool ContainsCorrectVariablesPair()
         {
-            InvalidSection = (Text.Contains("aₙ") && Text.Contains("n")) ||( Text.Contains("y") && Text.Contains("x")) ? (0, 0, -1) : (0, 0, 39);
+            if ((Text.Contains("aₙ") || Text.Contains("n")) && (Text.Contains("y") || Text.Contains("x")))
+            {
+                InvalidSection = (0, 0, 39);
+            }
 
             return InvalidSection.MessageID == -1;
         }
-
+        
+        //Kontrola zda nejsou strany rovnice prázdné.
         private bool AreSidesEmpty()
         {
             if (LeftSide == "")
@@ -84,7 +131,33 @@ namespace Grafer.CustomControls
                 InvalidSection = (Text.Length, 0, 38);
             }
 
+            if (LeftSide == RightSide)
+            {
+                InvalidSection = (0, 0, 42);
+            }
+
             return InvalidSection.MessageID != -1;
+        }
+
+        //Jestli jsou vzájemně strany rovnice v pořádku.
+        private bool AreSidesValid()
+        {
+            if (Text.Contains("aₙ") && (LeftSide != "aₙ" && RightSide != "aₙ"))
+            {
+                InvalidSection = (Text.Length, 0, 40);
+            }
+
+            if (Text.Contains("y") && (LeftSide != "y" && RightSide != "y"))
+            {
+                InvalidSection = (Text.Length, 0, 41);
+            }
+
+            if ((LeftSide.Contains('y') && RightSide.Contains('y')) || (LeftSide.Contains('x') && RightSide.Contains('x')))
+            {
+                InvalidSection = (0, 0, 43);
+            }
+
+            return InvalidSection.MessageID == -1;
         }
 
         //Při vkládání textu z klávesnice. 
@@ -99,7 +172,7 @@ namespace Grafer.CustomControls
         {
             string[] special = new string[3] { "-", "[", "]" }; // tyto znaky nejdou zadávat do regexu.
 
-            if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( ) ^ √ , s i n c o s t a g ° π | l e =]") && !special.Contains(e.Text))
+            if (!Regex.IsMatch(e.Text, "[0-9 x + * / ( ) ^ √ , s i n c o s t a g ° π | l e = y]") && !special.Contains(e.Text))
             {
                 e.Handled = true;
             }
@@ -139,13 +212,13 @@ namespace Grafer.CustomControls
         //Vložení zkratky do textového pole.
         public void InsertShortcut(string shortcut)
         {
-            string addition = (shortcut != "π" && shortcut != "°" && shortcut != "|") ? "()" : "";
+            string addition = (shortcut != "π" && shortcut != "°" && shortcut != "|" && shortcut != "aₙ") ? "()" : "";
 
             int selectionStart = SelectionStart;
 
             Text = Text.Insert(SelectionStart, shortcut + addition);
 
-            SelectionStart = selectionStart + shortcut.Length + addition.Length + ((shortcut != "π" && shortcut != "°" && shortcut != "|") ? -1 : 0);
+            SelectionStart = selectionStart + shortcut.Length + addition.Length + ((shortcut != "π" && shortcut != "°" && shortcut != "|" && shortcut != "aₙ") ? -1 : 0);
         }
 
         private void LoadShortcuts()
@@ -155,25 +228,18 @@ namespace Grafer.CustomControls
             shortcuts = inputShortcuts.ToArray().ToDictionary();
         }
 
-        private bool IsCompleteEquation()
-        {
-            return Text.Contains("=");
-        }
-
         private void CompleteEquation()
         {
-            string leftSide;
-
             if (IsSequence())
             {
-                leftSide = "aₙ";
+                LeftSide = "aₙ";
             }
             else
             {
-                leftSide = "y";
+                LeftSide = "y";
             }
 
-            Text = Text.Insert(0, leftSide + " = ");
+            Text = Text.Insert(0, LeftSide + " = ");
             SelectionStart = Text.Length;
         }
 
@@ -183,7 +249,7 @@ namespace Grafer.CustomControls
 
             for (int i = 0; i < Text.Length - 1 && !isSequence; i++)
             {
-                if (Text[i + 1] == 'n' && Text[i] != 'i')
+                if ((Text[i + 1] == 'n' && Text[i] != 'i') || (Text[i] == 'a' && Text[i + 1] == 'ₙ'))
                 {
                     isSequence = true;
                 }

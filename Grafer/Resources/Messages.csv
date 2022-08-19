@@ -38,4 +38,8 @@ cannot contain number before infinity.;nemůže obsahovat číslo před nekoneč
 cannot contain more than one equals;nemůže obsahovat více než jedno rovná se;
 doesn't include left side of equation;neobsahuje levou stranu rovnice;
 doesn't include right side of equation;neobsahuje pravou stranu rovnice;
-must contains pair of variables: aₙ and n or y and x.;musí obsahovat dvojci proměnných: aₙ a n nebo y a x.;
+cannot contain variables y or x and aₙ or n in the same time.;nemůže obsahovat proměnné y nebo x a zároveň aₙ nebo n.;
+requires in case of sequence input that one side must equal to aₙ only.;požaduje aby v případě poslouponosti byla jedna strana rovna aₙ.;
+requires in case of function relation input that one side must equal to y only.;požaduje aby v případě předpisu funkce byla jedna strana rovna y.;
+cannot contain sides that are same.;nemůže obsahovat strany, které jsou stejné.;
+cannot contain variables x or y on both sides.;nemůže obsahovat proměnné x nebo y na obou stranách.;
