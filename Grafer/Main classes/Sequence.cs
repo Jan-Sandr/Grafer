@@ -1,5 +1,5 @@
 ﻿using Grafer.CustomControls;
-using System.Windows;
+using System;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
@@ -12,21 +12,41 @@ namespace Grafer
 
         }
 
+        //Vykreslení křížků
         public override void Plot(bool inverse, double opacity, Space freeShift = default)
         {
             for (int i = 0; i < curves[0].Points.Count; i++)
             {
-                // Add an Ellipse Element
-                Ellipse myEllipse = new Ellipse();
-                myEllipse.Margin = new Thickness(curves[0].Points[i].X - 8 - coordinateSystem.ZoomLevel, curves[0].Points[i].Y - 8 - coordinateSystem.ZoomLevel, 0, 0);
-                myEllipse.Stroke = Brushes.Black;
-                myEllipse.Fill = Brush;
-                myEllipse.Width = 16 + 2 * coordinateSystem.ZoomLevel;
-                myEllipse.Height = 16 + 2 * coordinateSystem.ZoomLevel;
-                coordinateSystem.Children.Add(myEllipse);
+                //První část křížku
+                Line LineUpDown = new Line
+                {
+                    X1 = curves[0].Points[i].X - 8,
+                    Y1 = curves[0].Points[i].Y - 8,
+                    X2 = curves[0].Points[i].X + 8,
+                    Y2 = curves[0].Points[i].Y + 8,
+                    Stroke = Brush,
+                    StrokeThickness = 2,
+                    Fill = Brush,
+                };
+
+                //Druhá část křížku
+                Line LineDownUp = new Line
+                {
+                    X1 = curves[0].Points[i].X - 8,
+                    Y1 = curves[0].Points[i].Y + 8,
+                    X2 = curves[0].Points[i].X + 8,
+                    Y2 = curves[0].Points[i].Y - 8,
+                    Stroke = Brush,
+                    StrokeThickness = 2,
+                    Fill = Brush,
+                };
+
+                coordinateSystem.Children.Add(LineUpDown);
+                coordinateSystem.Children.Add(LineDownUp);
             }
         }
 
+        //Přepíše v předpisu znaky n na x, protože výpočet pracuje s x.
         protected override void PrepareForCalculation()
         {
             if (relation.Contains("n"))
@@ -43,7 +63,7 @@ namespace Grafer
 
             base.PrepareForCalculation();
 
-            calculationMinimumX = 0;
+            calculationMinimumX = calculationMinimumX < 0 ? 0 : Math.Ceiling(calculationMinimumX);
         }
     }
 }
