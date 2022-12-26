@@ -110,7 +110,17 @@ namespace Grafer.CustomControls
         //Kontrola zda se nekombinují proměnné pro funkci a posloupnost.
         private bool ContainsCorrectVariablesPair()
         {
-            if ((Text.Contains("aₙ") || Text.Contains("n")) && (Text.Contains("y") || Text.Contains("x")))
+            bool containsN = false;
+
+            for (int i = 1; i < Text.Length; i++)
+            {
+                if (Text[i] == 'n' && Text[i - 1] != 'i' && Text[i - 1] != 'l')
+                {
+                    containsN = true;
+                }
+            }
+
+            if ((Text.Contains("aₙ") || containsN) && (Text.Contains("y") || Text.Contains("x")))
             {
                 InvalidSection = (0, 0, 39);
             }
@@ -249,7 +259,7 @@ namespace Grafer.CustomControls
 
             for (int i = 0; i < Text.Length - 1 && !isSequence; i++)
             {
-                if ((Text[i + 1] == 'n' && Text[i] != 'i') || (Text[i] == 'a' && Text[i + 1] == 'ₙ'))
+                if ((Text[i + 1] == 'n' && Text[i] != 'i' && Text[i] != 'l') || (Text[i] == 'a' && Text[i + 1] == 'ₙ'))
                 {
                     isSequence = true;
                 }
